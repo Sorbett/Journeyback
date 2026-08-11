@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "source": "JourneyBack Benefits RAG Knowledge Base v1",
+  "source_root": "/Users/sorbet/Documents/Codex/2026-08-05/thank-you-for-your-registration-for/outputs/journeyback_rag_kb",
+  "source_generated_at": "2026-08-10T00:00:00+08:00",
+  "source_count": 14,
+  "chunk_count": 107,
+  "quality_checks_passed": true,
+  "files": [
+    {
+      "path": "rag/knowledge_base.jsonl",
+      "bytes": 203078,
+      "sha256": "97dab118dd90f0044cc09267a5643c437c8d45282fd432751186ecd1a2bc6e8e"
+    },
+    {
+      "path": "rag/chunk_schema.json",
+      "bytes": 2632,
+      "sha256": "a7f269bcea05678ffbf5d8aaad4c9bb22f129829969182b5082294c73ff59ac5"
+    },
+    {
+      "path": "rag/retrieval_policy.json",
+      "bytes": 1890,
+      "sha256": "8bcc894622f6dde7523f22a2da602c8d843c7359220dc1b673fe0c4f8c395d01"
+    },
+    {
+      "path": "rag/retrieval_qa.json",
+      "bytes": 6077,
+      "sha256": "1e6915e622e1d2acb9c358c683c5d34e9f1b15b5fdf8cc7078a53b1c61f632de"
+    },
+    {
+      "path": "rag/source_manifest.csv",
+      "bytes": 6645,
+      "sha256": "2b463a31aa628dc0ad188e19021ee666b816d69feea90f7f3c1ccfc530435fc8"
+    },
+    {
+      "path": "normalized/policy_facts.json",
+      "bytes": 19710,
+      "sha256": "e2763e3693fe08ab38ec1450e6e56cd95d99791d29911fa5807ec7741b5ce539"
+    },
+    {
+      "path": "normalized/sources.json",
+      "bytes": 12163,
+      "sha256": "bc187399aaf942cae78ecd554fb0a80d909d0595225aaac5057cb85bebc3de1a"
+    },
+    {
+      "path": "quality_report.json",
+      "bytes": 1496,
+      "sha256": "a0aa327832e2e88fd044ad52ebd3bf230abf6f080b2f1b5ce544924eaea21f0c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1872,
+      "sha256": "79b0726de67a4bb6bac85ddcc8fa73904b881bc7d66487ca3b4c4c1a9055789e"
+    }
+  ]
+}

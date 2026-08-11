@@ -1,0 +1,223 @@
+[
+  {
+    "query_id": "Q01",
+    "query": "Platinum 航班延误四小时可以报多少？",
+    "expected_source_ids": [
+      "POL-SG-PLATINUM-2021-06"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+      "POL-SG-KF-ASCEND-INCONVENIENCE",
+      "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+      "POL-SG-PLATINUM-BAGGAGE",
+      "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS"
+    ],
+    "top5_source_ids": [
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-KF-ASCEND-2021-08",
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-2021-06"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q02",
+    "query": "Platinum 托运行李四小时没到，需要什么？",
+    "expected_source_ids": [
+      "POL-SG-PLATINUM-2021-06"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-PLATINUM-BAGGAGE",
+      "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+      "POL-SG-PLATINUM-CLAIMS",
+      "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+      "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS"
+    ],
+    "top5_source_ids": [
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-2021-06"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q03",
+    "query": "Platinum Reserve missed connection 四小时上限",
+    "expected_source_ids": [
+      "POL-SG-PLATINUM-RESERVE"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+      "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+      "POL-SG-KF-ASCEND-INCONVENIENCE",
+      "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+      "POL-SG-PLATINUM-BAGGAGE"
+    ],
+    "top5_source_ids": [
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-KF-ASCEND-2021-08",
+      "POL-SG-TRUE-CASHBACK-2021-04",
+      "POL-SG-PLATINUM-2021-06"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q04",
+    "query": "KrisFlyer Ascend baggage extended delay 48 hours",
+    "expected_source_ids": [
+      "POL-SG-KF-ASCEND-2021-08"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-KF-ASCEND-INCONVENIENCE",
+      "POL-SG-PLATINUM-BAGGAGE",
+      "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+      "POL-SG-KF-ASCEND-EXCLUSIONS",
+      "POL-SG-TRUE-CASHBACK-INCONVENIENCE"
+    ],
+    "top5_source_ids": [
+      "POL-SG-KF-ASCEND-2021-08",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-KF-ASCEND-2021-08",
+      "POL-SG-TRUE-CASHBACK-2021-04"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q05",
+    "query": "True Cashback 行李六小时延误和 PIR",
+    "expected_source_ids": [
+      "POL-SG-TRUE-CASHBACK-2021-04"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+      "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+      "POL-SG-KF-ASCEND-INCONVENIENCE",
+      "POL-SG-KF-ASCEND-EXCLUSIONS",
+      "POL-SG-TRUE-CASHBACK-EXCLUSIONS"
+    ],
+    "top5_source_ids": [
+      "POL-SG-TRUE-CASHBACK-2021-04",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-KF-ASCEND-2021-08",
+      "POL-SG-KF-ASCEND-2021-08",
+      "POL-SG-TRUE-CASHBACK-2021-04"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q06",
+    "query": "Platinum travel inconvenience claim documents airline confirmation receipts",
+    "expected_source_ids": [
+      "POL-SG-PLATINUM-2021-06"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-PLATINUM-CLAIMS",
+      "POL-SG-PLATINUM-RESERVE-CLAIMS",
+      "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+      "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+      "SG-AMEX-MR-TC-HTML-019"
+    ],
+    "top5_source_ids": [
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-PLATINUM-2021-06",
+      "POL-SG-PLATINUM-RESERVE",
+      "SG-AMEX-MR-TC"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q07",
+    "query": "Global Assist lost luggage delayed departure service boundary",
+    "expected_source_ids": [
+      "SG-AMEX-CARD-ASSIST"
+    ],
+    "top5_chunk_ids": [
+      "SG-AMEX-CARD-ASSIST-HTML-002",
+      "SG-AMEX-FLIGHT-FAQ-HTML-001",
+      "SG-AMEX-TRUE-CASHBACK-HTML-001",
+      "SG-AMEX-MR-TC-HTML-014",
+      "SG-AMEX-MR-TC-HTML-040"
+    ],
+    "top5_source_ids": [
+      "SG-AMEX-CARD-ASSIST",
+      "SG-AMEX-FLIGHT-FAQ",
+      "SG-AMEX-TRUE-CASHBACK",
+      "SG-AMEX-MR-TC",
+      "SG-AMEX-MR-TC"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q08",
+    "query": "Amex Travel how to change or cancel a flight booking",
+    "expected_source_ids": [
+      "SG-AMEX-MANAGE-BOOKING",
+      "SG-AMEX-FLIGHT-FAQ"
+    ],
+    "top5_chunk_ids": [
+      "SG-AMEX-FLIGHT-FAQ-HTML-001",
+      "SG-AMEX-MANAGE-BOOKING-HTML-001",
+      "SG-AMEX-FLIGHT-FAQ-HTML-002",
+      "SG-AMEX-TRAVEL-TC-HTML-002",
+      "SG-AMEX-TRAVEL-TC-HTML-012"
+    ],
+    "top5_source_ids": [
+      "SG-AMEX-FLIGHT-FAQ",
+      "SG-AMEX-MANAGE-BOOKING",
+      "SG-AMEX-FLIGHT-FAQ",
+      "SG-AMEX-TRAVEL-TC",
+      "SG-AMEX-TRAVEL-TC"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q09",
+    "query": "Membership Rewards frequent flyer ticket travel insurance exception",
+    "expected_source_ids": [
+      "SG-AMEX-MR-TC"
+    ],
+    "top5_chunk_ids": [
+      "SG-AMEX-MR-TC-HTML-019",
+      "SG-AMEX-MR-TC-HTML-045",
+      "SG-AMEX-TRAVEL-TC-HTML-013",
+      "SG-AMEX-MR-TC-HTML-003",
+      "SG-AMEX-MR-TC-HTML-005"
+    ],
+    "top5_source_ids": [
+      "SG-AMEX-MR-TC",
+      "SG-AMEX-MR-TC",
+      "SG-AMEX-TRAVEL-TC",
+      "SG-AMEX-MR-TC",
+      "SG-AMEX-MR-TC"
+    ],
+    "hit": true
+  },
+  {
+    "query_id": "Q10",
+    "query": "My Travel Insurance travel delay six hours operator written confirmation",
+    "expected_source_ids": [
+      "POL-SG-MY-TRAVEL-2021-12"
+    ],
+    "top5_chunk_ids": [
+      "POL-SG-MY-TRAVEL-DELAY",
+      "POL-SG-MY-TRAVEL-MISCONNECTION",
+      "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+      "POL-SG-PLATINUM-RESERVE-CLAIMS",
+      "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY"
+    ],
+    "top5_source_ids": [
+      "POL-SG-MY-TRAVEL-2021-12",
+      "POL-SG-MY-TRAVEL-2021-12",
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-PLATINUM-RESERVE",
+      "POL-SG-MY-TRAVEL-2021-12"
+    ],
+    "hit": true
+  }
+]

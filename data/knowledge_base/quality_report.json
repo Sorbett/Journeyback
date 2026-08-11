@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-10T00:00:00+08:00",
+  "scope": "Public Singapore travel-benefit documents relevant to JourneyBack; all rules require current-policy and product verification before customer-facing use.",
+  "source_count": 14,
+  "policy_source_count": 5,
+  "html_source_count": 9,
+  "chunk_count": 107,
+  "policy_chunk_count": 22,
+  "html_chunk_count": 85,
+  "duplicate_chunks_removed": 1,
+  "duplicate_chunk_ids_removed": [
+    "SG-AMEX-TRAVEL-TC-HTML-017"
+  ],
+  "max_chunk_chars": 1766,
+  "qa_top5_hit_rate": 1.0,
+  "checks": {
+    "all_sources_https": true,
+    "all_domains_allowed": true,
+    "all_chunk_sources_exist": true,
+    "all_required_chunk_fields_present": true,
+    "chunk_ids_unique": true,
+    "content_hashes_unique_after_dedup": true,
+    "max_chunk_chars_lte_1800": true,
+    "formal_policy_chunks_have_product_code": true,
+    "formal_policy_chunks_have_locator": true,
+    "qa_top5_hit_rate_gte_90pct": true
+  },
+  "all_checks_passed": true,
+  "known_limitations": [
+    "Official PDF URLs and searchable text were verified, but the site viewer did not export original PDF binaries into the workspace.",
+    "Policy wordings published in 2021 remain publicly accessible; current production use requires issuer/insurer confirmation of the latest version.",
+    "The corpus is Singapore-first and does not yet cover every Amex card or APAC market.",
+    "No chunk may be used to promise coverage or automatically approve a claim."
+  ]
+}

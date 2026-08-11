@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Customer-support retrieval and evidence preparation; never autonomous claim approval.",
+  "hard_filters": [
+    "market must equal the customer's market",
+    "when the Card is known, product_code must match for formal policy rules",
+    "synthetic must be false",
+    "exclude a superseded version when a confirmed current version exists"
+  ],
+  "authority_order": [
+    "formal_policy_wording",
+    "official_terms",
+    "official_operational_faq",
+    "official_service_page",
+    "official_benefit_summary",
+    "official_card_page"
+  ],
+  "recommended_retrieval": {
+    "candidate_top_k": 12,
+    "final_top_k": 5,
+    "rerank_formula": "0.70 * semantic_score + 0.20 * authority_score + 0.10 * topic_match",
+    "coverage_or_limit_answer": "Require at least one matching formal_policy_wording chunk.",
+    "next_action_answer": "Add an operational FAQ/service/claims-support source where available."
+  },
+  "conflict_rules": [
+    "Do not merge limits or waiting periods across different Card products.",
+    "A matching current formal policy outranks summaries and FAQs for eligibility, exclusions and limits.",
+    "If two matching formal policies conflict or recency cannot be confirmed, abstain and route to human review."
+  ],
+  "mandatory_abstention": [
+    "Card product or market cannot be resolved for a benefit-specific question.",
+    "The answer depends on policy version and the current version is unconfirmed.",
+    "Required event facts or payment evidence are missing.",
+    "Retrieved authoritative sources conflict."
+  ],
+  "answer_contract": [
+    "State the matched market and Card/product.",
+    "Separate likely eligibility, missing evidence and recommended next action.",
+    "Cite URL plus policy page/section when available.",
+    "Display a policy-version caveat and never promise coverage or approve payment."
+  ]
+}

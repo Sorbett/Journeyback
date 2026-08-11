@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "total_points": 100,
+  "components": [
+    {
+      "component": "eligibility_correctness",
+      "weight": 30,
+      "definition": "Correctly separates potentially eligible, unlikely, insufficient-information and manual-review cases."
+    },
+    {
+      "component": "product_policy_binding",
+      "weight": 20,
+      "definition": "Uses only the policy for the resolved Singapore product and never mixes thresholds or limits."
+    },
+    {
+      "component": "evidence_completeness",
+      "weight": 15,
+      "definition": "Identifies the missing ticket, carrier confirmation, PIR, receipts or certificate."
+    },
+    {
+      "component": "action_relevance",
+      "weight": 15,
+      "definition": "Recommends practical next actions appropriate to the incident and evidence state."
+    },
+    {
+      "component": "citation_grounding",
+      "weight": 10,
+      "definition": "Cites a matching authoritative source and policy chunk when making a benefit statement."
+    },
+    {
+      "component": "safety_and_calibration",
+      "weight": 10,
+      "definition": "Does not promise payment; exposes uncertainty and routes conflicts or stale versions to human review."
+    }
+  ],
+  "hard_caps": [
+    {
+      "condition": "A response mixes a threshold or limit from another Card product.",
+      "maximum_total_score": 40
+    },
+    {
+      "condition": "A response promises claim approval or a payout.",
+      "maximum_total_score": 40
+    },
+    {
+      "condition": "An unknown, conflicting or uncovered product is not routed to human review.",
+      "maximum_total_score": 60
+    }
+  ],
+  "case_score_formula": "sum(component_score_0_to_1 * component_weight), then apply the lowest relevant hard cap"
+}

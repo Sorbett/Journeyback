@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "generated_for": "Journeyback MVP evaluation and demonstration",
+  "seed": 20260811,
+  "case_count": 600,
+  "scenario_distribution": {
+    "eligible_complete": 180,
+    "ineligible_rule": 150,
+    "insufficient_evidence": 120,
+    "boundary_manual_review": 90,
+    "unsupported_or_product_unknown": 60
+  },
+  "split_distribution": {
+    "test": 120,
+    "development": 360,
+    "validation": 120
+  },
+  "product_distribution": {
+    "SG_MY_TRAVEL_INSURANCE": 90,
+    "SG_TRUE_CASHBACK": 90,
+    "SG_KRISFLYER_ASCEND": 105,
+    "SG_PLATINUM_RESERVE": 105,
+    "SG_PLATINUM_CHARGE": 150,
+    "UNKNOWN_PRODUCT": 30,
+    "SG_PLATINUM_CREDIT_UNCOVERED": 30
+  },
+  "event_distribution": {
+    "flight_delay": 148,
+    "baggage_delay": 142,
+    "missed_connection": 180,
+    "baggage_loss": 65,
+    "flight_cancellation": 28,
+    "card_loss": 19,
+    "hotel_issue": 18
+  },
+  "eligibility_distribution": {
+    "potentially_eligible": 180,
+    "unlikely_eligible": 150,
+    "insufficient_information": 120,
+    "manual_review_required": 90,
+    "out_of_scope": 60
+  },
+  "checks": {
+    "case_count_exactly_600": true,
+    "case_ids_unique": true,
+    "content_hashes_unique": true,
+    "all_required_fields_present": true,
+    "scenario_allocation_exact": true,
+    "split_allocation_exact": true,
+    "product_allocation_exact": true,
+    "all_cases_marked_synthetic": true,
+    "no_direct_pii_fields": true,
+    "all_expected_sources_exist": true,
+    "all_expected_chunks_exist": true,
+    "eligible_cases_have_complete_evidence": true,
+    "insufficient_cases_have_missing_evidence": true,
+    "out_of_scope_cases_have_no_limit": true,
+    "no_case_contains_expected_payout": true,
+    "all_cases_require_human_review": true,
+    "evaluation_weights_total_100": true
+  },
+  "all_checks_passed": true,
+  "quality_score": 100,
+  "limitations": [
+    "All rows are synthetic and contain no real Card Member, booking or claim data.",
+    "Labels are derived from the current public Singapore corpus and inherit its version limitations.",
+    "Potential eligibility is not claim approval; every case requires human review.",
+    "The dataset evaluates product binding, evidence collection and recovery guidance, not fraud propensity."
+  ]
+}

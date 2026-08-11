@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://journeyback.local/schemas/benefits-rag-chunk-v1.json",
+  "title": "JourneyBack Benefits RAG Chunk v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authority_score",
+    "chunk_id",
+    "citation",
+    "content_hash",
+    "decision_use",
+    "document_type",
+    "language",
+    "market",
+    "pages",
+    "product",
+    "product_code",
+    "retrieval_text",
+    "retrieved_at",
+    "safety_note",
+    "section",
+    "source_id",
+    "structured_facts",
+    "synthetic",
+    "topics",
+    "url",
+    "version_status"
+  ],
+  "properties": {
+    "chunk_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "market": {
+      "type": "string",
+      "const": "SG"
+    },
+    "product": {
+      "type": "string",
+      "minLength": 1
+    },
+    "product_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "formal_policy_wording",
+        "official_benefit_summary",
+        "official_card_page",
+        "official_operational_faq",
+        "official_service_page",
+        "official_terms"
+      ]
+    },
+    "authority_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "section": {
+      "type": "string"
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "citation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "en",
+        "zh-en"
+      ]
+    },
+    "retrieval_text": {
+      "type": "string",
+      "minLength": 80,
+      "maxLength": 1800
+    },
+    "structured_facts": {
+      "type": "object"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "decision_use": {
+      "type": "string",
+      "enum": [
+        "human_review_required",
+        "operational_guidance_only",
+        "discovery_only"
+      ]
+    },
+    "version_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "safety_note": {
+      "type": "string",
+      "minLength": 1
+    },
+    "synthetic": {
+      "type": "boolean",
+      "const": false
+    }
+  }
+}

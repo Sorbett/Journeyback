@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://journeyback.local/schemas/synthetic-case-v1.json",
+  "title": "Journeyback synthetic travel-disruption case",
+  "type": "object",
+  "required": [
+    "case_id",
+    "split",
+    "synthetic",
+    "seed",
+    "market",
+    "language",
+    "scenario_class",
+    "difficulty",
+    "product_code",
+    "product_name",
+    "product_resolution_status",
+    "event_type",
+    "origin_airport",
+    "destination_airport",
+    "scheduled_departure_utc",
+    "incident_duration_minutes",
+    "origin_return_paid_with_card",
+    "expense_charged_to_card",
+    "claim_notice_days",
+    "user_query",
+    "expected_eligibility",
+    "expected_routing",
+    "expected_missing_documents",
+    "expected_reason_codes",
+    "expected_actions",
+    "expected_source_ids",
+    "expected_chunk_ids",
+    "human_review_required",
+    "expected_payout_sgd",
+    "safety_note",
+    "rule_version",
+    "content_hash"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^JB-SYN-[0-9]{4}$"
+    },
+    "split": {
+      "enum": [
+        "development",
+        "validation",
+        "test"
+      ]
+    },
+    "synthetic": {
+      "const": true
+    },
+    "seed": {
+      "type": "integer"
+    },
+    "market": {
+      "type": "string"
+    },
+    "language": {
+      "enum": [
+        "zh",
+        "en"
+      ]
+    },
+    "scenario_class": {
+      "enum": [
+        "eligible_complete",
+        "ineligible_rule",
+        "insufficient_evidence",
+        "boundary_manual_review",
+        "unsupported_or_product_unknown"
+      ]
+    },
+    "difficulty": {
+      "enum": [
+        "standard",
+        "hard",
+        "edge"
+      ]
+    },
+    "product_code": {
+      "type": "string"
+    },
+    "product_name": {
+      "type": "string"
+    },
+    "product_resolution_status": {
+      "enum": [
+        "resolved",
+        "uncovered_product",
+        "unknown"
+      ]
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "origin_airport": {
+      "type": "string"
+    },
+    "destination_airport": {
+      "type": "string"
+    },
+    "scheduled_departure_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "incident_duration_minutes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "origin_return_paid_with_card": {
+      "type": "boolean"
+    },
+    "expense_charged_to_card": {
+      "type": "boolean"
+    },
+    "claim_notice_days": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "user_query": {
+      "type": "string",
+      "minLength": 20
+    },
+    "expected_eligibility": {
+      "enum": [
+        "potentially_eligible",
+        "unlikely_eligible",
+        "insufficient_information",
+        "manual_review_required",
+        "out_of_scope"
+      ]
+    },
+    "expected_routing": {
+      "type": "string"
+    },
+    "expected_missing_documents": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "expected_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "expected_source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_chunk_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "human_review_required": {
+      "const": true
+    },
+    "reference_limit_sgd": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "expected_payout_sgd": {
+      "type": "null"
+    },
+    "safety_note": {
+      "type": "string"
+    },
+    "rule_version": {
+      "const": "journeyback-synthetic-rules-v1.0"
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

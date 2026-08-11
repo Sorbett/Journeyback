@@ -1,0 +1,483 @@
+[
+  {
+    "chunk_id": "POL-SG-PLATINUM-ELIGIBILITY",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "2.2-2.3 Eligibility and conditions of cover",
+    "pages": [
+      2
+    ],
+    "topics": [
+      "eligibility",
+      "payment_trigger",
+      "covered_person"
+    ],
+    "summary_zh": "Platinum 保障对象包括符合年龄条件的持卡人、配偶和受养子女；要形成受保旅程，出发和返程的旅行成本须计入持卡人的 Platinum Card。",
+    "summary_en": "Eligibility covers qualifying Card Members, spouses and dependent children; the originating and return journey cost must be charged to the Card for the trip to qualify.",
+    "facts": {
+      "origin_and_return_travel_cost_charged_to_card": true,
+      "adult_age_range": "18-80",
+      "dependent_child_max_age": 23
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-DURATION",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "2.3.2 Duration of cover",
+    "pages": [
+      2
+    ],
+    "topics": [
+      "trip_duration",
+      "coverage_limit"
+    ],
+    "summary_zh": "单次受保旅程超过 180 个连续日，或在指定期间累计超过 240 日后，超出部分不再受保。",
+    "summary_en": "Cover ends after day 180 of a single covered trip or after day 240 cumulatively in the specified period.",
+    "facts": {
+      "max_consecutive_trip_days": 180,
+      "max_cumulative_days": 240
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "8.1 Travel Inconvenience Benefit",
+    "pages": [
+      8,
+      9
+    ],
+    "topics": [
+      "flight_delay",
+      "flight_cancellation",
+      "overbooking",
+      "missed_departure",
+      "missed_connection"
+    ],
+    "summary_zh": "若误机、延误、取消、超售或错过转机后 4 小时内没有可用替代航班，可对实际发生且符合条件的额外交通、餐饮和住宿费用进行报销；上限为每人 S$400、每家庭 S$800。",
+    "summary_en": "For specified missed departure, delay, cancellation, overbooking or missed connection events with no alternative flight within four hours, eligible additional travel, refreshment and accommodation expenses may be reimbursed up to S$400 per person and S$800 per family.",
+    "facts": {
+      "alternative_unavailable_minutes": 240,
+      "person_limit_sgd": 400,
+      "family_limit_sgd": 800,
+      "expense_based": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-BAGGAGE",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "8.1(b)-(c) Baggage delay",
+    "pages": [
+      9
+    ],
+    "topics": [
+      "baggage_delay",
+      "extended_baggage_delay",
+      "essential_items"
+    ],
+    "summary_zh": "托运行李到达目的地后 4 小时仍未送达，可购买必需品并按每人 S$400、每家庭 S$800 的上限申请；48 小时仍未送达时，可再适用一组同额的额外上限。",
+    "summary_en": "Checked baggage delayed beyond four hours may support essential-item purchases up to S$400 per person and S$800 per family, with an additional equal limit after 48 hours.",
+    "facts": {
+      "baggage_delay_minutes": 240,
+      "extended_delay_hours": 48,
+      "person_limit_sgd": 400,
+      "family_limit_sgd": 800,
+      "additional_limit_after_extended_delay": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "8.2 Travel Inconvenience exclusions",
+    "pages": [
+      9
+    ],
+    "topics": [
+      "exclusion",
+      "alternative_refused",
+      "return_leg",
+      "receipts",
+      "pir"
+    ],
+    "summary_zh": "关键限制包括拒绝航空公司提供的替代安排、回程最后一段的行李延误、购买非必要物品、没有取得行李事故报告，以及私人包机等情形。",
+    "summary_en": "Important exclusions include refusing airline alternatives, baggage delay on the final return leg, non-essential purchases, missing baggage reports and certain private charter flights.",
+    "facts": {
+      "airline_alternative_refused_excluded": true,
+      "final_return_leg_baggage_excluded": true,
+      "property_irregularity_report_required": true,
+      "essential_items_only": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-CLAIMS",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "17.1-17.3 Claims",
+    "pages": [
+      15,
+      16
+    ],
+    "topics": [
+      "claim_deadline",
+      "required_documents",
+      "receipts",
+      "airline_confirmation"
+    ],
+    "summary_zh": "一般应在事件发生后 30 日内提交申请和证明。旅行不便通常需要机票、航空公司对延误/取消/转机失败/超售的书面确认、行李事故报告及返还日期、相关原因证明和费用收据。",
+    "summary_en": "Claims should generally be submitted within 30 days. Travel-inconvenience evidence includes tickets, carrier confirmation, baggage reports and return dates, cause evidence and expense receipts.",
+    "facts": {
+      "claim_deadline_days": 30,
+      "flight_ticket_required": true,
+      "carrier_confirmation_required": true,
+      "property_irregularity_report_required_for_baggage": true,
+      "receipts_required": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-CANCELLATION",
+    "source_id": "POL-SG-PLATINUM-2021-06",
+    "section": "5 Trip Cancellation and Postponement",
+    "pages": [
+      7
+    ],
+    "topics": [
+      "trip_cancellation",
+      "trip_postponement",
+      "medical_certificate"
+    ],
+    "summary_zh": "符合指定原因的取消、延期或变更，可对已支付且不可退的旅行相关费用或变更费申请，限额 S$10,000；费用须计入卡片，并受既知情况、既往病况、通知义务和医疗证明等限制。",
+    "summary_en": "Specified cancellation, postponement or change costs may be covered up to S$10,000, subject to Card charging and exclusions including known circumstances and missing medical evidence.",
+    "facts": {
+      "limit_sgd": 10000,
+      "card_charge_required": true,
+      "medical_certificate_may_be_required": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+    "source_id": "POL-SG-PLATINUM-RESERVE",
+    "section": "2.2-2.3 Eligibility and cover",
+    "pages": [
+      2
+    ],
+    "topics": [
+      "eligibility",
+      "payment_trigger",
+      "trip_duration"
+    ],
+    "summary_zh": "Platinum Reserve 的受保对象包括持卡人、配偶和受养子女；旅程的出发及返程旅行成本须计入该卡。单次旅程和累计期限分别为 180 日和 240 日。",
+    "summary_en": "The Card Member, spouse and dependent children may qualify when originating and return travel costs are charged to the Card; trip duration limits are 180 consecutive and 240 cumulative days.",
+    "facts": {
+      "origin_and_return_travel_cost_charged_to_card": true,
+      "max_consecutive_trip_days": 180,
+      "max_cumulative_days": 240
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+    "source_id": "POL-SG-PLATINUM-RESERVE",
+    "section": "5 Travel Inconvenience Benefits",
+    "pages": [
+      5,
+      6
+    ],
+    "topics": [
+      "missed_connection",
+      "baggage_delay",
+      "baggage_loss"
+    ],
+    "summary_zh": "错过转机且 4 小时内无替代航班，上限为持卡人 S$200、家庭 S$400；托运行李 6 小时未送达适用相同上限，48 小时未送达则按持卡人 S$500、家庭 S$1,000 的必需品支出上限处理。",
+    "summary_en": "Missed connection without an alternative for four hours has S$200/S$400 Card Member/family limits; baggage delay after six hours uses the same limits, and presumed loss after 48 hours uses S$500/S$1,000.",
+    "facts": {
+      "missed_connection_minutes": 240,
+      "baggage_delay_hours": 6,
+      "baggage_loss_hours": 48,
+      "cardmember_limit_sgd": 200,
+      "family_limit_sgd": 400,
+      "loss_cardmember_limit_sgd": 500,
+      "loss_family_limit_sgd": 1000
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+    "source_id": "POL-SG-PLATINUM-RESERVE",
+    "section": "5.2 Travel Inconvenience exclusions",
+    "pages": [
+      6
+    ],
+    "topics": [
+      "exclusion",
+      "alternative_refused",
+      "return_leg",
+      "pir",
+      "receipt"
+    ],
+    "summary_zh": "不适用或可能被拒的情形包括拒绝航空公司替代安排、回程最后一段行李问题、未取得行李事故报告、没有实际支出或缺少适当收据。",
+    "summary_en": "Exclusions include refusing airline alternatives, final return-leg baggage events, missing baggage reports, no incurred costs and missing receipts.",
+    "facts": {
+      "airline_alternative_refused_excluded": true,
+      "final_return_leg_baggage_excluded": true,
+      "property_irregularity_report_required": true,
+      "receipts_required": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-PLATINUM-RESERVE-CLAIMS",
+    "source_id": "POL-SG-PLATINUM-RESERVE",
+    "section": "10 Claims",
+    "pages": [
+      8,
+      9
+    ],
+    "topics": [
+      "claim_deadline",
+      "required_documents"
+    ],
+    "summary_zh": "索赔材料通常应在事件后 30 日内提交。旅行不便证明包括机票、航空公司确认、行李事故报告、行李返还日期、延误原因和相关收据。",
+    "summary_en": "Claims are generally due within 30 days; travel-inconvenience evidence includes tickets, carrier confirmation, baggage reports, baggage return dates, delay cause and receipts.",
+    "facts": {
+      "claim_deadline_days": 30,
+      "flight_ticket_required": true,
+      "carrier_confirmation_required": true,
+      "receipts_required": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-KF-ASCEND-ELIGIBILITY",
+    "source_id": "POL-SG-KF-ASCEND-2021-08",
+    "section": "2.3 Conditions of cover",
+    "pages": [
+      2
+    ],
+    "topics": [
+      "eligibility",
+      "payment_trigger",
+      "family"
+    ],
+    "summary_zh": "KrisFlyer Ascend 旅程保障要求出发和返程旅行成本计入该卡；配偶和受养子女需与持卡人同行才进入该条款所述的受保旅程范围。",
+    "summary_en": "The originating and return travel cost must be charged to the Card; the spouse and dependent children are covered when travelling together with the Card Member.",
+    "facts": {
+      "origin_and_return_travel_cost_charged_to_card": true,
+      "family_travels_with_cardmember": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-KF-ASCEND-INCONVENIENCE",
+    "source_id": "POL-SG-KF-ASCEND-2021-08",
+    "section": "4.1 Travel Inconvenience",
+    "pages": [
+      4
+    ],
+    "topics": [
+      "missed_connection",
+      "baggage_delay",
+      "extended_baggage_delay",
+      "flight_delay"
+    ],
+    "summary_zh": "错过转机或航班延误且 4 小时内无替代航班，实际餐饮、住宿或额外交通类费用上限为每人 S$200、家庭 S$400；行李 6 小时延误适用每人 S$200/家庭 S$400，48 小时仍未送达可再增加每人 S$500/家庭 S$1,000。",
+    "summary_en": "Four-hour missed-connection and flight-delay events have S$200 per-person/S$400 family limits; baggage delay after six hours uses those limits and 48-hour extended delay adds S$500/S$1,000.",
+    "facts": {
+      "flight_or_connection_threshold_minutes": 240,
+      "person_limit_sgd": 200,
+      "family_limit_sgd": 400,
+      "baggage_delay_hours": 6,
+      "extended_baggage_delay_hours": 48,
+      "extended_person_additional_sgd": 500,
+      "extended_family_additional_sgd": 1000
+    }
+  },
+  {
+    "chunk_id": "POL-SG-KF-ASCEND-EXCLUSIONS",
+    "source_id": "POL-SG-KF-ASCEND-2021-08",
+    "section": "4.1.2-4.1.3 Payment and exclusions",
+    "pages": [
+      4
+    ],
+    "topics": [
+      "card_charge",
+      "exclusion",
+      "pir",
+      "return_leg"
+    ],
+    "summary_zh": "可报销费用须计入该卡。拒绝航空公司替代安排、回程最后一段行李延误、非即时必要物品、没有取得行李事故报告或私人包机等情况不适用。",
+    "summary_en": "Claimed expenses must be charged to the Card; exclusions include refused airline alternatives, final return-leg baggage delay, non-essential items, missing baggage reports and private charter flights.",
+    "facts": {
+      "claimed_expenses_charged_to_card": true,
+      "airline_alternative_refused_excluded": true,
+      "final_return_leg_baggage_excluded": true,
+      "property_irregularity_report_required": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-KF-ASCEND-CLAIMS",
+    "source_id": "POL-SG-KF-ASCEND-2021-08",
+    "section": "8 Claims",
+    "pages": [
+      7
+    ],
+    "topics": [
+      "claim_deadline",
+      "claims_channel",
+      "evidence"
+    ],
+    "summary_zh": "可通过 Chubb 的 Amex Singapore Claims Centre 提交；申请表和证明一般须在事件发生后 30 日内送达，并提供警方、承运人或其他机构报告及保险人合理要求的证据。",
+    "summary_en": "Claims may be filed through the Chubb Amex Singapore Claims Centre and should generally include reports and evidence within 30 days of the event.",
+    "facts": {
+      "claim_deadline_days": 30,
+      "online_claims_url": "https://www.chubbclaims.com/amex/sg-en/welcome.aspx",
+      "carrier_reports_required_when_applicable": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+    "source_id": "POL-SG-TRUE-CASHBACK-2021-04",
+    "section": "2.2-2.3 Eligibility and cover",
+    "pages": [
+      2,
+      3
+    ],
+    "topics": [
+      "eligibility",
+      "payment_trigger",
+      "trip_duration"
+    ],
+    "summary_zh": "True Cashback 的持卡人、附属卡持卡人、配偶及符合年龄的受养子女可进入受保范围；出发及返程旅行成本须计入该卡，单次及累计期限分别为 180 日和 240 日。",
+    "summary_en": "Eligible Card Members, supplementary members, spouses and dependent children require originating and return travel costs charged to the Card; duration limits are 180 consecutive and 240 cumulative days.",
+    "facts": {
+      "origin_and_return_travel_cost_charged_to_card": true,
+      "max_consecutive_trip_days": 180,
+      "max_cumulative_days": 240
+    }
+  },
+  {
+    "chunk_id": "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+    "source_id": "POL-SG-TRUE-CASHBACK-2021-04",
+    "section": "4 Travel Inconvenience Benefit",
+    "pages": [
+      4,
+      5
+    ],
+    "topics": [
+      "missed_connection",
+      "baggage_delay",
+      "baggage_loss"
+    ],
+    "summary_zh": "错过转机且 4 小时内无替代交通，可对计入该卡的酒店和餐饮支出按持卡人 S$200、家庭 S$400 上限申请。行李 6 小时延误适用同额上限；48 小时未送达视为遗失时，上限为持卡人 S$500、家庭 S$1,000。",
+    "summary_en": "A four-hour missed connection has S$200/S$400 Card Member/family limits for Card-charged accommodation and meals; six-hour baggage delay uses the same limits and 48-hour loss uses S$500/S$1,000.",
+    "facts": {
+      "missed_connection_minutes": 240,
+      "baggage_delay_hours": 6,
+      "baggage_loss_hours": 48,
+      "cardmember_limit_sgd": 200,
+      "family_limit_sgd": 400,
+      "loss_cardmember_limit_sgd": 500,
+      "loss_family_limit_sgd": 1000
+    }
+  },
+  {
+    "chunk_id": "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+    "source_id": "POL-SG-TRUE-CASHBACK-2021-04",
+    "section": "4.5 Additional exclusions",
+    "pages": [
+      4
+    ],
+    "topics": [
+      "exclusion",
+      "pir",
+      "baggage"
+    ],
+    "summary_zh": "行李相关申请需要采取合理的找回措施，并在目的地向航空公司报告缺失且取得完整的 Property Irregularity Report；海关没收等情形也不适用。",
+    "summary_en": "Baggage claims require reasonable recovery action and a completed Property Irregularity Report from the airline at destination; confiscation is excluded.",
+    "facts": {
+      "property_irregularity_report_required": true,
+      "reasonable_recovery_steps_required": true,
+      "customs_confiscation_excluded": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-TRUE-CASHBACK-CLAIMS",
+    "source_id": "POL-SG-TRUE-CASHBACK-2021-04",
+    "section": "8 Claims",
+    "pages": [
+      8
+    ],
+    "topics": [
+      "claim_deadline",
+      "claims_channel",
+      "evidence"
+    ],
+    "summary_zh": "可通过 Chubb 的 Amex Singapore Claims Centre 提交；警方、承运人或其他机构报告和其他证明应尽快提供，通常不得晚于事件后 30 日。",
+    "summary_en": "Claims may be filed through the Chubb Amex Singapore Claims Centre with police, carrier or other evidence, generally within 30 days.",
+    "facts": {
+      "claim_deadline_days": 30,
+      "online_claims_url": "https://www.chubbclaims.com/amex/sg-en/welcome.aspx",
+      "authority_reports_required_when_applicable": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+    "source_id": "POL-SG-MY-TRAVEL-2021-12",
+    "section": "Benefit Schedule and policy scope",
+    "pages": [
+      1,
+      4,
+      5
+    ],
+    "topics": [
+      "separate_policy",
+      "plan_category",
+      "benefit_schedule"
+    ],
+    "summary_zh": "My Travel Insurance 是另行购买的 Chubb 保单，不等同于卡片内嵌保障；其 Essential、Standard、Superior 三档限额不同，RAG 必须先确认用户是否购买、保单区域和计划档位。",
+    "summary_en": "My Travel Insurance is separately purchased and differs from embedded Card cover; Essential, Standard and Superior limits require confirmation of purchase, region and plan tier.",
+    "facts": {
+      "separately_purchased": true,
+      "plan_tiers": [
+        "Essential",
+        "Standard",
+        "Superior"
+      ],
+      "certificate_of_insurance_required_for_exact_limit": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-MY-TRAVEL-DELAY",
+    "source_id": "POL-SG-MY-TRAVEL-2021-12",
+    "section": "17 Travel Delay",
+    "pages": [
+      26,
+      27
+    ],
+    "topics": [
+      "travel_delay",
+      "operator_confirmation",
+      "plan_limit"
+    ],
+    "summary_zh": "公共交通在同一地点连续延误至少 6 小时，且原因属于条款列示的罢工、恶劣天气、机械故障或结构缺陷停运时，可按每满 6 小时计算相应计划利益；承运人或处理代理须书面确认时长和原因。",
+    "summary_en": "A public-conveyance delay of at least six consecutive hours for specified causes may pay by full six-hour blocks according to the plan, with written operator confirmation of duration and reason.",
+    "facts": {
+      "threshold_hours": 6,
+      "paid_per_full_block_hours": 6,
+      "written_operator_confirmation_required": true,
+      "limit_depends_on_plan": true
+    }
+  },
+  {
+    "chunk_id": "POL-SG-MY-TRAVEL-MISCONNECTION",
+    "source_id": "POL-SG-MY-TRAVEL-2021-12",
+    "section": "19 Travel Misconnection",
+    "pages": [
+      28
+    ],
+    "topics": [
+      "missed_connection",
+      "operator_confirmation",
+      "plan_limit"
+    ],
+    "summary_zh": "因前一段公共交通晚到而错过已确认的海外接驳，且实际到达后 6 小时内无后续交通，可按每满 6 小时及计划限额计算；需要承运人书面确认计划和实际到离时间以及原因。",
+    "summary_en": "An overseas misconnection caused by late incoming transport and no onward transport for six hours may pay in six-hour blocks, subject to plan limits and written schedule/actual-time confirmation.",
+    "facts": {
+      "threshold_hours": 6,
+      "paid_per_full_block_hours": 6,
+      "written_operator_confirmation_required": true,
+      "limit_depends_on_plan": true
+    }
+  }
+]
