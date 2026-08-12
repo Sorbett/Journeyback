@@ -1,0 +1,8 @@
+{
+  "evaluation_scope": "Live LLM smoke evaluation",
+  "status": "not_run",
+  "reason": "OPENAI_API_KEY is not configured",
+  "model": "gpt-5.4-nano",
+  "embedding_model": "text-embedding-3-small",
+  "offline_validation": "Run python3 -m unittest discover -s tests -v for mocked pipeline tests."
+}

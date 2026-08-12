@@ -511,7 +511,7 @@ def build_known_case(
 
         failure = rng.choice(failure_modes)
         if failure == "below_threshold":
-            case["incident_duration_minutes"] = max(0, threshold - rng.choice([1, 15, 60]))
+            case["incident_duration_minutes"] = max(0, threshold - rng.choice([15, 60, 120]))
         elif failure == "payment_condition_failed":
             case["origin_return_paid_with_card"] = False
         elif failure == "expense_not_charged_to_card":
