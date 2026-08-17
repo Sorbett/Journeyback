@@ -1,8 +1,9 @@
-"""Minimal OpenAI Responses and Embeddings API client.
+"""Minimal DeepSeek/SiliconFlow API client.
 
 The implementation uses the Python standard library so the hackathon MVP keeps
-its zero-install startup. It deliberately exposes a tiny interface that can be
-replaced with a test double or another OpenAI-compatible provider.
+its zero-install startup. DeepSeek handles structured text generation through
+Chat Completions; SiliconFlow-hosted BGE-M3 handles semantic embeddings. A pure
+OpenAI text or embedding path remains available through configuration.
 """
 
 from __future__ import annotations
@@ -46,8 +47,8 @@ class LLMClient(Protocol):
     def embed(self, texts: list[str]) -> list[list[float]]: ...
 
 
-class OpenAIResponsesClient:
-    """Call Structured Outputs and Embeddings through OpenAI's REST API."""
+class JourneybackLLMClient:
+    """Route structured generation and embeddings to their configured providers."""
 
     def __init__(self, settings: LLMSettings) -> None:
         self.settings = settings
@@ -60,7 +61,34 @@ class OpenAIResponsesClient:
         schema_name: str,
         schema: dict[str, Any],
     ) -> dict[str, Any]:
-        payload = {
+        if not self.settings.llm_configured:
+            key_name = "DEEPSEEK_API_KEY" if self.settings.llm_provider == "deepseek" else "OPENAI_API_KEY"
+            raise LLMConfigurationError(
+                f"Text generation is not configured. Add {key_name} to the project .env file."
+            )
+        if self.settings.llm_provider == "deepseek":
+            return self._deepseek_structured(
+                instructions=instructions,
+                input_text=input_text,
+                schema_name=schema_name,
+                schema=schema,
+            )
+        return self._openai_structured(
+            instructions=instructions,
+            input_text=input_text,
+            schema_name=schema_name,
+            schema=schema,
+        )
+
+    def _openai_structured(
+        self,
+        *,
+        instructions: str,
+        input_text: str,
+        schema_name: str,
+        schema: dict[str, Any],
+    ) -> dict[str, Any]:
+        payload: dict[str, Any] = {
             "model": self.settings.model,
             "store": False,
             "input": [
@@ -78,25 +106,87 @@ class OpenAIResponsesClient:
         }
         if self.settings.reasoning_effort != "none":
             payload["reasoning"] = {"effort": self.settings.reasoning_effort}
-        response = self._post("/responses", payload)
+        response = self._post(
+            api_base=self.settings.llm_api_base,
+            api_key=self.settings.llm_api_key,
+            path="/responses",
+            payload=payload,
+            provider="OpenAI Responses",
+        )
         output_text = _extract_output_text(response)
-        try:
-            parsed = json.loads(output_text)
-        except json.JSONDecodeError as exc:
-            raise LLMResponseError("Model returned malformed structured output.") from exc
-        if not isinstance(parsed, dict):
-            raise LLMResponseError("Model structured output must be a JSON object.")
-        return parsed
+        return _parse_and_validate(output_text, schema)
+
+    def _deepseek_structured(
+        self,
+        *,
+        instructions: str,
+        input_text: str,
+        schema_name: str,
+        schema: dict[str, Any],
+    ) -> dict[str, Any]:
+        schema_text = json.dumps(schema, ensure_ascii=False, separators=(",", ":"))
+        system_prompt = (
+            f"{instructions}\n\n"
+            f"Return only valid JSON for `{schema_name}`. The JSON must conform exactly "
+            f"to this schema, including required fields and enum values:\n{schema_text}"
+        )
+        thinking: dict[str, str]
+        # DeepSeek maps a literal "low" effort to its "high" tier. For this
+        # latency-sensitive MVP, application-level none/low therefore selects
+        # the provider's non-thinking mode instead.
+        if self.settings.reasoning_effort in {"none", "low"}:
+            thinking = {"type": "disabled"}
+        else:
+            effort = "max" if self.settings.reasoning_effort in {"xhigh", "max"} else "high"
+            thinking = {"type": "enabled", "reasoning_effort": effort}
+        payload = {
+            "model": self.settings.model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": input_text},
+            ],
+            "response_format": {"type": "json_object"},
+            "thinking": thinking,
+            "max_tokens": 4_096,
+            "stream": False,
+        }
+        response = self._post(
+            api_base=self.settings.llm_api_base,
+            api_key=self.settings.llm_api_key,
+            path="/chat/completions",
+            payload=payload,
+            provider="DeepSeek Chat Completions",
+        )
+        return _parse_and_validate(_extract_chat_output(response), schema)
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
+        if not self.settings.embedding_configured:
+            key_name = (
+                "SILICONFLOW_API_KEY"
+                if self.settings.embedding_provider == "siliconflow"
+                else "OPENAI_API_KEY"
+            )
+            raise LLMConfigurationError(
+                f"Embeddings are not configured. Add {key_name} to the project .env file."
+            )
         payload = {
             "model": self.settings.embedding_model,
             "input": texts,
             "encoding_format": "float",
         }
-        response = self._post("/embeddings", payload)
+        provider_name = {
+            "siliconflow": "SiliconFlow",
+            "openai": "OpenAI",
+        }.get(self.settings.embedding_provider, self.settings.embedding_provider)
+        response = self._post(
+            api_base=self.settings.embedding_api_base,
+            api_key=self.settings.embedding_api_key,
+            path="/embeddings",
+            payload=payload,
+            provider=f"{provider_name} Embeddings",
+        )
         data = response.get("data")
         if not isinstance(data, list):
             raise LLMResponseError("Embedding response is missing data.")
@@ -106,17 +196,21 @@ class OpenAIResponsesClient:
             raise LLMResponseError("Embedding response does not match the requested inputs.")
         return embeddings
 
-    def _post(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
-        if not self.settings.configured:
-            raise LLMConfigurationError(
-                "LLM is not configured. Add OPENAI_API_KEY to the project .env file."
-            )
+    def _post(
+        self,
+        *,
+        api_base: str,
+        api_key: str,
+        path: str,
+        payload: dict[str, Any],
+        provider: str,
+    ) -> dict[str, Any]:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         request = Request(
-            f"{self.settings.api_base}{path}",
+            f"{api_base}{path}",
             data=body,
             headers={
-                "Authorization": f"Bearer {self.settings.api_key}",
+                "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
             },
             method="POST",
@@ -126,16 +220,20 @@ class OpenAIResponsesClient:
                 parsed = json.loads(response.read().decode("utf-8"))
         except HTTPError as exc:
             detail = _safe_error_detail(exc)
-            raise LLMAPIError(f"Model API returned HTTP {exc.code}: {detail}") from exc
+            raise LLMAPIError(f"{provider} returned HTTP {exc.code}: {detail}") from exc
         except URLError as exc:
-            raise LLMAPIError(f"Could not reach the model API: {exc.reason}") from exc
+            raise LLMAPIError(f"Could not reach {provider}: {exc.reason}") from exc
         except TimeoutError as exc:
-            raise LLMAPIError("The model API request timed out.") from exc
+            raise LLMAPIError(f"{provider} request timed out.") from exc
         except json.JSONDecodeError as exc:
-            raise LLMResponseError("Model API returned a non-JSON response.") from exc
+            raise LLMResponseError(f"{provider} returned a non-JSON response.") from exc
         if not isinstance(parsed, dict):
-            raise LLMResponseError("Model API returned an unexpected response shape.")
+            raise LLMResponseError(f"{provider} returned an unexpected response shape.")
         return parsed
+
+
+# Backwards-compatible import name for callers of the original MVP client.
+OpenAIResponsesClient = JourneybackLLMClient
 
 
 def _extract_output_text(response: dict[str, Any]) -> str:
@@ -148,6 +246,79 @@ def _extract_output_text(response: dict[str, Any]) -> str:
             if content.get("type") == "output_text" and isinstance(content.get("text"), str):
                 return content["text"]
     raise LLMResponseError("Model response did not contain structured output text.")
+
+
+def _extract_chat_output(response: dict[str, Any]) -> str:
+    choices = response.get("choices")
+    if not isinstance(choices, list) or not choices:
+        raise LLMResponseError("Chat response is missing choices.")
+    first = choices[0]
+    if not isinstance(first, dict):
+        raise LLMResponseError("Chat response contains an invalid choice.")
+    if first.get("finish_reason") == "length":
+        raise LLMResponseError("Chat response was truncated before the JSON object completed.")
+    message = first.get("message")
+    content = message.get("content") if isinstance(message, dict) else None
+    if not isinstance(content, str) or not content.strip():
+        raise LLMResponseError("Chat response did not contain JSON output.")
+    return content
+
+
+def _parse_and_validate(output_text: str, schema: dict[str, Any]) -> dict[str, Any]:
+    try:
+        parsed = json.loads(output_text)
+    except json.JSONDecodeError as exc:
+        raise LLMResponseError("Model returned malformed structured output.") from exc
+    if not isinstance(parsed, dict):
+        raise LLMResponseError("Model structured output must be a JSON object.")
+    try:
+        _validate_schema(parsed, schema)
+    except ValueError as exc:
+        raise LLMResponseError(f"Model output did not match the requested schema: {exc}") from exc
+    return parsed
+
+
+def _validate_schema(value: Any, schema: dict[str, Any], path: str = "$") -> None:
+    expected = schema.get("type")
+    if expected == "object":
+        if not isinstance(value, dict):
+            raise ValueError(f"{path} must be an object")
+        properties = schema.get("properties", {})
+        for name in schema.get("required", []):
+            if name not in value:
+                raise ValueError(f"{path}.{name} is required")
+        if schema.get("additionalProperties") is False:
+            extras = set(value) - set(properties)
+            if extras:
+                raise ValueError(f"{path} contains unexpected field {sorted(extras)[0]}")
+        for name, item in value.items():
+            child_schema = properties.get(name)
+            if isinstance(child_schema, dict):
+                _validate_schema(item, child_schema, f"{path}.{name}")
+    elif expected == "array":
+        if not isinstance(value, list):
+            raise ValueError(f"{path} must be an array")
+        item_schema = schema.get("items")
+        if isinstance(item_schema, dict):
+            for index, item in enumerate(value):
+                _validate_schema(item, item_schema, f"{path}[{index}]")
+    elif expected == "string":
+        if not isinstance(value, str):
+            raise ValueError(f"{path} must be a string")
+    elif expected == "integer":
+        if not isinstance(value, int) or isinstance(value, bool):
+            raise ValueError(f"{path} must be an integer")
+    elif expected == "number":
+        if not isinstance(value, (int, float)) or isinstance(value, bool):
+            raise ValueError(f"{path} must be a number")
+
+    if "enum" in schema and value not in schema["enum"]:
+        raise ValueError(f"{path} contains a value outside the allowed enum")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        if "minimum" in schema and value < schema["minimum"]:
+            raise ValueError(f"{path} is below the minimum")
+        if "maximum" in schema and value > schema["maximum"]:
+            raise ValueError(f"{path} exceeds the maximum")
 
 
 def _safe_error_detail(exc: HTTPError) -> str:

@@ -1,4 +1,4 @@
-"""Runtime configuration for the LLM-first Journeyback service."""
+"""Runtime configuration for the multi-provider Journeyback service."""
 
 from __future__ import annotations
 
@@ -36,15 +36,19 @@ def load_env_file(path: Path = DEFAULT_ENV_FILE) -> None:
 
 @dataclass(frozen=True)
 class LLMSettings:
-    """OpenAI-compatible endpoint and model configuration."""
+    """Independent text-generation and embedding provider configuration."""
 
-    api_key: str
-    api_base: str = "https://api.openai.com/v1"
-    model: str = "gpt-5.4-nano"
-    embedding_model: str = "text-embedding-3-small"
+    model: str = "deepseek-v4-flash"
+    embedding_model: str = "BAAI/bge-m3"
     reasoning_effort: str = "low"
     timeout_seconds: int = 60
     retrieval_top_k: int = 8
+    llm_provider: str = "deepseek"
+    llm_api_key: str = ""
+    llm_api_base: str = "https://api.deepseek.com"
+    embedding_provider: str = "siliconflow"
+    embedding_api_key: str = ""
+    embedding_api_base: str = "https://api.siliconflow.cn/v1"
 
     @classmethod
     def from_env(cls, env_file: Path = DEFAULT_ENV_FILE) -> "LLMSettings":
@@ -54,26 +58,75 @@ class LLMSettings:
         effort = os.getenv("JOURNEYBACK_REASONING_EFFORT", "low").strip().lower()
         if effort not in {"none", "low", "medium", "high", "xhigh", "max"}:
             effort = "low"
+        requested_model = os.getenv("JOURNEYBACK_LLM_MODEL", "").strip()
+        requested_provider = os.getenv("JOURNEYBACK_LLM_PROVIDER", "").strip().lower()
+        if requested_provider not in {"deepseek", "openai"}:
+            requested_provider = (
+                "deepseek"
+                if os.getenv("DEEPSEEK_API_KEY", "").strip() or requested_model.startswith("deepseek-")
+                else "openai"
+            )
+        default_model = "deepseek-v4-flash" if requested_provider == "deepseek" else "gpt-5.4-nano"
+        if requested_provider == "deepseek":
+            llm_api_key = os.getenv("DEEPSEEK_API_KEY", "").strip()
+            llm_api_base = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com").strip()
+        else:
+            llm_api_key = os.getenv("OPENAI_API_KEY", "").strip()
+            llm_api_base = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").strip()
+
+        requested_embedding_model = os.getenv("JOURNEYBACK_EMBEDDING_MODEL", "").strip()
+        embedding_provider = os.getenv("JOURNEYBACK_EMBEDDING_PROVIDER", "siliconflow").strip().lower()
+        if embedding_provider not in {"siliconflow", "openai"}:
+            embedding_provider = "siliconflow"
+        if embedding_provider == "siliconflow":
+            embedding_api_key = os.getenv("SILICONFLOW_API_KEY", "").strip()
+            embedding_api_base = os.getenv(
+                "SILICONFLOW_BASE_URL", "https://api.siliconflow.cn/v1"
+            ).strip()
+            default_embedding_model = "BAAI/bge-m3"
+        else:
+            embedding_api_key = os.getenv("OPENAI_API_KEY", "").strip()
+            embedding_api_base = os.getenv(
+                "OPENAI_BASE_URL", "https://api.openai.com/v1"
+            ).strip()
+            default_embedding_model = "text-embedding-3-small"
         return cls(
-            api_key=os.getenv("OPENAI_API_KEY", "").strip(),
-            api_base=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").strip().rstrip("/"),
-            model=os.getenv("JOURNEYBACK_LLM_MODEL", "gpt-5.4-nano").strip(),
-            embedding_model=os.getenv("JOURNEYBACK_EMBEDDING_MODEL", "text-embedding-3-small").strip(),
+            model=requested_model or default_model,
+            embedding_model=requested_embedding_model or default_embedding_model,
             reasoning_effort=effort,
             timeout_seconds=timeout,
             retrieval_top_k=top_k,
+            llm_provider=requested_provider,
+            llm_api_key=llm_api_key,
+            llm_api_base=llm_api_base.rstrip("/"),
+            embedding_provider=embedding_provider,
+            embedding_api_key=embedding_api_key,
+            embedding_api_base=embedding_api_base.rstrip("/"),
         )
 
     @property
+    def llm_configured(self) -> bool:
+        return _usable_secret(self.llm_api_key) and bool(self.model)
+
+    @property
+    def embedding_configured(self) -> bool:
+        return _usable_secret(self.embedding_api_key) and bool(self.embedding_model)
+
+    @property
     def configured(self) -> bool:
-        return bool(self.api_key and self.model and self.embedding_model)
+        return self.llm_configured and self.embedding_configured
 
     def public_summary(self) -> dict[str, object]:
         """Return configuration metadata without ever exposing the API key."""
 
         return {
             "configured": self.configured,
-            "api_base": self.api_base,
+            "llm_configured": self.llm_configured,
+            "embedding_configured": self.embedding_configured,
+            "llm_provider": self.llm_provider,
+            "llm_api_base": self.llm_api_base,
+            "embedding_provider": self.embedding_provider,
+            "embedding_api_base": self.embedding_api_base,
             "model": self.model,
             "embedding_model": self.embedding_model,
             "reasoning_effort": self.reasoning_effort,
@@ -87,3 +140,11 @@ def _bounded_int(value: str, minimum: int, maximum: int, fallback: int) -> int:
     except ValueError:
         return fallback
     return min(maximum, max(minimum, parsed))
+
+
+def _usable_secret(value: str) -> bool:
+    normalized = value.strip().lower()
+    return bool(normalized) and not any(
+        marker in normalized
+        for marker in ("replace-with", "your-api-key", "your_", "填入", "<your")
+    )

@@ -27,7 +27,7 @@ The control exists only to make the automatic trigger demonstrable in Round 2. I
 
 ## Run the MVP
 
-The application uses the Python standard library and an OpenAI-compatible API. No package installation is required.
+The application uses the Python standard library, DeepSeek for structured text generation and SiliconFlow-hosted BGE-M3 for semantic embeddings. No package installation is required.
 
 1. Copy the configuration template:
 
@@ -35,12 +35,18 @@ The application uses the Python standard library and an OpenAI-compatible API. N
    cp .env.example .env
    ```
 
-2. Add the API key to `.env`:
+2. Add both provider keys to `.env`:
 
    ```env
-   OPENAI_API_KEY=replace-with-your-api-key
-   JOURNEYBACK_LLM_MODEL=gpt-5.4-nano
-   JOURNEYBACK_EMBEDDING_MODEL=text-embedding-3-small
+   DEEPSEEK_API_KEY=replace-with-your-deepseek-api-key
+   DEEPSEEK_BASE_URL=https://api.deepseek.com
+   JOURNEYBACK_LLM_PROVIDER=deepseek
+   JOURNEYBACK_LLM_MODEL=deepseek-v4-flash
+
+   SILICONFLOW_API_KEY=replace-with-your-siliconflow-api-key
+   SILICONFLOW_BASE_URL=https://api.siliconflow.cn/v1
+   JOURNEYBACK_EMBEDDING_PROVIDER=siliconflow
+   JOURNEYBACK_EMBEDDING_MODEL=BAAI/bge-m3
    ```
 
 3. Start the application:
@@ -75,21 +81,27 @@ There is no hand-authored event threshold table or keyword score in the live req
 
 The first live request embeds the knowledge corpus and writes a model-specific cache under `.journeyback_cache/`. Later requests normally embed only the new event query unless the corpus or embedding model changes.
 
-The implementation follows OpenAI's [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) and [Embeddings](https://developers.openai.com/api/docs/guides/embeddings) guidance.
+The default hybrid implementation uses DeepSeek Chat Completions JSON Output for the two text stages and SiliconFlow's [Embeddings endpoint](https://api-docs.siliconflow.cn/docs/api/embeddings-post) with BGE-M3 for semantic retrieval. Generated JSON is validated against the application schema before use. OpenAI remains an optional text or embedding provider through configuration, but is not required by the default setup.
 
 ## Configuration
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `OPENAI_API_KEY` | required | Server-side API credential |
-| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | OpenAI-compatible API base |
-| `JOURNEYBACK_LLM_MODEL` | `gpt-5.4-nano` | Operational fact extraction and grounded guidance |
-| `JOURNEYBACK_EMBEDDING_MODEL` | `text-embedding-3-small` | Semantic retrieval model |
+| `DEEPSEEK_API_KEY` | required for default mode | Server-side credential for text generation |
+| `DEEPSEEK_BASE_URL` | `https://api.deepseek.com` | DeepSeek Chat Completions API base |
+| `JOURNEYBACK_LLM_PROVIDER` | `deepseek` | Text provider: `deepseek` or `openai` |
+| `JOURNEYBACK_LLM_MODEL` | `deepseek-v4-flash` | Operational fact extraction and grounded guidance |
+| `SILICONFLOW_API_KEY` | required | Server-side credential for semantic embeddings |
+| `SILICONFLOW_BASE_URL` | `https://api.siliconflow.cn/v1` | SiliconFlow API base |
+| `JOURNEYBACK_EMBEDDING_PROVIDER` | `siliconflow` | Embedding provider: `siliconflow` or `openai` |
+| `JOURNEYBACK_EMBEDDING_MODEL` | `BAAI/bge-m3` | Multilingual semantic retrieval model |
 | `JOURNEYBACK_REASONING_EFFORT` | `low` | Latency and quality control |
 | `JOURNEYBACK_RAG_TOP_K` | `8` | Evidence chunks passed to the guidance stage |
 | `JOURNEYBACK_LLM_TIMEOUT` | `60` | API timeout in seconds |
 
-`gpt-5.4-nano` is the economical default for the MVP. Model names remain configurable so representative cases can be evaluated against a stronger model before a production decision.
+`deepseek-v4-flash` is the economical default for the two text stages, while the standard SiliconFlow `BAAI/bge-m3` endpoint keeps multilingual retrieval inexpensive. To use OpenAI instead, set the relevant provider to `openai`, configure `OPENAI_API_KEY` and `OPENAI_BASE_URL`, and choose the corresponding model. Model choices should still be evaluated on representative cases before a production decision.
+
+In DeepSeek mode, JourneyBack maps `none` and `low` to non-thinking mode for predictable demo latency; `medium` and `high` use DeepSeek's high reasoning tier, while `xhigh` and `max` use its max tier.
 
 ## API
 

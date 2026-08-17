@@ -24,7 +24,7 @@ class ServerTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.previous_engine = JourneybackHandler.engine
         JourneybackHandler.engine = JourneybackEngine(
-            settings=LLMSettings(api_key="", model="test-model", embedding_model="test-embedding"),
+            settings=LLMSettings(model="test-model", embedding_model="test-embedding"),
             client=FakeLLMClient(),
             cache_path=False,
         )

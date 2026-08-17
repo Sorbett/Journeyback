@@ -25,7 +25,7 @@ MESSAGE = (
 
 def fake_engine(*, invalid_citation: bool = False) -> tuple[JourneybackEngine, FakeLLMClient]:
     client = FakeLLMClient(invalid_citation=invalid_citation)
-    settings = LLMSettings(api_key="", model="test-reasoning-model", embedding_model="test-embedding-model")
+    settings = LLMSettings(model="test-reasoning-model", embedding_model="test-embedding-model")
     engine = JourneybackEngine(settings=settings, client=client, cache_path=False)
     return engine, client
 
@@ -71,7 +71,7 @@ class JourneybackEngineTests(unittest.TestCase):
         self.assertIn("POL-SG-PLATINUM-BAGGAGE", result_ids)
 
     def test_missing_api_key_fails_closed(self) -> None:
-        settings = LLMSettings(api_key="", model="model", embedding_model="embedding")
+        settings = LLMSettings(model="model", embedding_model="embedding")
         engine = JourneybackEngine(settings=settings, cache_path=False)
         with self.assertRaises(LLMConfigurationError):
             engine.evaluate({"message": MESSAGE})

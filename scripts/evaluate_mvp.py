@@ -39,7 +39,7 @@ def main() -> None:
         report = {
             "evaluation_scope": "Live LLM smoke evaluation",
             "status": "not_run",
-            "reason": "OPENAI_API_KEY is not configured",
+            "reason": "The text-generation and/or embedding provider API key is not configured",
             "model": engine.settings.model,
             "embedding_model": engine.settings.embedding_model,
             "offline_validation": "Run python3 -m unittest discover -s tests -v for mocked pipeline tests.",

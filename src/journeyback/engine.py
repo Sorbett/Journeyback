@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import LLMSettings
-from .llm_client import LLMClient, LLMConfigurationError, OpenAIResponsesClient
+from .llm_client import JourneybackLLMClient, LLMClient, LLMConfigurationError
 from .retrieval import SemanticRetriever
 
 
@@ -174,7 +174,7 @@ class JourneybackEngine:
     ) -> None:
         self.settings = settings or LLMSettings.from_env()
         self._client_was_injected = client is not None
-        self.client = client or OpenAIResponsesClient(self.settings)
+        self.client = client or JourneybackLLMClient(self.settings)
         self.retriever = retriever or SemanticRetriever(
             client=self.client,
             embedding_model=self.settings.embedding_model,
@@ -194,7 +194,8 @@ class JourneybackEngine:
     def evaluate(self, request: JourneybackRequest | dict[str, Any]) -> dict[str, Any]:
         if not self.ready:
             raise LLMConfigurationError(
-                "The AI service is not configured. Copy .env.example to .env and add OPENAI_API_KEY."
+                "The AI service is not configured. Add both the text-model and embedding API keys "
+                "listed in .env."
             )
         if isinstance(request, dict):
             request = JourneybackRequest.from_mapping(request)
