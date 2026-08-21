@@ -4,109 +4,118 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="JourneyBack proactive travel recovery" />
-    <title>JourneyBack | Trip details</title>
+    <title>JourneyBack | Travel recovery</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <header class="site-header">
       <div class="header-inner">
         <a class="brand" href="/" aria-label="JourneyBack home">
-          <span class="brand-mark">J</span>
-          <span>JourneyBack</span>
+          <svg class="brand-symbol" viewBox="0 0 44 44" role="img" aria-label="JourneyBack return-route symbol">
+            <circle cx="12" cy="13" r="3"></circle>
+            <path d="M15 13h12a8 8 0 0 1 0 16H13"></path>
+            <path d="m18 23-6 6 6 6"></path>
+          </svg>
+          <span class="brand-wordmark">Journey<span>Back</span></span>
         </a>
         <nav aria-label="Primary navigation">
-          <a class="active" href="#">Trips</a>
-          <a href="#">Benefits</a>
-          <a href="#">Support</a>
+          <a class="active" href="#trip-overview">My trips</a>
+          <a href="#benefit-panel">Benefits</a>
+          <a href="#">Assistance</a>
         </nav>
-        <button class="account-button" type="button" aria-label="Account menu">AM</button>
+        <button class="account-button" type="button" aria-label="Account menu"><span>AM</span></button>
       </div>
     </header>
 
-    <main class="page-shell">
-      <div class="breadcrumb"><a href="#">Trips</a><span>/</span><span>Tokyo business trip</span></div>
-
-      <section id="page-heading" class="page-heading">
-        <div>
-          <p class="section-kicker">UPCOMING TRIP</p>
-          <h1>Tokyo business trip</h1>
-          <p id="trip-meta" class="trip-meta">12–18 August 2026 · Singapore to Tokyo</p>
-        </div>
-        <div id="monitoring-status" class="monitoring-status" role="status">
-          <span class="status-dot"></span>
-          <div><strong>Trip monitoring active</strong><small>Last checked 12 Aug 2026, 16:20 SGT</small></div>
+    <main>
+      <section id="trip-overview" class="trip-hero">
+        <div class="page-shell hero-inner">
+          <div class="hero-content">
+            <div>
+              <p class="section-kicker light">MY JOURNEY</p>
+              <h1 id="trip-title">Loading your journey…</h1>
+              <p id="trip-meta" class="trip-meta">Selecting one traveller from the synthetic benchmark</p>
+            </div>
+            <div id="monitoring-status" class="monitoring-status" role="status" aria-live="polite">
+              <span class="status-pulse" aria-hidden="true"></span>
+              <div><strong>Journey monitoring active</strong><small>Connecting travel signals</small></div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section id="demo-notice" class="demo-notice">
-        <div>
-          <strong>Demonstration control</strong>
-          <span>Simulate a carrier-status signal to show how JourneyBack responds automatically.</span>
+      <div class="page-shell page-content">
+        <section id="demo-lab" class="demo-lab" aria-labelledby="demo-title">
+          <div class="demo-lab-copy">
+            <div class="demo-label-row">
+              <span class="demo-label">DEMO PROFILE</span>
+              <span id="case-id" class="case-id">Selecting case…</span>
+            </div>
+            <h2 id="demo-title">Preview a recovery journey</h2>
+            <p id="demo-query">Selecting a traveller…</p>
+          </div>
+          <div class="demo-actions">
+            <button id="another-button" class="button button-quiet" type="button">Try another traveller</button>
+            <button id="simulate-button" class="button button-primary" type="button">
+              <span>Simulate disruption</span><span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </section>
+
+        <section id="loading-panel" class="loading-panel hidden" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <div><strong>Preparing your recovery plan</strong></div>
+        </section>
+
+        <section id="disruption-alert" class="disruption-alert hidden" aria-live="polite"></section>
+
+        <div class="content-grid">
+          <div class="primary-column">
+            <section class="panel itinerary-panel">
+              <div class="panel-header">
+                <div><h2>Journey</h2></div>
+                <span id="segment-count" class="panel-note">3 monitored reservations</span>
+              </div>
+              <div id="itinerary" class="itinerary" aria-live="polite"></div>
+            </section>
+
+            <section id="recovery-panel" class="panel hidden">
+              <div class="panel-header">
+                <div><h2>Next steps</h2></div>
+                <span id="result-mode" class="result-mode">Expected result</span>
+              </div>
+              <div id="recovery-actions" class="recovery-actions"></div>
+            </section>
+
+            <section id="claim-panel" class="panel hidden">
+              <div class="panel-header claim-header">
+                <div><h2>Evidence wallet</h2></div>
+                <div class="completion"><strong id="completion-value">0%</strong><span>complete</span></div>
+              </div>
+              <div class="progress-track" role="progressbar" aria-label="Evidence completeness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar"></span></div>
+              <div id="evidence-status" class="evidence-status hidden" aria-live="polite"></div>
+              <div id="claim-items" class="claim-items"></div>
+            </section>
+          </div>
+
+          <aside class="side-column">
+            <section class="panel compact-panel protection-panel">
+              <div class="panel-header"><div><h2>Traveller</h2></div></div>
+              <dl id="protection-details" class="details-list"></dl>
+            </section>
+
+            <section id="benefit-panel" class="panel compact-panel hidden">
+              <div class="panel-header"><div><h2>Relevant benefit</h2></div></div>
+              <div id="benefit-match"></div>
+            </section>
+          </aside>
         </div>
-        <button id="simulate-button" class="secondary-button" type="button">Simulate baggage delay</button>
-      </section>
-
-      <section id="loading-panel" class="loading-panel hidden" aria-live="polite">
-        <span class="spinner" aria-hidden="true"></span>
-        <div><strong id="loading-title">Carrier disruption detected</strong><span>Matching the event to your Card benefits and preparing next steps.</span></div>
-      </section>
-
-      <section id="disruption-alert" class="disruption-alert hidden" aria-live="polite"></section>
-
-      <div class="content-grid">
-        <div class="primary-column">
-          <section class="panel">
-            <div class="panel-header">
-              <div><p class="section-kicker">ITINERARY</p><h2>Your trip</h2></div>
-              <span id="segment-count" class="panel-note">3 reservations</span>
-            </div>
-            <div id="itinerary" class="itinerary"></div>
-          </section>
-
-          <section id="recovery-panel" class="panel hidden">
-            <div class="panel-header">
-              <div><p class="section-kicker">RECOVERY PLAN</p><h2>Recommended next steps</h2></div>
-              <span class="panel-note">Ordered by urgency</span>
-            </div>
-            <div id="recovery-actions" class="recovery-actions"></div>
-          </section>
-
-          <section id="claim-panel" class="panel hidden">
-            <div class="panel-header claim-header">
-              <div><p class="section-kicker">CLAIM PREPARATION</p><h2>Evidence checklist</h2></div>
-              <div class="completion"><strong id="completion-value">0%</strong><span>complete</span></div>
-            </div>
-            <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
-            <div id="claim-items" class="claim-items"></div>
-          </section>
-        </div>
-
-        <aside class="side-column">
-          <section class="panel compact-panel">
-            <div class="panel-header"><div><p class="section-kicker">CARD &amp; COVER</p><h2>Trip protection</h2></div></div>
-            <dl id="protection-details" class="details-list"></dl>
-          </section>
-
-          <section id="benefit-panel" class="panel compact-panel hidden">
-            <div class="panel-header"><div><p class="section-kicker">BENEFIT MATCH</p><h2>Potentially relevant cover</h2></div></div>
-            <div id="benefit-match"></div>
-          </section>
-
-          <section class="panel compact-panel monitoring-panel">
-            <div class="panel-header"><div><p class="section-kicker">MONITORING</p><h2>Connected signals</h2></div></div>
-            <ul class="signal-list">
-              <li><span>Itinerary</span><strong>Connected</strong></li>
-              <li><span>Card payment</span><strong>Verified</strong></li>
-              <li><span>Carrier status</span><strong>Connected</strong></li>
-            </ul>
-          </section>
-        </aside>
       </div>
     </main>
 
     <footer class="site-footer">
-      <span>JourneyBack demonstration · Singapore public-data prototype</span>
-      <span>Benefit applicability and claims remain subject to formal review.</span>
+      <strong>JourneyBack</strong>
+      <span>Demo experience · Benefit eligibility remains subject to formal review.</span>
     </footer>
     <script src="/app.js" defer></script>
   </body>

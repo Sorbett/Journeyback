@@ -6,3 +6,4 @@ __pycache__/
 .pytest_cache/
 node_modules
 .journeyback_cache/
+.journeyback_uploads/

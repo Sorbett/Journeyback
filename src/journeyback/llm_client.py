@@ -266,8 +266,8 @@ def _extract_chat_output(response: dict[str, Any]) -> str:
 
 def _parse_and_validate(output_text: str, schema: dict[str, Any]) -> dict[str, Any]:
     try:
-        parsed = json.loads(output_text)
-    except json.JSONDecodeError as exc:
+        parsed = _decode_json_object(output_text)
+    except (json.JSONDecodeError, ValueError) as exc:
         raise LLMResponseError("Model returned malformed structured output.") from exc
     if not isinstance(parsed, dict):
         raise LLMResponseError("Model structured output must be a JSON object.")
@@ -276,6 +276,27 @@ def _parse_and_validate(output_text: str, schema: dict[str, Any]) -> dict[str, A
     except ValueError as exc:
         raise LLMResponseError(f"Model output did not match the requested schema: {exc}") from exc
     return parsed
+
+
+def _decode_json_object(output_text: str) -> Any:
+    """Accept provider JSON mode plus the occasional fenced JSON response."""
+
+    candidate = output_text.strip()
+    if candidate.startswith("```") and candidate.endswith("```"):
+        lines = candidate.splitlines()
+        if len(lines) >= 3 and lines[0].strip().lower() in {"```", "```json"}:
+            candidate = "\n".join(lines[1:-1]).strip()
+    try:
+        return json.loads(candidate)
+    except json.JSONDecodeError as direct_error:
+        start = candidate.find("{")
+        if start < 0:
+            raise direct_error
+        parsed, end = json.JSONDecoder().raw_decode(candidate[start:])
+        trailing = candidate[start + end :].strip().strip("`").strip()
+        if trailing:
+            raise ValueError("Unexpected text followed the JSON object.")
+        return parsed
 
 
 def _validate_schema(value: Any, schema: dict[str, Any], path: str = "$") -> None:

@@ -5,23 +5,33 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import time
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 from .engine import JourneybackEngine
-from .demo_trip import build_recovery_case, disruption_event_message, trip_snapshot
+from .evidence_store import (
+    DEFAULT_UPLOAD_ROOT,
+    enrich_case,
+    load_evidence,
+    reanalysis_message,
+    save_evidence,
+)
 from .llm_client import LLMAPIError, LLMConfigurationError, LLMResponseError
+from .synthetic_demo import dataset_insights, get_case, recovery_case_from_synthetic, trip_from_case
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 WEB_ROOT = PROJECT_ROOT / "web"
+EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "synthetic_evaluation" / "report.html"
 
 
 class JourneybackHandler(BaseHTTPRequestHandler):
     engine = JourneybackEngine()
+    upload_root = DEFAULT_UPLOAD_ROOT
     static_routes = {
         "/": "index.html",
         "/index.html": "index.html",
@@ -42,7 +52,9 @@ class JourneybackHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _static(self, filename: str) -> None:
-        path = WEB_ROOT / filename
+        self._serve_file(WEB_ROOT / filename)
+
+    def _serve_file(self, path: Path) -> None:
         if not path.is_file():
             self.send_error(HTTPStatus.NOT_FOUND)
             return
@@ -56,7 +68,9 @@ class JourneybackHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:  # noqa: N802
-        route = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        route = parsed.path
+        query = parse_qs(parsed.query)
         if route == "/api/health":
             self._json({
                 "status": "ok",
@@ -70,7 +84,17 @@ class JourneybackHandler(BaseHTTPRequestHandler):
             self._json(self.engine.runtime_summary())
             return
         if route == "/api/trip":
-            self._json(trip_snapshot())
+            case_id = query.get("case_id", [None])[0]
+            try:
+                self._json(trip_from_case(get_case(case_id)))
+            except ValueError as exc:
+                self._json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+            return
+        if route == "/api/demo/insights":
+            self._json(dataset_insights())
+            return
+        if route == "/evaluation":
+            self._serve_file(EVALUATION_REPORT)
             return
         if route == "/favicon.ico":
             self.send_response(HTTPStatus.NO_CONTENT)
@@ -83,25 +107,97 @@ class JourneybackHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         route = urlparse(self.path).path
-        if route not in {"/api/detect", "/api/analyze", "/api/evaluate"}:
+        if route not in {
+            "/api/detect",
+            "/api/analyze",
+            "/api/evaluate",
+            "/api/evidence",
+            "/api/reanalyse",
+        }:
             self.send_error(HTTPStatus.NOT_FOUND)
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if length <= 0 or length > 100_000:
-                raise ValueError("Request body must be between 1 and 100000 bytes")
+            maximum_length = 2_100_000 if route == "/api/evidence" else 100_000
+            if length <= 0 or length > maximum_length:
+                raise ValueError(f"Request body must be between 1 and {maximum_length} bytes")
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
-            if route == "/api/detect":
-                trip = trip_snapshot(disruption_detected=True)
+            if not isinstance(payload, dict):
+                raise ValueError("Request body must be a JSON object")
+            if route == "/api/evidence":
+                case_id = str(payload.get("case_id") or "")
+                get_case(case_id)
+                result = save_evidence(
+                    case_id=case_id,
+                    evidence_code=str(payload.get("evidence_code") or ""),
+                    file_name=str(payload.get("file_name") or ""),
+                    mime_type=str(payload.get("mime_type") or ""),
+                    content_base64=str(payload.get("content_base64") or ""),
+                    evidence_note=str(payload.get("evidence_note") or ""),
+                    upload_root=self.upload_root,
+                )
+            elif route == "/api/reanalyse":
+                started = time.perf_counter()
+                case_id = str(payload.get("case_id") or "")
+                case = get_case(case_id)
+                upload_ids = payload.get("evidence_upload_ids", [])
+                if not isinstance(upload_ids, list) or len(upload_ids) > 10:
+                    raise ValueError("evidence_upload_ids must be a list of at most 10 ids")
+                product_code = str(payload.get("product_code") or "") or None
+                if product_code is None and not upload_ids:
+                    raise ValueError("Submit a product selection or uploaded evidence before reanalysis.")
+                uploaded_evidence = load_evidence(
+                    case_id=case_id,
+                    upload_ids=[str(value) for value in upload_ids],
+                    upload_root=self.upload_root,
+                )
+                enriched_case = enrich_case(
+                    case,
+                    product_code=product_code,
+                    uploaded_evidence=uploaded_evidence,
+                )
                 guidance = self.engine.evaluate({
-                    "message": disruption_event_message(trip),
-                    "locale": "en-SG",
+                    "message": reanalysis_message(
+                        enriched_case, uploaded_evidence=uploaded_evidence
+                    ),
+                    "locale": "zh-SG" if case["language"] == "zh" else "en-SG",
                 })
-                result = build_recovery_case(trip, guidance)
+                result = recovery_case_from_synthetic(
+                    enriched_case, live_guidance=guidance
+                )
+                result["response_time_ms"] = round(
+                    (time.perf_counter() - started) * 1_000, 1
+                )
+                result["submitted_information"] = {
+                    "product_code": product_code,
+                    "evidence": [
+                        {
+                            "upload_id": item["upload_id"],
+                            "evidence_code": item["evidence_code"],
+                            "file_name": item["file_name"],
+                        }
+                        for item in uploaded_evidence
+                    ],
+                }
+            elif route == "/api/detect":
+                started = time.perf_counter()
+                case = get_case(str(payload.get("case_id") or "") or None)
+                live = payload.get("live") is True
+                guidance = None
+                if live:
+                    guidance = self.engine.evaluate({
+                        "message": case["user_query"],
+                        "locale": "zh-SG" if case["language"] == "zh" else "en-SG",
+                    })
+                result = recovery_case_from_synthetic(case, live_guidance=guidance)
+                result["response_time_ms"] = round((time.perf_counter() - started) * 1_000, 1)
             else:
                 result = self.engine.evaluate(payload)
         except (ValueError, TypeError, json.JSONDecodeError) as exc:
             self._json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+            return
+        except OSError as exc:
+            self._json({"error": f"Evidence storage failed: {exc}"}, HTTPStatus.INTERNAL_SERVER_ERROR)
             return
         except LLMConfigurationError as exc:
             self._json({"error": str(exc), "code": "llm_not_configured"}, HTTPStatus.SERVICE_UNAVAILABLE)

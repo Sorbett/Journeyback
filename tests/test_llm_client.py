@@ -26,9 +26,16 @@ SCHEMA = {
 
 
 class RecordingClient(JourneybackLLMClient):
-    def __init__(self, settings: LLMSettings, *, output: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        settings: LLMSettings,
+        *,
+        output: dict[str, Any] | None = None,
+        raw_output: str | None = None,
+    ) -> None:
         super().__init__(settings)
         self.output = output or {"summary": "structured result"}
+        self.raw_output = raw_output
         self.calls: list[dict[str, Any]] = []
 
     def _post(
@@ -52,7 +59,7 @@ class RecordingClient(JourneybackLLMClient):
         return {
             "choices": [{
                 "finish_reason": "stop",
-                "message": {"content": json.dumps(self.output)},
+                "message": {"content": self.raw_output or json.dumps(self.output)},
             }]
         }
 
@@ -136,6 +143,19 @@ class JourneybackLLMClientTests(unittest.TestCase):
                 schema_name="incident",
                 schema=SCHEMA,
             )
+
+    def test_accepts_fenced_json_from_deepseek_json_mode(self) -> None:
+        client = RecordingClient(
+            self.settings,
+            raw_output='```json\n{"summary":"structured result"}\n```',
+        )
+        result = client.structured(
+            instructions="Return incident facts.",
+            input_text="A checked bag is delayed.",
+            schema_name="incident",
+            schema=SCHEMA,
+        )
+        self.assertEqual({"summary": "structured result"}, result)
 
 
 if __name__ == "__main__":

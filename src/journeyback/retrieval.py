@@ -61,6 +61,19 @@ class SemanticRetriever:
         ranked.sort(key=lambda item: (item[0], float(item[1]["authority_score"])), reverse=True)
         return [self._public_result(chunk, score) for score, chunk in ranked[:top_k]]
 
+    def cache_summary(self) -> dict[str, Any]:
+        """Expose safe cache state for diagnostics without loading or rebuilding vectors."""
+
+        cache_present = bool(self.cache_path and self.cache_path.is_file())
+        cache_bytes = self.cache_path.stat().st_size if cache_present and self.cache_path else 0
+        return {
+            "persistent": self.cache_path is not None,
+            "cache_present": cache_present,
+            "cache_bytes": cache_bytes,
+            "corpus_loaded_in_memory": self._memory_vectors is not None,
+            "rebuild_policy": "only_missing_or_changed_chunks",
+        }
+
     def _corpus_vectors(self) -> dict[str, list[float]]:
         if self._memory_vectors is not None:
             return self._memory_vectors

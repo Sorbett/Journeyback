@@ -1,0 +1,68 @@
+{
+  "evaluation_scope": "JourneyBack synthetic product-need evaluation",
+  "status": "completed",
+  "evaluation_mode": "deterministic_expected_outcomes",
+  "generated_at": "2026-08-21T13:28:11+00:00",
+  "dataset_sha256": "67d57db316291ddfc522a764d5b7628a93139a53fd7bb1e65bb348c8e76d63d1",
+  "dataset_size": 600,
+  "materialised_results": 600,
+  "metrics": {
+    "needs_explanation_or_triage": {
+      "count": 420,
+      "percent": 70.0
+    },
+    "missing_key_documents": {
+      "count": 180,
+      "percent": 30.0
+    },
+    "non_english_cases": {
+      "count": 353,
+      "percent": 58.8
+    },
+    "human_review_guardrail": {
+      "count": 600,
+      "percent": 100.0
+    },
+    "payout_prediction_suppressed": {
+      "count": 600,
+      "percent": 100.0
+    },
+    "cases_with_policy_evidence": {
+      "count": 540,
+      "percent": 90.0
+    },
+    "average_recommended_actions": 3.04
+  },
+  "outcomes": {
+    "potentially_eligible": 180,
+    "unlikely_eligible": 150,
+    "insufficient_information": 120,
+    "manual_review_required": 90,
+    "out_of_scope": 60
+  },
+  "events": {
+    "missed_connection": 180,
+    "flight_delay": 148,
+    "baggage_delay": 142,
+    "baggage_loss": 65,
+    "flight_cancellation": 28,
+    "card_loss": 19,
+    "hotel_issue": 18
+  },
+  "products": {
+    "The Platinum Card": 150,
+    "KrisFlyer Ascend Credit Card": 105,
+    "Platinum Reserve Credit Card": 105,
+    "My Travel Insurance": 90,
+    "True Cashback Card": 90,
+    "Platinum Credit Card (not yet covered by this corpus)": 30,
+    "Unknown Amex Card": 30
+  },
+  "product_need": "Travel disruption is rarely a one-step claim decision: customers need fast evidence capture, policy explanation and safe routing across products, events and languages.",
+  "limitations": [
+    "All journeys and expected results are synthetic; this report does not measure real claim incidence.",
+    "This deterministic run validates coverage, routing and product-need scenarios, not live LLM accuracy.",
+    "Run scripts/evaluate_mvp.py separately for a small live model and citation smoke test.",
+    "Final benefit applicability and claims always require formal review."
+  ]
+}

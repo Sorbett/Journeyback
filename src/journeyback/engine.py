@@ -189,6 +189,7 @@ class JourneybackEngine:
         summary = self.settings.public_summary()
         summary["configured"] = self.ready
         summary["pipeline"] = "llm_extraction -> embedding_rag -> llm_grounded_guidance"
+        summary["embedding_cache"] = self.retriever.cache_summary()
         return summary
 
     def evaluate(self, request: JourneybackRequest | dict[str, Any]) -> dict[str, Any]:

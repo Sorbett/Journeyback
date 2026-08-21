@@ -4,26 +4,13 @@ JourneyBack is a proactive travel-disruption recovery MVP for the Amex AI Hackat
 
 The product is deliberately presented as a trip-management workflow rather than a chatbot.
 
-## Demonstration scenario
+## Random-traveller demonstration
 
-The MVP opens on a normal monitored business trip from Singapore to Tokyo:
+The MVP randomly selects one traveller from the deterministic 600-case synthetic benchmark. Each selection changes the journey, Card or insurance product, disruption, language, policy outcome and available evidence. Use `Try another traveller` to sample a new case and `Simulate disruption` to materialise its expected result.
 
-- An outbound and return flight are present in the itinerary.
-- A Tokyo hotel reservation is confirmed.
-- The round-trip payment with The Platinum Card is verified.
-- Itinerary, payment and carrier-status signals are connected.
-- No disruption is initially shown.
+The showcase path is deliberately instant and offline: it renders the benchmark's expected routing, evidence prompts and recovery actions without making a model call. This keeps product demonstrations fluid and makes every displayed result reproducible. It is clearly labelled as a synthetic expected result, not a live AI decision.
 
-The `Simulate baggage delay` control represents an incoming carrier event. JourneyBack then:
-
-1. Creates a structured baggage-delay incident seven hours after arrival.
-2. Uses an LLM to extract the operational facts.
-3. Uses embeddings to retrieve relevant evidence from the 107-chunk knowledge base.
-4. Uses a grounded LLM response to recommend recovery actions.
-5. Validates every cited chunk before displaying it.
-6. Creates an evidence checklist showing what is already verified and what remains outstanding.
-
-The control exists only to make the automatic trigger demonstrable in Round 2. In a production integration, the event would come from a carrier, travel platform or operational feed.
+The real pipeline remains available through `POST /api/analyze` and `POST /api/evaluate`. In production, its operational event would come from a carrier, travel platform or monitoring feed.
 
 ## Run the MVP
 
@@ -57,7 +44,7 @@ The application uses the Python standard library, DeepSeek for structured text g
 
 4. Open `http://127.0.0.1:8000`.
 
-The real `.env` and local embedding cache are excluded by `.gitignore`. Never place an API key in `web/app.js`, commit it to Git, or send it to the browser.
+The real `.env`, local embedding cache and locally uploaded demo evidence are excluded by `.gitignore`. Never place an API key in `web/app.js`, commit it to Git, or send it to the browser.
 
 ## Proactive pipeline
 
@@ -79,7 +66,7 @@ Itinerary + Card payment + carrier status
 
 There is no hand-authored event threshold table or keyword score in the live request path. Deterministic code is limited to event assembly, input validation, vector similarity, citation allow-listing, evidence-pack state and safety postconditions.
 
-The first live request embeds the knowledge corpus and writes a model-specific cache under `.journeyback_cache/`. Later requests normally embed only the new event query unless the corpus or embedding model changes.
+The first **live** request embeds any missing or changed knowledge chunks and writes a model-specific cache under `.journeyback_cache/`. Server startup itself does not call the embedding API. Later live requests normally embed only the new event query unless the corpus or embedding model changes. `GET /api/health` exposes safe cache diagnostics (`cache_present`, cache size and in-memory state) without exposing credentials.
 
 The default hybrid implementation uses DeepSeek Chat Completions JSON Output for the two text stages and SiliconFlow's [Embeddings endpoint](https://api-docs.siliconflow.cn/docs/api/embeddings-post) with BGE-M3 for semantic retrieval. Generated JSON is validated against the application schema before use. OpenAI remains an optional text or embedding provider through configuration, but is not required by the default setup.
 
@@ -105,11 +92,20 @@ In DeepSeek mode, JourneyBack maps `none` and `low` to non-thinking mode for pre
 
 ## API
 
-- `GET /api/trip` returns the normal monitored itinerary.
-- `POST /api/detect` simulates an operational disruption signal and returns the complete recovery case.
-- `GET /api/health` reports service readiness, model names and knowledge-base status without exposing the API key.
+- `GET /api/trip` randomly selects a normal monitored synthetic itinerary.
+- `GET /api/trip?case_id=JB-SYN-0001` returns a reproducible benchmark traveller.
+- `POST /api/detect` materialises the selected case's expected result immediately; pass `{"case_id":"JB-SYN-0001","live":true}` to explicitly run the real LLM/RAG pipeline.
+- `POST /api/evidence` validates and stores a selected PDF, JPG, PNG or TXT file under the ignored local `.journeyback_uploads/` directory.
+- `POST /api/reanalyse` validates a submitted Card product and uploaded evidence, then runs the real LLM + embedding-policy retrieval pipeline before updating the recovery case.
+- `GET /api/demo/insights` aggregates the product-need metrics shown on the page.
+- `GET /api/health` reports service readiness, model names, embedding-cache state and knowledge-base status without exposing an API key.
+- `GET /evaluation` serves the generated visual evaluation report.
 
 The recovery case contains the detected event, validated benefit evidence, ordered actions and evidence-pack completion state. It never returns an expected payout and always requires formal human review.
+
+Evidence progress is server-backed. Selecting a Card product or file does not mark an item complete by itself: the server must validate the submission and complete live policy reanalysis first. Any new evidence gaps identified by the model are added back to the evidence wallet for another upload-and-review cycle.
+
+Uploaded originals remain in the ignored local `.journeyback_uploads/` directory. For plain-text files, the server sends a bounded extracted-text excerpt plus the user's document note to the configured model. For PDFs and images in this zero-dependency prototype, only verified metadata and the user-entered note are sent; the UI does not claim that unreadable binary contents were analysed.
 
 ## Test and evaluate
 
@@ -118,6 +114,20 @@ Run the offline suite. Model calls use a deterministic test double, so tests do 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
+
+Run all 600 generated journeys and rebuild the standalone visual report:
+
+```bash
+PYTHONPATH=src python3 scripts/evaluate_synthetic_cases.py
+```
+
+This writes:
+
+- `outputs/synthetic_evaluation/results.jsonl` — one materialised expected result per case.
+- `outputs/synthetic_evaluation/summary.json` — aggregate distributions and safety metrics.
+- `outputs/synthetic_evaluation/report.html` — responsive charts explaining the product need.
+
+The deterministic report validates scenario coverage and expected routing; it does not claim live-model accuracy or real-world claim incidence.
 
 After configuring a real key, run the live smoke evaluation:
 

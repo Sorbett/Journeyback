@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JourneyBack synthetic evaluation</title>
+  <style>
+    :root { --navy:#0a2747; --deep:#071d34; --blue:#006fcf; --sky:#67b8e8; --ink:#172b3d; --muted:#607386; --line:#d8e2e9; --bg:#f4f7f9; --white:#fff; --amber:#d28a00; font-family:Inter,"Helvetica Neue",Arial,sans-serif; color:var(--ink); background:var(--bg); }
+    * { box-sizing:border-box; } body { margin:0; }
+    header { padding:30px max(24px,calc((100% - 1160px)/2)); color:white; background:linear-gradient(115deg,var(--deep),#0b568b); }
+    .brand { display:flex; align-items:center; gap:10px; margin-bottom:62px; font-size:17px; font-weight:700; }
+    .brand i { display:block; width:28px; height:16px; border:2px solid #84d0f7; border-left:0; border-radius:0 20px 20px 0; }
+    header p { max-width:720px; color:#c8dbea; font-size:12px; line-height:1.6; }
+    h1 { max-width:760px; margin:0; font-family:Georgia,serif; font-size:clamp(34px,5vw,57px); font-weight:400; line-height:1.03; }
+    .meta { display:flex; flex-wrap:wrap; gap:18px; margin-top:25px; color:#9dc3dd; font-size:9px; text-transform:uppercase; letter-spacing:.08em; }
+    main { width:min(1160px,calc(100% - 48px)); margin:0 auto; padding:46px 0 70px; }
+    .method { padding:17px 20px; border-left:4px solid var(--blue); background:#e9f4fb; color:#31536d; font-size:11px; line-height:1.55; }
+    .metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin:34px 0 54px; background:var(--line); }
+    .metric { min-height:175px; padding:29px; background:white; } .metric strong { display:block; color:var(--navy); font-family:Georgia,serif; font-size:46px; font-weight:400; }
+    .metric span { display:block; margin:7px 0; font-size:11px; font-weight:700; } .metric small { color:var(--muted); font-size:9px; line-height:1.5; }
+    .section-head { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:end; margin-bottom:25px; }
+    h2 { margin:0; color:var(--navy); font-family:Georgia,serif; font-size:30px; font-weight:400; } .section-head p { margin:0; color:var(--muted); font-size:11px; line-height:1.6; }
+    .charts { display:grid; grid-template-columns:1fr 1fr; gap:60px; margin-bottom:60px; } h3 { margin:0 0 21px; color:var(--navy); font-size:12px; }
+    .chart { display:grid; gap:13px; } .bar-row { display:grid; grid-template-columns:135px 1fr 58px; gap:10px; align-items:center; }
+    .bar-row>span { color:var(--muted); font-size:9px; } .track { height:12px; background:#e7edf2; } .track i { display:block; height:100%; background:var(--blue); }
+    .event .track i { background:#78afd1; } .bar-row strong { color:var(--navy); font-size:9px; } .bar-row small { color:var(--muted); font-weight:400; }
+    .interventions { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin:0 0 60px; padding:0; list-style:none; counter-reset:step; }
+    .interventions li { min-height:164px; padding:20px 16px; border-top:3px solid var(--blue); background:white; font-size:10px; line-height:1.5; counter-increment:step; }
+    .interventions li::before { display:block; margin-bottom:25px; color:var(--blue); content:"0" counter(step); font-family:Georgia,serif; font-size:21px; }
+    .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:40px; } table { width:100%; border-collapse:collapse; background:white; font-size:10px; }
+    th,td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; } th { color:var(--muted); font-size:8px; text-transform:uppercase; }
+    .guardrails { padding:25px 28px; color:white; background:var(--navy); } .guardrails h3 { color:white; } .guardrails strong { display:block; margin-bottom:8px; font-family:Georgia,serif; font-size:31px; font-weight:400; }
+    .guardrails span { color:#bdd1e1; font-size:9px; } .guardrails ul { margin:24px 0 0; padding-left:18px; color:#dce8f1; font-size:9px; line-height:1.8; }
+    footer { padding:24px max(24px,calc((100% - 1160px)/2)); color:#728392; background:white; font-size:8px; }
+    @media(max-width:780px) { .metrics,.charts,.detail-grid,.section-head { grid-template-columns:1fr; } .interventions { grid-template-columns:1fr 1fr; } .section-head { gap:12px; } }
+    @media(max-width:480px) { main { width:calc(100% - 28px); } .interventions { grid-template-columns:1fr; } .bar-row { grid-template-columns:108px 1fr 50px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><i aria-hidden="true"></i>JourneyBack</div>
+    <h1>What 600 synthetic journeys tell us about travel recovery</h1>
+    <p>A deterministic evaluation of where travellers need policy explanation, evidence prompts and safe human routing after disruption. It explains the product need; it does not estimate real claim incidence.</p>
+    <div class="meta"><span>Completed · 600 / 600 results</span><span>Dataset 67d57db31629</span><span>2026-08-21T13:28:11+00:00</span></div>
+  </header>
+  <main>
+    <div class="method"><strong>How to read this report.</strong> Every result below is materialised from the benchmark’s rule-authored expected routing and safety labels. No API key, live model call or payout prediction is used.</div>
+    <section class="metrics" aria-label="Headline metrics">
+      <article class="metric"><strong>70.0%</strong><span>need explanation or triage</span><small>420 journeys are not a straightforward potential match. Customers still need a useful, safe next step.</small></article>
+      <article class="metric"><strong>30.0%</strong><span>have a key evidence gap</span><small>180 journeys can benefit from proactive document prompts before formal review begins.</small></article>
+      <article class="metric"><strong>58.8%</strong><span>are non-English scenarios</span><small>353 journeys demonstrate the need for multilingual, consistent policy navigation.</small></article>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>One disruption, five different customer outcomes</h2><p>Travel disruption is rarely a one-step claim decision: customers need fast evidence capture, policy explanation and safe routing across products, events and languages. The right product experience is guidance and orchestration, not an automated claim decision.</p></div>
+      <div class="charts">
+        <div><h3>Expected outcome · share of all journeys</h3><div class="chart outcome" role="img" aria-label="Potential match 180; Condition not met 150; More information needed 120; Manual policy review 90; Product handoff 60"><div class="bar-row"><span>Potential match</span><div class="track"><i style="width:100.0%"></i></div><strong>180 <small>30.0%</small></strong></div><div class="bar-row"><span>Condition not met</span><div class="track"><i style="width:83.3%"></i></div><strong>150 <small>25.0%</small></strong></div><div class="bar-row"><span>More information needed</span><div class="track"><i style="width:66.7%"></i></div><strong>120 <small>20.0%</small></strong></div><div class="bar-row"><span>Manual policy review</span><div class="track"><i style="width:50.0%"></i></div><strong>90 <small>15.0%</small></strong></div><div class="bar-row"><span>Product handoff</span><div class="track"><i style="width:33.3%"></i></div><strong>60 <small>10.0%</small></strong></div></div></div>
+        <div><h3>Disruption mix · share of all journeys</h3><div class="chart event" role="img" aria-label="Missed connection 180; Flight delay 148; Baggage delay 142; Baggage loss 65; Flight cancellation 28; Card loss 19; Hotel issue 18"><div class="bar-row"><span>Missed connection</span><div class="track"><i style="width:100.0%"></i></div><strong>180 <small>30.0%</small></strong></div><div class="bar-row"><span>Flight delay</span><div class="track"><i style="width:82.2%"></i></div><strong>148 <small>24.7%</small></strong></div><div class="bar-row"><span>Baggage delay</span><div class="track"><i style="width:78.9%"></i></div><strong>142 <small>23.7%</small></strong></div><div class="bar-row"><span>Baggage loss</span><div class="track"><i style="width:36.1%"></i></div><strong>65 <small>10.8%</small></strong></div><div class="bar-row"><span>Flight cancellation</span><div class="track"><i style="width:15.6%"></i></div><strong>28 <small>4.7%</small></strong></div><div class="bar-row"><span>Card loss</span><div class="track"><i style="width:10.6%"></i></div><strong>19 <small>3.2%</small></strong></div><div class="bar-row"><span>Hotel issue</span><div class="track"><i style="width:10.0%"></i></div><strong>18 <small>3.0%</small></strong></div></div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>Where JourneyBack creates value</h2><p>Each benchmark routing maps to a distinct intervention. A single claim form cannot handle this range well.</p></div>
+      <ol class="interventions">
+        <li>Explain a potential benefit and assemble the evidence path.</li>
+        <li>Explain why a condition may not be met without abandoning the traveller.</li>
+        <li>Ask for the missing document while the carrier interaction is still fresh.</li>
+        <li>Recognise a timing or wording boundary and escalate safely.</li>
+        <li>Resolve an unknown product before presenting benefit-specific guidance.</li>
+      </ol>
+    </section>
+
+    <section class="detail-grid">
+      <div><h3>Coverage across Card and insurance products</h3><table><thead><tr><th>Product</th><th>Cases</th><th>Share</th></tr></thead><tbody><tr><td>The Platinum Card</td><td>150</td><td>25.0%</td></tr><tr><td>KrisFlyer Ascend Credit Card</td><td>105</td><td>17.5%</td></tr><tr><td>Platinum Reserve Credit Card</td><td>105</td><td>17.5%</td></tr><tr><td>My Travel Insurance</td><td>90</td><td>15.0%</td></tr><tr><td>True Cashback Card</td><td>90</td><td>15.0%</td></tr><tr><td>Platinum Credit Card (not yet covered by this corpus)</td><td>30</td><td>5.0%</td></tr><tr><td>Unknown Amex Card</td><td>30</td><td>5.0%</td></tr></tbody></table></div>
+      <div class="guardrails"><h3>Safety contract validated on every row</h3><strong>100.0% human review</strong><span>100.0% suppress payout prediction · 90.0% include expected public-policy evidence</span><ul><li>All journeys and expected results are synthetic; this report does not measure real claim incidence.</li><li>This deterministic run validates coverage, routing and product-need scenarios, not live LLM accuracy.</li><li>Run scripts/evaluate_mvp.py separately for a small live model and citation smoke test.</li><li>Final benefit applicability and claims always require formal review.</li></ul></div>
+    </section>
+  </main>
+  <footer>JourneyBack synthetic evaluation · Generated by scripts/evaluate_synthetic_cases.py · Re-run after any dataset change.</footer>
+</body>
+</html>
