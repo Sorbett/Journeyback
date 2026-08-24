@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0362",
+  "product_code": "SG_TRUE_CASHBACK",
+  "product_name": "True Cashback Card",
+  "source_case_hash": "fb7cde27f0803ab32ca8d0c30d30fce29fb3d03d189a39cfd3f673194e5ccb35",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "flight_ticket",
+    "pir"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 773,
+      "sha256": "7125bba708091bc4ebed6f14a6d63dd0093ca3d138229e167dfd32f2985152f4"
+    },
+    {
+      "evidence_code": "pir",
+      "file_name": "property_irregularity_report.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the baggage incident report and carrier tracing reference.",
+      "size_bytes": 482,
+      "sha256": "ba8f568c9c0c40d28765cc43f4fedd06a18c565bec4e2a56f9663748ed0aa9ab"
+    }
+  ]
+}

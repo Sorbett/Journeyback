@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0438",
+  "product_code": "SG_PLATINUM_CHARGE",
+  "product_name": "The Platinum Card",
+  "source_case_hash": "aadc5118470daf8cd6f37cafcfb7c74630272bb26446907ad1da423758011bb5",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "receipts"
+  ],
+  "files": [
+    {
+      "evidence_code": "receipts",
+      "file_name": "itemised_expense_receipts.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the itemised disruption expense, amount and recorded payment method.",
+      "size_bytes": 461,
+      "sha256": "3a887ff5b04450fa564bcdb7651732d6f0b2f46970900da366f69ab180fc9333"
+    }
+  ]
+}

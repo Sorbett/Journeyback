@@ -11,6 +11,7 @@ from typing import Any
 from .config import PROJECT_ROOT
 from .evidence_store import public_product_options
 from .knowledge_base import KnowledgeBase
+from .pipeline_evidence import pipeline_test_summary
 
 
 CASES_PATH = PROJECT_ROOT / "data" / "synthetic" / "journeyback_cases.jsonl"
@@ -493,11 +494,13 @@ def _primary_question(
         "prompt": "Upload the document and add a short note. JourneyBack will validate the file, extract readable text and re-run policy analysis.",
         "accepted_formats": ["PDF", "JPG", "PNG", "TXT"],
     }
-    if trip["case_id"] == "JB-SYN-0331":
+    pipeline_summary = pipeline_test_summary(trip["case_id"])
+    if pipeline_summary is not None:
         question["guided_pipeline"] = {
             "label": "Run complete pipeline",
-            "file_count": 3,
-            "description": "Use the curated evidence set and watch each live processing step.",
+            "file_count": pipeline_summary["file_count"],
+            "files": pipeline_summary["files"],
+            "description": "Use the matched synthetic evidence package and watch each live processing step.",
         }
     return question
 

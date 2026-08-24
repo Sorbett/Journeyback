@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0371",
+  "product_code": "SG_KRISFLYER_ASCEND",
+  "product_name": "KrisFlyer Ascend Credit Card",
+  "source_case_hash": "a2c13b1985ab169a94a20f2220ecdc6938adcf197ef6247bab3ea41d5434f486",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "carrier_confirmation",
+    "flight_ticket"
+  ],
+  "files": [
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 580,
+      "sha256": "cc4d6e44cdfefe9a69a5301491c83481630832f737d11497030aa56ac6ce7e90"
+    },
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 785,
+      "sha256": "c7ce6deb82f649d69fc3688ec5998b91450c1d78ae9f350c54137c70f880b7a1"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0348",
+  "product_code": "SG_PLATINUM_RESERVE",
+  "product_name": "Platinum Reserve Credit Card",
+  "source_case_hash": "6a06698fb92cc2250a9d66a2e283a34ffa792b211221b4d5ead1335a7e069cb8",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "receipts"
+  ],
+  "files": [
+    {
+      "evidence_code": "receipts",
+      "file_name": "itemised_expense_receipts.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the itemised disruption expense, amount and recorded payment method.",
+      "size_bytes": 452,
+      "sha256": "66fef069ad90de232e4d670215706fab7a9c5da8f6802422cc1c49b3d615f53e"
+    }
+  ]
+}

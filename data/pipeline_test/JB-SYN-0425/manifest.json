@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0425",
+  "product_code": "SG_PLATINUM_CHARGE",
+  "product_name": "The Platinum Card",
+  "source_case_hash": "9242edc5fc0cf4abc10a38c1b5f1b35805ea9234262ee090a0e29ea73ce58866",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "flight_ticket"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 778,
+      "sha256": "51db0e195c1615cfe34969ade970f3ab92d200c734de53c7f2cee4b0fc70c5c7"
+    }
+  ]
+}

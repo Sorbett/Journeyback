@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0340",
+  "product_code": "SG_PLATINUM_RESERVE",
+  "product_name": "Platinum Reserve Credit Card",
+  "source_case_hash": "9ea971f6027dc5509077da8488e534be12661f3e9bef05a78137812ae0302d9a",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "flight_ticket"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 785,
+      "sha256": "8efdbd5f72c179d5e7ed9509c7d1ccc713a740373afb31bb8d2c4c672dd2b0fe"
+    }
+  ]
+}

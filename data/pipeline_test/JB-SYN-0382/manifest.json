@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0382",
+  "product_code": "SG_MY_TRAVEL_INSURANCE",
+  "product_name": "My Travel Insurance",
+  "source_case_hash": "cc69c0dce56f714deba4332e6c79dd52cd0607abfcf04134f7b31a7d282538eb",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "carrier_confirmation"
+  ],
+  "files": [
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 580,
+      "sha256": "132b6fec09f22ff8740b1985bf823d227f0cf2e65b9aac79a7bc8207fea17dfc"
+    }
+  ]
+}

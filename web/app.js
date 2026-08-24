@@ -230,15 +230,31 @@ function renderDecision(data) {
   });
 }
 
-function createGuidedPipelineRun() {
+function evidenceStepLabel(evidenceCode) {
+  const labels = {
+    flight_ticket: "Upload ticket and itinerary",
+    carrier_confirmation: "Upload carrier confirmation",
+    pir: "Upload Property Irregularity Report",
+    receipts: "Upload itemised receipts",
+    policy_certificate: "Upload policy certificate",
+  };
+  return labels[evidenceCode] || "Upload supporting evidence";
+}
+
+function createGuidedPipelineRun(files = []) {
+  const uploadSteps = files.map((item) => ({
+    id: item.evidence_code,
+    label: evidenceStepLabel(item.evidence_code),
+    detail: item.file_name || "Persist and extract readable text",
+    status: "pending",
+  }));
   return {
     status: "running",
     error: "",
+    fileCount: files.length,
     steps: [
-      { id: "load", label: "Load curated test evidence", detail: "Three synthetic TXT files", status: "pending" },
-      { id: "flight_ticket", label: "Upload ticket and itinerary", detail: "Persist and extract readable text", status: "pending" },
-      { id: "carrier_confirmation", label: "Upload carrier confirmation", detail: "Verify the disruption record", status: "pending" },
-      { id: "receipts", label: "Upload itemised receipts", detail: "Verify expense evidence", status: "pending" },
+      { id: "load", label: "Load matched test evidence", detail: `${files.length} synthetic TXT ${files.length === 1 ? "file" : "files"}`, status: "pending" },
+      ...uploadSteps,
       { id: "analysis", label: "Run live policy analysis", detail: "LLM reasoning + BGE-M3 retrieval", status: "pending" },
       { id: "artifact", label: "Build specialist review pack", detail: "Reuse the grounded live result", status: "pending" },
     ],
@@ -248,7 +264,10 @@ function createGuidedPipelineRun() {
 function guidedPipelineMarkup(config) {
   if (!config && !guidedPipelineRun) return "";
   const run = guidedPipelineRun;
-  const steps = run?.steps || createGuidedPipelineRun().steps;
+  const configuredFiles = config?.files || [];
+  const steps = run?.steps || createGuidedPipelineRun(configuredFiles).steps;
+  const fileCount = run?.fileCount ?? config?.file_count ?? configuredFiles.length;
+  const fileLabel = `${fileCount} ${fileCount === 1 ? "file" : "files"}`;
   const isRunning = run?.status === "running";
   const isComplete = run?.status === "complete";
   const isError = run?.status === "error";
@@ -271,7 +290,7 @@ function guidedPipelineMarkup(config) {
         ? "Running the complete pipeline"
         : "Test the complete pipeline with one click";
   const description = isComplete
-    ? "All three files were processed, policy evidence was retrieved and the review pack is ready."
+    ? `All ${fileLabel} were processed, policy evidence was retrieved and the review pack is ready.`
     : isError
       ? run.error
       : "Use the matched synthetic evidence set and watch every real API stage complete.";
@@ -280,7 +299,7 @@ function guidedPipelineMarkup(config) {
     <section class="guided-pipeline ${isComplete ? "complete" : isError ? "error" : isRunning ? "running" : "idle"}" aria-live="polite">
       <div class="guided-pipeline-heading">
         <div><p class="eyebrow">GUIDED PIPELINE TEST</p><h3>${escapeHtml(title)}</h3></div>
-        <span>3 files · Live AI + BGE-M3</span>
+        <span>${escapeHtml(fileLabel)} · Live AI + BGE-M3</span>
       </div>
       <p>${escapeHtml(description)}</p>
       <ol class="guided-pipeline-steps">${stepsMarkup}</ol>
@@ -309,9 +328,10 @@ function pauseForPipelinePaint(delay = 220) {
 }
 
 async function runGuidedPipeline() {
-  if (!currentTrip || currentTrip.case_id !== "JB-SYN-0331") return;
+  if (!currentTrip) return;
   const before = currentRecovery?.benefit_match;
-  guidedPipelineRun = createGuidedPipelineRun();
+  const configuredFiles = currentRecovery?.workspace?.primary_question?.guided_pipeline?.files || [];
+  guidedPipelineRun = createGuidedPipelineRun(configuredFiles);
   latestPipelineArtifact = null;
   submittedProductCode = "";
   submittedEvidenceIds = [];
@@ -320,8 +340,11 @@ async function runGuidedPipeline() {
   showEvidenceStatus("Running the curated end-to-end test…", "working");
 
   try {
-    updateGuidedPipelineStep("load", "running", "Reading the matched evidence kit for JB-SYN-0331");
+    updateGuidedPipelineStep("load", "running", `Reading the matched evidence kit for ${currentTrip.case_id}`);
     const kit = await getJson(`/api/demo/pipeline-test-kit?case_id=${encodeURIComponent(currentTrip.case_id)}`);
+    guidedPipelineRun = createGuidedPipelineRun(kit.files);
+    updateGuidedPipelineStep("load", "running", `Reading the matched evidence kit for ${currentTrip.case_id}`);
+    renderDecision(currentRecovery);
     submittedProductCode = kit.product_code;
     await pauseForPipelinePaint();
     updateGuidedPipelineStep("load", "complete", `${kit.files.length} matched files ready`);
@@ -372,7 +395,8 @@ async function runGuidedPipeline() {
     updateGuidedPipelineStep("artifact", "complete", "Downloadable review pack generated");
     guidedPipelineRun.status = "complete";
     renderRecovery(data);
-    showEvidenceStatus("Complete: 3 files processed, live analysis run and review pack generated.", "success");
+    const fileLabel = `${kit.files.length} ${kit.files.length === 1 ? "file" : "files"}`;
+    showEvidenceStatus(`Complete: ${fileLabel} processed, live analysis run and review pack generated.`, "success");
   } catch (error) {
     const activeStep = guidedPipelineRun.steps.find((step) => step.status === "running");
     if (activeStep) {

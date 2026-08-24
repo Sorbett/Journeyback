@@ -102,6 +102,7 @@ In DeepSeek mode, JourneyBack maps `none` and `low` to non-thinking mode for pre
 - `POST /api/action` creates a persisted carrier-request draft or formal-review pack instead of toggling local UI state.
 - `GET /api/artifact` downloads a server-created recovery artifact after validating its case and artifact identifiers.
 - `GET /api/demo/insights` aggregates the product-need metrics shown on the page.
+- `GET /api/demo/pipeline-test-kit?case_id=...` returns the integrity-checked synthetic evidence package for any upload-blocked benchmark case.
 - `GET /api/health` reports service readiness, model names, embedding-cache state and knowledge-base status without exposing an API key.
 - `GET /evaluation` serves the product-outcome benchmark overview.
 - `GET /evaluation/retrieval` serves the supporting retrieval benchmark report.
@@ -110,6 +111,8 @@ In DeepSeek mode, JourneyBack maps `none` and `low` to non-thinking mode for pre
 The recovery case contains the detected event, validated benefit evidence, ordered actions and evidence-pack completion state. It never returns an expected payout and always requires formal human review.
 
 Evidence progress is server-backed. Selecting a Card product or file does not mark an item complete by itself: the server must validate the submission and complete live policy reanalysis first. Any new evidence gaps identified by the model are added back to the evidence wallet for another upload-and-review cycle.
+
+All 120 cases blocked by uploadable documents include a matched synthetic TXT evidence package. The page exposes a one-click guided pipeline for these cases, dynamically uploads the case's actual missing documents, runs live policy reanalysis and creates a specialist review pack. Regenerate the fixtures with `python3 scripts/generate_pipeline_evidence.py` after changing the benchmark data.
 
 Uploaded originals remain in the ignored local `.journeyback_uploads/` directory. For plain-text files, the server sends a bounded extracted-text excerpt plus the user's document note to the configured model. For PDFs and images in this zero-dependency prototype, only verified metadata and the user-entered note are sent; the UI does not claim that unreadable binary contents were analysed.
 

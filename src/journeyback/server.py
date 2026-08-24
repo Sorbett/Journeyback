@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import json
 import mimetypes
 import time
@@ -23,6 +22,7 @@ from .evidence_store import (
     save_evidence,
 )
 from .llm_client import LLMAPIError, LLMConfigurationError, LLMResponseError
+from .pipeline_evidence import pipeline_test_kit
 from .recovery_actions import (
     create_recovery_artifact,
     load_reanalysis_snapshot,
@@ -37,50 +37,6 @@ WEB_ROOT = PROJECT_ROOT / "web"
 PRODUCT_EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "product_evaluation" / "report.html"
 RETRIEVAL_EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "retrieval_evaluation" / "report.html"
 SYNTHETIC_EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "synthetic_evaluation" / "report.html"
-PIPELINE_TEST_CASE_ID = "JB-SYN-0331"
-PIPELINE_TEST_PRODUCT_CODE = "SG_TRUE_CASHBACK"
-PIPELINE_TEST_ROOT = PROJECT_ROOT / "data" / "pipeline_test" / PIPELINE_TEST_CASE_ID
-PIPELINE_TEST_FILES = (
-    (
-        "flight_ticket",
-        "flight_ticket_and_itinerary.txt",
-        "Verify the passenger, route, dates and ticket reference.",
-    ),
-    (
-        "carrier_confirmation",
-        "carrier_confirmation.txt",
-        "Verify the disruption duration and the carrier's written confirmation.",
-    ),
-    (
-        "receipts",
-        "itemised_expense_receipts.txt",
-        "Verify the itemised disruption expenses and payment details.",
-    ),
-)
-
-
-def pipeline_test_kit(case_id: str) -> dict[str, Any]:
-    """Return the fixed, safe-to-expose evidence kit for the guided demo."""
-
-    if case_id != PIPELINE_TEST_CASE_ID:
-        raise ValueError(f"No guided pipeline test kit is available for {case_id or 'this case'}")
-    files = []
-    for evidence_code, file_name, evidence_note in PIPELINE_TEST_FILES:
-        path = PIPELINE_TEST_ROOT / file_name
-        files.append({
-            "evidence_code": evidence_code,
-            "file_name": file_name,
-            "mime_type": "text/plain",
-            "content_base64": base64.b64encode(path.read_bytes()).decode("ascii"),
-            "evidence_note": evidence_note,
-        })
-    return {
-        "case_id": PIPELINE_TEST_CASE_ID,
-        "product_code": PIPELINE_TEST_PRODUCT_CODE,
-        "files": files,
-    }
-
-
 class JourneybackHandler(BaseHTTPRequestHandler):
     engine = JourneybackEngine()
     upload_root = DEFAULT_UPLOAD_ROOT

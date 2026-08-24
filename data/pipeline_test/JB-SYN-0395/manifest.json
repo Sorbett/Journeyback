@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0395",
+  "product_code": "SG_MY_TRAVEL_INSURANCE",
+  "product_name": "My Travel Insurance",
+  "source_case_hash": "65c0f6a87e17b91d9d805d822a27fd06c6749e7a0272e9fe188de5f7bbb2aec5",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "carrier_confirmation",
+    "flight_ticket"
+  ],
+  "files": [
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 582,
+      "sha256": "fc55e62f93326dae8d53046e418a9cce36e8ae647d6ce473b850c77d481caebb"
+    },
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 780,
+      "sha256": "693c67207c80c68506ad7a9d2c43eb4b4095877311b0bcf56d338ff73987b18d"
+    }
+  ]
+}

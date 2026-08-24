@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0421",
+  "product_code": "SG_MY_TRAVEL_INSURANCE",
+  "product_name": "My Travel Insurance",
+  "source_case_hash": "fa13e5a7361c4691151585f84fabd82f9da88674b94b158554b4ad4e1897d742",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "policy_certificate"
+  ],
+  "files": [
+    {
+      "evidence_code": "policy_certificate",
+      "file_name": "policy_certificate.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the named product and synthetic policy certificate reference.",
+      "size_bytes": 609,
+      "sha256": "cd90667ad9efd51118972521881e5bc91f3ac0ef0e3431dcdbe2f6af144df90a"
+    }
+  ]
+}

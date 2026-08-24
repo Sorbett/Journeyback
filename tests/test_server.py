@@ -121,6 +121,21 @@ class ServerTests(unittest.TestCase):
             self.assertIn(b"JB-SYN-0331", document)
             self.assertEqual("text/plain", item["mime_type"])
 
+    def test_guided_pipeline_endpoint_returns_the_current_cases_matched_files(self) -> None:
+        with urlopen(
+            f"http://127.0.0.1:{self.port}/api/demo/pipeline-test-kit?case_id=JB-SYN-0332",
+            timeout=2,
+        ) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        self.assertEqual("JB-SYN-0332", payload["case_id"])
+        self.assertEqual("SG_PLATINUM_CHARGE", payload["product_code"])
+        self.assertEqual(
+            {"carrier_confirmation", "receipts"},
+            {item["evidence_code"] for item in payload["files"]},
+        )
+        self.assertEqual(2, len(payload["files"]))
+
     def test_evidence_file_is_persisted_before_it_can_be_reanalysed(self) -> None:
         document = b"%PDF-1.4 synthetic demo evidence"
         body = json.dumps({

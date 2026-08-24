@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0388",
+  "product_code": "SG_PLATINUM_RESERVE",
+  "product_name": "Platinum Reserve Credit Card",
+  "source_case_hash": "12943eedb88ca018bb4efc235a868871e770bbe5802b003de5bd59790602c319",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "pir"
+  ],
+  "files": [
+    {
+      "evidence_code": "pir",
+      "file_name": "property_irregularity_report.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the baggage incident report and carrier tracing reference.",
+      "size_bytes": 490,
+      "sha256": "f84fdc2887453b65fad48ccdf281eb94cee5bff5c9e39428bcb505a321cddfaa"
+    }
+  ]
+}

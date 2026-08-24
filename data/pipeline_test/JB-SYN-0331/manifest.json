@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0331",
+  "product_code": "SG_TRUE_CASHBACK",
+  "product_name": "True Cashback Card",
+  "source_case_hash": "4f3d16c4d99100d14d3c75eb5921a6c36b5afecd9d19ef72dd72989adc994920",
+  "package_mode": "golden_path",
+  "expected_missing_documents": [
+    "flight_ticket"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 772,
+      "sha256": "ca11af9519a60b7bd6ea16cbdeb81e638860e485ba9f5bc506f72fc90ada9c99"
+    },
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 585,
+      "sha256": "2fa6c1fe930c92c059cae61ebc21f4263fb23339ac25cacddce84a7132f5fd92"
+    },
+    {
+      "evidence_code": "receipts",
+      "file_name": "itemised_expense_receipts.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the itemised disruption expense, amount and recorded payment method.",
+      "size_bytes": 460,
+      "sha256": "09a367bd0b92e8d304444bfd5a425e6ca92f4be10b74b60f11c1aaa9fe50688b"
+    }
+  ]
+}

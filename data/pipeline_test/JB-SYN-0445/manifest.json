@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0445",
+  "product_code": "SG_KRISFLYER_ASCEND",
+  "product_name": "KrisFlyer Ascend Credit Card",
+  "source_case_hash": "50d1536bbb8d1ae5286bf65784d00812d9491815db60b21a933460bcebe59ac1",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "pir"
+  ],
+  "files": [
+    {
+      "evidence_code": "pir",
+      "file_name": "property_irregularity_report.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the baggage incident report and carrier tracing reference.",
+      "size_bytes": 505,
+      "sha256": "e6dd73f327aaa431a0327419681b2c2c85f8353fcd188d14082e3ed6fd80d471"
+    }
+  ]
+}

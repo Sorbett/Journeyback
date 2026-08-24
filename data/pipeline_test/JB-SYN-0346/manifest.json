@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0346",
+  "product_code": "SG_MY_TRAVEL_INSURANCE",
+  "product_name": "My Travel Insurance",
+  "source_case_hash": "7290becf37c7fbf75366cf2627e60e9ce21fe9dd26728dba67c62fa3119564ff",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "flight_ticket",
+    "policy_certificate"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 780,
+      "sha256": "cb67cdeae696b5e56cb519b89d56f5f832538228633cc3da7e11acc1377d48e6"
+    },
+    {
+      "evidence_code": "policy_certificate",
+      "file_name": "policy_certificate.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the named product and synthetic policy certificate reference.",
+      "size_bytes": 604,
+      "sha256": "8876d8fb7e1fe0660ad928a11a67e0298a30b5590867272e009493b84a905f15"
+    }
+  ]
+}

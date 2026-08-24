@@ -50,6 +50,17 @@ class SyntheticDemoTests(unittest.TestCase):
         self.assertEqual("flight_ticket", question["evidence_code"])
         self.assertEqual(3, question["guided_pipeline"]["file_count"])
 
+    def test_each_upload_case_exposes_its_matched_evidence_package(self) -> None:
+        recovery = recovery_case_from_synthetic(get_case("JB-SYN-0332"))
+        question = recovery["workspace"]["primary_question"]
+
+        self.assertEqual("upload", question["type"])
+        self.assertEqual(2, question["guided_pipeline"]["file_count"])
+        self.assertEqual(
+            {"carrier_confirmation", "receipts"},
+            {item["evidence_code"] for item in question["guided_pipeline"]["files"]},
+        )
+
     def test_expected_recovery_result_never_needs_an_api_call(self) -> None:
         case = get_case("JB-SYN-0001")
         result = recovery_case_from_synthetic(case)

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0351",
+  "product_code": "SG_PLATINUM_RESERVE",
+  "product_name": "Platinum Reserve Credit Card",
+  "source_case_hash": "e495ff3d901fbbb6a965e8b1e5471fbf0106415be86c063ebd8167a5ee8b4802",
+  "package_mode": "missing_evidence",
+  "expected_missing_documents": [
+    "carrier_confirmation"
+  ],
+  "files": [
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 581,
+      "sha256": "d9a46e0c7ca62b09417dea7c25612103f21135d2f86c6be57e814f858b054d77"
+    }
+  ]
+}

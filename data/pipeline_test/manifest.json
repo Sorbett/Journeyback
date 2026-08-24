@@ -1,0 +1,1170 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "source": "data/synthetic/journeyback_cases.jsonl",
+  "package_count": 120,
+  "file_count": 196,
+  "evidence_counts": {
+    "carrier_confirmation": 38,
+    "flight_ticket": 68,
+    "pir": 28,
+    "policy_certificate": 9,
+    "receipts": 53
+  },
+  "packages": [
+    {
+      "case_id": "JB-SYN-0331",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "golden_path",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 3
+    },
+    {
+      "case_id": "JB-SYN-0332",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0333",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0334",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0335",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0336",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0337",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0338",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0339",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0340",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0341",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0342",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0343",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0344",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0345",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0346",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0347",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0348",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0349",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0350",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0351",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0352",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0353",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0354",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0355",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0356",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0357",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0358",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0359",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0360",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0361",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0362",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0363",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0364",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0365",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0366",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0367",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0368",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0369",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0370",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0371",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0372",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0373",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0374",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0375",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0376",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0377",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0378",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0379",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0380",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0381",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0382",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0383",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0384",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0385",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0386",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0387",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0388",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0389",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0390",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0391",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0392",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0393",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0394",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0395",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0396",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0397",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0398",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0399",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0400",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0401",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0402",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0403",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0404",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0405",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0406",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0407",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0408",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0409",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0410",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0411",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0412",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0413",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0414",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0415",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0416",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0417",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0418",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0419",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0420",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0421",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "policy_certificate"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0422",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0423",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0424",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0425",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0426",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0427",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0428",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0429",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0430",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0431",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0432",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0433",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0434",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0435",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0436",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0437",
+      "product_code": "SG_TRUE_CASHBACK",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0438",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0439",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "receipts"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0440",
+      "product_code": "SG_PLATINUM_RESERVE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0441",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0442",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0443",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0444",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir",
+        "receipts"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0445",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "pir"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0446",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0447",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation"
+      ],
+      "file_count": 1
+    },
+    {
+      "case_id": "JB-SYN-0448",
+      "product_code": "SG_KRISFLYER_ASCEND",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "flight_ticket",
+        "pir"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0449",
+      "product_code": "SG_MY_TRAVEL_INSURANCE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "policy_certificate"
+      ],
+      "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0450",
+      "product_code": "SG_PLATINUM_CHARGE",
+      "package_mode": "missing_evidence",
+      "expected_missing_documents": [
+        "carrier_confirmation",
+        "flight_ticket"
+      ],
+      "file_count": 2
+    }
+  ]
+}
