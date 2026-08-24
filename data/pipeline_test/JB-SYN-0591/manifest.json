@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0591",
+  "product_code": "UNKNOWN_PRODUCT",
+  "product_name": "Unknown Amex Card",
+  "source_case_hash": "ecb8704ee7d3eb6eba6f1930bb5d91e5a034b2d27664e8e0bbd46ab51b3683af",
+  "package_mode": "post_product_confirmation",
+  "expected_missing_documents": [
+    "exact_card_product"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 765,
+      "sha256": "56e3599ac0d034a94d96c30de9e30aa9891826091d801701c83220b8d4acbe2d"
+    },
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 580,
+      "sha256": "02285ae058413d351d482fecf5fc64af1a1c8f62740412b12ab18a829e3245b1"
+    },
+    {
+      "evidence_code": "receipts",
+      "file_name": "itemised_expense_receipts.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the itemised disruption expense, amount and recorded payment method.",
+      "size_bytes": 445,
+      "sha256": "fe49530cc791e64bf1559fe19ec7b74d80afc7d5b7945da7791cb815563c36a7"
+    }
+  ],
+  "product_bound_at_runtime": true
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "generation_version": "journeyback-evidence-v1.0",
+  "case_id": "JB-SYN-0550",
+  "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+  "product_name": "Platinum Credit Card (not yet covered by this corpus)",
+  "source_case_hash": "496ae1181cb699dab577723c6f79222df0723060067b3c7c39cccf5ab5291117",
+  "package_mode": "post_product_confirmation",
+  "expected_missing_documents": [
+    "exact_card_product"
+  ],
+  "files": [
+    {
+      "evidence_code": "flight_ticket",
+      "file_name": "flight_ticket_and_itinerary.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the passenger, route, dates, ticket reference and recorded Card product.",
+      "size_bytes": 770,
+      "sha256": "12dd08fad8800f96b5db6f2f920b90a7ca93145365df71303d42e2c455a78cdd"
+    },
+    {
+      "evidence_code": "carrier_confirmation",
+      "file_name": "carrier_confirmation.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the disruption type, duration and carrier operational record.",
+      "size_bytes": 578,
+      "sha256": "1b884a011f26b73f08e080393df2370c521fc5ffa33dafa1231f14b0b65c8350"
+    },
+    {
+      "evidence_code": "receipts",
+      "file_name": "itemised_expense_receipts.txt",
+      "mime_type": "text/plain",
+      "evidence_note": "Verify the itemised disruption expense, amount and recorded payment method.",
+      "size_bytes": 445,
+      "sha256": "f33301ac4c96edf15de393b7824a22ec9ea48f1176e5537a4a4d657a8f6cd892"
+    }
+  ],
+  "product_bound_at_runtime": true
+}

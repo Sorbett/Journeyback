@@ -144,6 +144,36 @@ class JourneybackLLMClientTests(unittest.TestCase):
                 schema=SCHEMA,
             )
 
+    def test_deepseek_discards_unknown_fields_but_keeps_schema_validation(self) -> None:
+        client = RecordingClient(
+            self.settings,
+            output={
+                "summary": "structured result",
+                "citation_chunks": ["provider-added-alias"],
+            },
+        )
+
+        result = client.structured(
+            instructions="Return incident facts.",
+            input_text="A checked bag is delayed.",
+            schema_name="incident",
+            schema=SCHEMA,
+        )
+
+        self.assertEqual({"summary": "structured result"}, result)
+
+        invalid_client = RecordingClient(
+            self.settings,
+            output={"summary": 123, "citation_chunks": []},
+        )
+        with self.assertRaises(LLMResponseError):
+            invalid_client.structured(
+                instructions="Return incident facts.",
+                input_text="A checked bag is delayed.",
+                schema_name="incident",
+                schema=SCHEMA,
+            )
+
     def test_accepts_fenced_json_from_deepseek_json_mode(self) -> None:
         client = RecordingClient(
             self.settings,

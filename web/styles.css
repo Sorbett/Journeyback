@@ -189,6 +189,12 @@ nav a.active::after { background: #57b7ec; }
 .input-action-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
 .primary-form select, .primary-form input[type="text"] { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid #9fb6c6; border-radius: 0; color: var(--ink); background: white; font-size: 11px; outline: none; }
 .primary-form select:focus, .primary-form input:focus { border-color: var(--blue-600); box-shadow: 0 0 0 3px rgb(0 111 207 / 10%); }
+.primary-input-feedback { display: block; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.primary-input-feedback.ready { color: var(--blue-700); }
+.primary-input-feedback.working { padding-left: 15px; color: var(--blue-700); font-weight: 700; }
+.primary-input-feedback.working::before { position: absolute; width: 8px; height: 8px; margin: 2px 0 0 -15px; border: 2px solid #b8d9ed; border-top-color: var(--blue-600); border-radius: 50%; content: ""; animation: input-spin .8s linear infinite; }
+.primary-input-feedback.error { color: var(--danger); }
+@keyframes input-spin { to { transform: rotate(360deg); } }
 .drop-zone { display: grid; place-items: center; min-height: 142px; padding: 20px; border: 1px dashed #7da9c4; color: var(--navy-800); background: rgb(255 255 255 / 72%); cursor: pointer; text-align: center; transition: border-color .15s ease, background .15s ease; }
 .drop-zone.dragging, .drop-zone:hover { border-color: var(--blue-600); background: #eaf6fc; }
 .drop-zone input { position: absolute; width: 1px; height: 1px; opacity: 0; }

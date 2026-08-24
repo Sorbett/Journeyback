@@ -19,6 +19,7 @@ from fakes import FakeLLMClient  # noqa: E402
 from journeyback.config import LLMSettings  # noqa: E402
 from journeyback.engine import JourneybackEngine  # noqa: E402
 from journeyback.server import JourneybackHandler  # noqa: E402
+from journeyback.synthetic_demo import synthetic_cases  # noqa: E402
 
 
 class ServerTests(unittest.TestCase):
@@ -136,6 +137,75 @@ class ServerTests(unittest.TestCase):
         )
         self.assertEqual(2, len(payload["files"]))
 
+    def test_post_confirmation_pipeline_endpoint_binds_the_selected_card(self) -> None:
+        with urlopen(
+            f"http://127.0.0.1:{self.port}/api/demo/pipeline-test-kit"
+            "?case_id=JB-SYN-0575&product_code=SG_PLATINUM_CHARGE",
+            timeout=2,
+        ) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        self.assertEqual("post_product_confirmation", payload["package_mode"])
+        self.assertEqual("SG_PLATINUM_CHARGE", payload["product_code"])
+        self.assertEqual(3, len(payload["files"]))
+        combined = b"\n".join(
+            base64.b64decode(item["content_base64"]) for item in payload["files"]
+        )
+        self.assertIn(b"THE PLATINUM CARD", combined)
+        self.assertNotIn(b"{{PRODUCT_", combined)
+
+    def test_post_confirmation_evidence_advances_the_live_case(self) -> None:
+        with urlopen(
+            f"http://127.0.0.1:{self.port}/api/demo/pipeline-test-kit"
+            "?case_id=JB-SYN-0575&product_code=SG_PLATINUM_CHARGE",
+            timeout=2,
+        ) as response:
+            kit = json.loads(response.read().decode("utf-8"))
+
+        upload_ids = []
+        for item in kit["files"]:
+            upload_body = json.dumps({
+                "case_id": "JB-SYN-0575",
+                "evidence_code": item["evidence_code"],
+                "file_name": item["file_name"],
+                "mime_type": item["mime_type"],
+                "content_base64": item["content_base64"],
+                "evidence_note": item["evidence_note"],
+            }).encode("utf-8")
+            upload_request = Request(
+                f"http://127.0.0.1:{self.port}/api/evidence",
+                data=upload_body,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urlopen(upload_request, timeout=2) as response:
+                upload = json.loads(response.read().decode("utf-8"))
+            upload_ids.append(upload["upload_id"])
+
+        reanalyse_body = json.dumps({
+            "case_id": "JB-SYN-0575",
+            "product_code": "SG_PLATINUM_CHARGE",
+            "evidence_upload_ids": upload_ids,
+        }).encode("utf-8")
+        reanalyse_request = Request(
+            f"http://127.0.0.1:{self.port}/api/reanalyse",
+            data=reanalyse_body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(reanalyse_request, timeout=2) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        item_status = {
+            item["code"]: item["status"] for item in payload["claim_pack"]["items"]
+        }
+        self.assertEqual("live_llm_rag", payload["processing_mode"])
+        self.assertEqual("The Platinum Card", payload["trip"]["card"]["product_name"])
+        self.assertNotIn("exact_card_product", item_status)
+        self.assertEqual("complete", item_status["flight_ticket"])
+        self.assertEqual("complete", item_status["carrier_confirmation"])
+        self.assertEqual("complete", item_status["receipts"])
+
     def test_evidence_file_is_persisted_before_it_can_be_reanalysed(self) -> None:
         document = b"%PDF-1.4 synthetic demo evidence"
         body = json.dumps({
@@ -183,14 +253,92 @@ class ServerTests(unittest.TestCase):
             "exact_card_product",
             {item["code"] for item in payload["claim_pack"]["items"]},
         )
-        self.assertLess(payload["claim_pack"]["completion_percent"], 100)
-        self.assertTrue(
-            any(
-                item["code"].startswith("llm_required_")
-                for item in payload["claim_pack"]["items"]
-            )
+        self.assertEqual(100, payload["claim_pack"]["completion_percent"])
+        self.assertFalse(
+            any(item["code"].startswith("llm_required_") for item in payload["claim_pack"]["items"])
         )
         self.assertEqual("SG_PLATINUM_CHARGE", payload["submitted_information"]["product_code"])
+
+    def test_uncovered_case_accepts_a_supported_card_confirmation(self) -> None:
+        body = json.dumps({
+            "case_id": "JB-SYN-0543",
+            "product_code": "SG_PLATINUM_CHARGE",
+            "evidence_upload_ids": [],
+        }).encode("utf-8")
+        request = Request(
+            f"http://127.0.0.1:{self.port}/api/reanalyse",
+            data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(request, timeout=2) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        self.assertEqual("live_llm_rag", payload["processing_mode"])
+        self.assertEqual("The Platinum Card", payload["trip"]["card"]["product_name"])
+        self.assertEqual("SG_PLATINUM_CHARGE", payload["submitted_information"]["product_code"])
+        primary_question = payload["workspace"]["primary_question"]
+        self.assertTrue(primary_question is None or primary_question["type"] != "product")
+
+    def test_product_confirmation_advances_the_wallet_before_live_analysis(self) -> None:
+        body = json.dumps({
+            "case_id": "JB-SYN-0543",
+            "product_code": "SG_PLATINUM_CHARGE",
+        }).encode("utf-8")
+        request = Request(
+            f"http://127.0.0.1:{self.port}/api/product-confirmation",
+            data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urlopen(request, timeout=2) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        self.assertEqual("validated_input", payload["processing_mode"])
+        self.assertEqual("The Platinum Card", payload["trip"]["card"]["product_name"])
+        self.assertNotIn(
+            "exact_card_product",
+            {item["code"] for item in payload["claim_pack"]["items"]},
+        )
+        self.assertEqual("review", payload["workspace"]["primary_question"]["type"])
+        self.assertEqual("SG_PLATINUM_CHARGE", payload["submitted_information"]["product_code"])
+
+    def test_all_product_blocked_cases_advance_through_live_reanalysis(self) -> None:
+        product_blocked_cases = [
+            case
+            for case in synthetic_cases()
+            if "exact_card_product" in case["expected_missing_documents"]
+        ]
+
+        self.assertEqual(60, len(product_blocked_cases))
+        for case in product_blocked_cases:
+            body = json.dumps({
+                "case_id": case["case_id"],
+                "product_code": "SG_PLATINUM_CHARGE",
+                "evidence_upload_ids": [],
+            }).encode("utf-8")
+            request = Request(
+                f"http://127.0.0.1:{self.port}/api/reanalyse",
+                data=body,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urlopen(request, timeout=2) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+
+            claim_codes = {item["code"] for item in payload["claim_pack"]["items"]}
+            primary_question = payload["workspace"]["primary_question"]
+            self.assertEqual("live_llm_rag", payload["processing_mode"], case["case_id"])
+            self.assertNotIn("exact_card_product", claim_codes, case["case_id"])
+            self.assertTrue(
+                primary_question is None or primary_question["type"] != "product",
+                case["case_id"],
+            )
+            self.assertEqual(
+                "SG_PLATINUM_CHARGE",
+                payload["submitted_information"]["product_code"],
+                case["case_id"],
+            )
 
     def test_curated_golden_path_runs_from_upload_to_review_pack(self) -> None:
         fixture_root = PROJECT_ROOT / "data" / "pipeline_test" / "JB-SYN-0331"

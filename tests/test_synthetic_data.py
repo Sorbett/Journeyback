@@ -72,6 +72,18 @@ class SyntheticDataTests(unittest.TestCase):
         self.assertEqual(100, sum(component["weight"] for component in self.framework["components"]))
         self.assertTrue(self.quality["all_checks_passed"])
 
+    def test_post_confirmation_flight_cases_have_itemised_expense_facts(self) -> None:
+        flight_cases = [
+            case
+            for case in self.cases
+            if "exact_card_product" in case["expected_missing_documents"]
+            and case["event_type"] == "flight_delay"
+        ]
+        self.assertEqual(23, len(flight_cases))
+        self.assertTrue(
+            all(case["expense_category"] == "meals_and_refreshments" for case in flight_cases)
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

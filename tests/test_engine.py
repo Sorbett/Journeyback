@@ -54,7 +54,66 @@ class AlreadyVerifiedAlternativeFakeLLMClient(FakeLLMClient):
         return result
 
 
+class FlightDelayWithIrrelevantPIRClient(FakeLLMClient):
+    def structured(self, **kwargs):  # type: ignore[no-untyped-def]
+        result = super().structured(**kwargs)
+        if kwargs["schema_name"] == "journeyback_guidance":
+            payload = json.loads(kwargs["input_text"])
+            baggage = next(
+                item
+                for item in payload["retrieved_evidence"]
+                if "BAGGAGE" in item["chunk_id"]
+            )
+            result["missing_information"] = [
+                "Property Irregularity Report (not applicable for flight delay)",
+            ]
+            result["next_steps"] = [
+                {
+                    "priority": 1,
+                    "title": "Request a PIR",
+                    "description": "Ask the baggage desk for a Property Irregularity Report.",
+                },
+                {
+                    "priority": 2,
+                    "title": "Keep the carrier confirmation",
+                    "description": "Retain the written flight-delay record.",
+                },
+            ]
+            result["citations"] = [
+                {
+                    "chunk_id": baggage["chunk_id"],
+                    "relevance": "Incorrect baggage evidence",
+                }
+            ]
+        return result
+
+
 class JourneybackEngineTests(unittest.TestCase):
+    def test_flight_delay_cannot_request_or_cite_baggage_pir_evidence(self) -> None:
+        engine = JourneybackEngine(
+            settings=LLMSettings(
+                model="test-reasoning-model",
+                embedding_model="test-embedding-model",
+            ),
+            client=FlightDelayWithIrrelevantPIRClient(),
+            cache_path=False,
+        )
+        result = engine.evaluate({
+            "message": (
+                "Verified product: The Platinum Card (SG_PLATINUM_CHARGE)\n"
+                "Event: flight_delay lasting 720 minutes\n"
+                "Carrier confirmation and itemised meal receipts are verified."
+            )
+        })
+
+        self.assertEqual("flight_delay", result["incident"]["incident_type"])
+        self.assertEqual([], result["missing_information"])
+        self.assertNotIn("PIR", " ".join(step["title"] for step in result["next_steps"]))
+        self.assertTrue(result["trace"]["rejected_incident_citations"])
+        self.assertTrue(result["trace"]["filtered_next_steps"])
+        self.assertIn("flight delay", result["trace"]["retrieval_query"])
+        self.assertNotIn("baggage", result["trace"]["retrieval_query"])
+
     def test_verified_alternative_fact_is_not_requested_again(self) -> None:
         engine = JourneybackEngine(
             settings=LLMSettings(

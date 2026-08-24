@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import PROJECT_ROOT
+from .evidence_store import SUPPORTED_PRODUCTS
 
 
 PIPELINE_TEST_ROOT = PROJECT_ROOT / "data" / "pipeline_test"
@@ -27,6 +28,8 @@ def pipeline_test_summary(case_id: str) -> dict[str, Any] | None:
     return {
         "case_id": manifest["case_id"],
         "product_code": manifest["product_code"],
+        "package_mode": manifest["package_mode"],
+        "product_bound_at_runtime": bool(manifest.get("product_bound_at_runtime", False)),
         "file_count": len(manifest["files"]),
         "files": [
             {
@@ -38,13 +41,20 @@ def pipeline_test_summary(case_id: str) -> dict[str, Any] | None:
     }
 
 
-def pipeline_test_kit(case_id: str) -> dict[str, Any]:
+def pipeline_test_kit(case_id: str, *, product_code: str | None = None) -> dict[str, Any]:
     """Load and integrity-check an API-ready evidence package for one case."""
 
     try:
         manifest, case_root = _load_manifest(case_id)
     except FileNotFoundError as exc:
         raise ValueError(f"No guided pipeline test kit is available for {case_id}") from exc
+    product_bound_at_runtime = bool(manifest.get("product_bound_at_runtime", False))
+    selected_product_name = None
+    if product_bound_at_runtime:
+        selected_product_name = SUPPORTED_PRODUCTS.get(str(product_code or ""))
+        if selected_product_name is None:
+            raise ValueError("Select a supported Card or insurance product for this evidence package.")
+
     files: list[dict[str, Any]] = []
     for item in manifest["files"]:
         path = case_root / item["file_name"]
@@ -57,6 +67,11 @@ def pipeline_test_kit(case_id: str) -> dict[str, Any]:
             raise OSError(f"Evidence file failed its integrity check: {item['file_name']}")
         if len(content) != item["size_bytes"]:
             raise OSError(f"Evidence file size does not match its manifest: {item['file_name']}")
+        if product_bound_at_runtime:
+            text = content.decode("utf-8")
+            text = text.replace("{{PRODUCT_CODE}}", str(product_code))
+            text = text.replace("{{PRODUCT_NAME}}", str(selected_product_name).upper())
+            content = text.encode("utf-8")
         files.append({
             "evidence_code": item["evidence_code"],
             "file_name": item["file_name"],
@@ -66,8 +81,9 @@ def pipeline_test_kit(case_id: str) -> dict[str, Any]:
         })
     return {
         "case_id": manifest["case_id"],
-        "product_code": manifest["product_code"],
+        "product_code": product_code if product_bound_at_runtime else manifest["product_code"],
         "package_mode": manifest["package_mode"],
+        "product_bound_at_runtime": product_bound_at_runtime,
         "files": files,
     }
 
@@ -87,6 +103,21 @@ def _load_manifest(case_id: str) -> tuple[dict[str, Any], Path]:
         raise OSError(f"Evidence manifest does not match {case_id}")
     if not isinstance(manifest.get("product_code"), str) or not manifest["product_code"]:
         raise OSError(f"Evidence manifest has no product code for {case_id}")
+    if manifest.get("package_mode") not in {
+        "golden_path",
+        "missing_evidence",
+        "post_product_confirmation",
+    }:
+        raise OSError(f"Evidence manifest has an invalid package mode for {case_id}")
+    if "product_bound_at_runtime" in manifest and not isinstance(
+        manifest["product_bound_at_runtime"], bool
+    ):
+        raise OSError(f"Evidence manifest has an invalid product-binding mode for {case_id}")
+    if (
+        manifest["package_mode"] == "post_product_confirmation"
+        and not manifest.get("product_bound_at_runtime", False)
+    ):
+        raise OSError(f"Post-confirmation evidence must bind a selected product for {case_id}")
     raw_files = manifest.get("files")
     if not isinstance(raw_files, list) or not raw_files:
         raise OSError(f"Evidence manifest has no files for {case_id}")

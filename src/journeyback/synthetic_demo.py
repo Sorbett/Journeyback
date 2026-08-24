@@ -351,6 +351,56 @@ def recovery_case_from_synthetic(
     return result
 
 
+def recovery_case_after_product_confirmation(case: dict[str, Any]) -> dict[str, Any]:
+    """Advance a product-blocked case before the slower live analysis completes."""
+
+    guidance = {
+        "status": "human_review",
+        "status_title": "Product confirmed",
+        "headline": "Card confirmed — policy analysis is the next step",
+        "summary": (
+            "JourneyBack validated the selected product. Product-specific policy analysis must "
+            "complete before any benefit guidance is shown."
+        ),
+        "confidence": 0.0,
+        "policy_evidence": [],
+        "next_steps": [
+            {
+                "priority": 1,
+                "title": "Run product-specific policy analysis",
+                "description": "Retrieve public wording for the confirmed product and validate the safest next step.",
+            },
+            {
+                "priority": 2,
+                "title": "Prepare a specialist review pack",
+                "description": "Keep the confirmed product and disruption facts available for human review.",
+            },
+        ],
+        "missing_information": [],
+        "human_review_required": True,
+        "safety_note": case["safety_note"],
+        "trace": {
+            "pipeline": ["server_validated_product", "live_policy_analysis_pending"],
+            "evaluation_source": "validated_customer_input",
+            "rule_version": case["rule_version"],
+        },
+    }
+    result = recovery_case_from_synthetic(case, live_guidance=guidance)
+    result["processing_mode"] = "validated_input"
+    result["workspace"]["phase_label"] = "Card confirmed"
+    result["workspace"]["headline"] = "Card confirmed — continue policy analysis"
+    result["workspace"]["summary"] = (
+        "The Card selection is saved for this demo flow. Retry live analysis if the model request stops."
+    )
+    result["workspace"]["processing"] = {
+        "mode": "validated_input",
+        "label": "Validated input",
+        "is_live": False,
+    }
+    result["workspace"]["disclosure"] = "Server-validated Card selection · live policy analysis pending"
+    return result
+
+
 def _workspace_for_result(
     *,
     case: dict[str, Any],
@@ -470,7 +520,7 @@ def _primary_question(
     if item is None:
         return None
     if item["code"] == "exact_card_product":
-        return {
+        question = {
             "type": "product",
             "evidence_code": item["code"],
             "eyebrow": "One detail is blocking policy analysis",
@@ -478,6 +528,21 @@ def _primary_question(
             "prompt": "Confirm the exact Card or insurance product. JourneyBack will re-run the live policy analysis before changing the result.",
             "options": trip["simulation"].get("product_options", []),
         }
+        pipeline_summary = pipeline_test_summary(trip["case_id"])
+        if (
+            pipeline_summary is not None
+            and pipeline_summary["package_mode"] == "post_product_confirmation"
+        ):
+            question["post_confirmation_pipeline"] = {
+                "trigger": "product_confirmation",
+                "file_count": pipeline_summary["file_count"],
+                "files": pipeline_summary["files"],
+                "description": (
+                    "Confirm the Card once. JourneyBack will automatically process the matched "
+                    "evidence package and complete live policy analysis."
+                ),
+            }
+        return question
     if item["code"] == "manual_review":
         return {
             "type": "review",

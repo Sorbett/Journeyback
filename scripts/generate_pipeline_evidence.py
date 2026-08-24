@@ -16,6 +16,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CASES_PATH = PROJECT_ROOT / "data" / "synthetic" / "journeyback_cases.jsonl"
 OUTPUT_ROOT = PROJECT_ROOT / "data" / "pipeline_test"
 GOLDEN_CASE_ID = "JB-SYN-0331"
+POST_CONFIRMATION_EVENT_EVIDENCE = {
+    "flight_delay": ["flight_ticket", "carrier_confirmation", "receipts"],
+}
 
 CARRIERS = {
     "CARRIER-A": ("Singapore Airlines", "SQ"),
@@ -48,19 +51,31 @@ def main() -> None:
     evidence_counts: Counter[str] = Counter()
     for case in cases:
         missing = [code for code in case["expected_missing_documents"] if code in FILE_NAMES]
-        if not missing:
+        post_confirmation = (
+            POST_CONFIRMATION_EVENT_EVIDENCE.get(case["event_type"])
+            if "exact_card_product" in case["expected_missing_documents"]
+            else None
+        )
+        if not missing and post_confirmation is None:
             continue
-        evidence_codes = list(missing)
+        evidence_codes = list(post_confirmation or missing)
         if case["case_id"] == GOLDEN_CASE_ID:
             evidence_codes = ["flight_ticket", "carrier_confirmation", "receipts"]
-        package = _write_package(case, evidence_codes)
-        packages.append({
+        package = _write_package(
+            case,
+            evidence_codes,
+            product_bound_at_runtime=post_confirmation is not None,
+        )
+        package_summary = {
             "case_id": package["case_id"],
             "product_code": package["product_code"],
             "package_mode": package["package_mode"],
             "expected_missing_documents": package["expected_missing_documents"],
             "file_count": len(package["files"]),
-        })
+        }
+        if package.get("product_bound_at_runtime"):
+            package_summary["product_bound_at_runtime"] = True
+        packages.append(package_summary)
         evidence_counts.update(evidence_codes)
 
     index = {
@@ -92,13 +107,22 @@ def _load_cases() -> list[dict[str, Any]]:
     return cases
 
 
-def _write_package(case: dict[str, Any], evidence_codes: list[str]) -> dict[str, Any]:
+def _write_package(
+    case: dict[str, Any],
+    evidence_codes: list[str],
+    *,
+    product_bound_at_runtime: bool,
+) -> dict[str, Any]:
     case_root = OUTPUT_ROOT / case["case_id"]
     case_root.mkdir(parents=True, exist_ok=True)
+    document_case = dict(case)
+    if product_bound_at_runtime:
+        document_case["product_code"] = "{{PRODUCT_CODE}}"
+        document_case["product_name"] = "{{PRODUCT_NAME}}"
     files: list[dict[str, Any]] = []
     for evidence_code in evidence_codes:
         file_name = FILE_NAMES[evidence_code]
-        content = DOCUMENT_BUILDERS[evidence_code](case)
+        content = DOCUMENT_BUILDERS[evidence_code](document_case)
         path = case_root / file_name
         path.write_text(content, encoding="utf-8")
         raw = content.encode("utf-8")
@@ -118,10 +142,18 @@ def _write_package(case: dict[str, Any], evidence_codes: list[str]) -> dict[str,
         "product_code": case["product_code"],
         "product_name": case["product_name"],
         "source_case_hash": case["content_hash"],
-        "package_mode": "golden_path" if case["case_id"] == GOLDEN_CASE_ID else "missing_evidence",
+        "package_mode": (
+            "golden_path"
+            if case["case_id"] == GOLDEN_CASE_ID
+            else "post_product_confirmation"
+            if product_bound_at_runtime
+            else "missing_evidence"
+        ),
         "expected_missing_documents": case["expected_missing_documents"],
         "files": files,
     }
+    if product_bound_at_runtime:
+        manifest["product_bound_at_runtime"] = True
     (case_root / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )

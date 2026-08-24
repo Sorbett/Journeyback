@@ -26,6 +26,7 @@ UPLOADABLE_CODES = {
     "receipts",
     "policy_certificate",
 }
+POST_CONFIRMATION_CODES = {"flight_ticket", "carrier_confirmation", "receipts"}
 
 
 class PipelineEvidenceTests(unittest.TestCase):
@@ -38,9 +39,17 @@ class PipelineEvidenceTests(unittest.TestCase):
         index = json.loads((PIPELINE_TEST_ROOT / "manifest.json").read_text(encoding="utf-8"))
 
         self.assertEqual(120, len(benchmark_cases))
-        self.assertEqual(120, index["package_count"])
-        self.assertEqual(196, index["file_count"])
-        self.assertEqual(set(benchmark_cases), {item["case_id"] for item in index["packages"]})
+        post_confirmation_cases = {
+            case["case_id"]: case
+            for case in synthetic_cases()
+            if "exact_card_product" in case["expected_missing_documents"]
+            and case["event_type"] == "flight_delay"
+        }
+        expected_package_ids = set(benchmark_cases) | set(post_confirmation_cases)
+        self.assertEqual(23, len(post_confirmation_cases))
+        self.assertEqual(143, index["package_count"])
+        self.assertEqual(265, index["file_count"])
+        self.assertEqual(expected_package_ids, {item["case_id"] for item in index["packages"]})
 
         for case_id, case in benchmark_cases.items():
             manifest = json.loads(
@@ -60,6 +69,18 @@ class PipelineEvidenceTests(unittest.TestCase):
                 self.assertEqual(len(content), item["size_bytes"])
                 self.assertEqual(hashlib.sha256(content).hexdigest(), item["sha256"])
 
+        for case_id, case in post_confirmation_cases.items():
+            manifest = json.loads(
+                (PIPELINE_TEST_ROOT / case_id / "manifest.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual("post_product_confirmation", manifest["package_mode"])
+            self.assertTrue(manifest["product_bound_at_runtime"])
+            self.assertEqual(
+                POST_CONFIRMATION_CODES,
+                {item["evidence_code"] for item in manifest["files"]},
+            )
+            self.assertEqual(case["content_hash"], manifest["source_case_hash"])
+
     def test_runtime_kit_returns_integrity_checked_api_payload(self) -> None:
         kit = pipeline_test_kit("JB-SYN-0332")
 
@@ -71,6 +92,37 @@ class PipelineEvidenceTests(unittest.TestCase):
         )
         for item in kit["files"]:
             self.assertIn(b"JB-SYN-0332", base64.b64decode(item["content_base64"]))
+
+    def test_all_post_confirmation_kits_bind_the_selected_product(self) -> None:
+        cases = [
+            case
+            for case in synthetic_cases()
+            if "exact_card_product" in case["expected_missing_documents"]
+            and case["event_type"] == "flight_delay"
+        ]
+        self.assertEqual(23, len(cases))
+
+        for case in cases:
+            with self.subTest(case_id=case["case_id"]):
+                kit = pipeline_test_kit(
+                    case["case_id"],
+                    product_code="SG_PLATINUM_CHARGE",
+                )
+                self.assertEqual("post_product_confirmation", kit["package_mode"])
+                self.assertEqual("SG_PLATINUM_CHARGE", kit["product_code"])
+                self.assertEqual(3, len(kit["files"]))
+                combined = b"\n".join(
+                    base64.b64decode(item["content_base64"])
+                    for item in kit["files"]
+                )
+                self.assertIn(b"THE PLATINUM CARD", combined)
+                self.assertIn(b"SG_PLATINUM_CHARGE", combined)
+                self.assertIn(b"ITEM_1: MEALS AND REFRESHMENTS", combined)
+                self.assertNotIn(b"ITEM_1: UNKNOWN", combined)
+                self.assertNotIn(b"{{PRODUCT_", combined)
+
+        with self.assertRaisesRegex(ValueError, "Select a supported"):
+            pipeline_test_kit("JB-SYN-0575")
 
     def test_cases_without_upload_gaps_do_not_expose_a_package(self) -> None:
         self.assertIsNone(pipeline_test_summary("JB-SYN-0001"))

@@ -197,13 +197,18 @@ def reanalysis_message(
         document_lines.append(line)
     documents = "\n".join(document_lines) if document_lines else "- No new file evidence"
     payment = "verified" if case["origin_return_paid_with_card"] else "not verified"
-    connected_evidence = "\n".join([
+    connected_evidence_items = [
         f"- Flight ticket and itinerary: {_availability(case.get('has_flight_ticket'))}",
         f"- Carrier written confirmation: {_availability(case.get('has_carrier_confirmation'))}",
-        f"- Property Irregularity Report: {_availability(case.get('has_pir'))}",
         f"- Itemised expense receipts: {_availability(case.get('has_receipts'))}",
         f"- Policy certificate: {_availability(case.get('has_policy_certificate'))}",
-    ])
+    ]
+    if str(case.get("event_type", "")).startswith("baggage"):
+        connected_evidence_items.insert(
+            2,
+            f"- Property Irregularity Report: {_availability(case.get('has_pir'))}",
+        )
+    connected_evidence = "\n".join(connected_evidence_items)
     return (
         "Reanalyse this travel disruption using the newly submitted, server-validated facts below. "
         "These facts are authoritative and supersede any earlier ambiguity in the synthetic customer wording.\n\n"

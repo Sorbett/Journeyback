@@ -58,11 +58,43 @@ class FakeLLMClient:
 
         payload = json.loads(input_text)
         evidence = payload["retrieved_evidence"]
+        incident_type = payload["extracted_incident"]["incident_type"]
+        matching_topics = {
+            "flight_delay": {"flight_delay"},
+            "flight_cancellation": {"flight_cancellation"},
+            "missed_connection": {"missed_connection", "missed_departure"},
+            "baggage_delay": {"baggage_delay", "extended_baggage_delay"},
+            "baggage_loss": {"baggage_loss", "baggage_delay"},
+        }.get(incident_type, set())
         formal = next(
-            (item for item in evidence if "BAGGAGE" in item["chunk_id"]),
+            (
+                item
+                for item in evidence
+                if set(item.get("topics", [])) & matching_topics
+            ),
             next((item for item in evidence if item["document_type"] == "formal_policy_wording"), evidence[0]),
         )
         chunk_id = "HALLUCINATED-CHUNK" if self.invalid_citation else formal["chunk_id"]
+        if incident_type in {"flight_delay", "flight_cancellation", "missed_connection"}:
+            event_label = incident_type.replace("_", " ").title()
+            return {
+                "status": "act_now",
+                "headline": f"{event_label} protection may be relevant",
+                "summary": "The matched public wording supports preserving the carrier record and itemised disruption expenses for review.",
+                "confidence": 0.8,
+                "detected_facts": [
+                    {"label": "Card", "value": "The Platinum Card"},
+                    {"label": "Event", "value": event_label},
+                ],
+                "missing_information": [],
+                "next_steps": [
+                    {"priority": 1, "title": "Keep the carrier confirmation", "description": "Retain the written disruption duration and operational record."},
+                    {"priority": 2, "title": "Keep itemised receipts", "description": "Retain reasonable disruption-expense receipts and Card payment evidence."},
+                    {"priority": 3, "title": "Request a formal benefit review", "description": "Submit the verified itinerary, carrier record and receipts for confirmation."},
+                ],
+                "decision_basis": [f"The operational event is {incident_type}"],
+                "citations": [{"chunk_id": chunk_id, "relevance": f"{event_label} wording"}],
+            }
         return {
             "status": "need_more_info",
             "headline": "Baggage delay cover may be relevant",

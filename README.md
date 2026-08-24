@@ -98,11 +98,12 @@ In DeepSeek mode, JourneyBack maps `none` and `low` to non-thinking mode for pre
 - `GET /api/trip?case_id=JB-SYN-0001` returns a reproducible benchmark traveller.
 - `POST /api/detect` materialises the selected case's expected result immediately; pass `{"case_id":"JB-SYN-0001","live":true}` to explicitly run the real LLM/RAG pipeline.
 - `POST /api/evidence` validates and stores a selected PDF, JPG, PNG or TXT file under the ignored local `.journeyback_uploads/` directory.
+- `POST /api/product-confirmation` validates and persists the selected Card before live policy analysis begins.
 - `POST /api/reanalyse` validates a submitted Card product and uploaded evidence, then runs the real LLM + embedding-policy retrieval pipeline before updating the recovery case.
 - `POST /api/action` creates a persisted carrier-request draft or formal-review pack instead of toggling local UI state.
 - `GET /api/artifact` downloads a server-created recovery artifact after validating its case and artifact identifiers.
 - `GET /api/demo/insights` aggregates the product-need metrics shown on the page.
-- `GET /api/demo/pipeline-test-kit?case_id=...` returns the integrity-checked synthetic evidence package for any upload-blocked benchmark case.
+- `GET /api/demo/pipeline-test-kit?case_id=...` returns the integrity-checked synthetic evidence package for any upload-blocked benchmark case. Post-confirmation packages also require `product_code=...` so their documents are bound to the Card the user selected.
 - `GET /api/health` reports service readiness, model names, embedding-cache state and knowledge-base status without exposing an API key.
 - `GET /evaluation` serves the product-outcome benchmark overview.
 - `GET /evaluation/retrieval` serves the supporting retrieval benchmark report.
@@ -112,7 +113,7 @@ The recovery case contains the detected event, validated benefit evidence, order
 
 Evidence progress is server-backed. Selecting a Card product or file does not mark an item complete by itself: the server must validate the submission and complete live policy reanalysis first. Any new evidence gaps identified by the model are added back to the evidence wallet for another upload-and-review cycle.
 
-All 120 cases blocked by uploadable documents include a matched synthetic TXT evidence package. The page exposes a one-click guided pipeline for these cases, dynamically uploads the case's actual missing documents, runs live policy reanalysis and creates a specialist review pack. Regenerate the fixtures with `python3 scripts/generate_pipeline_evidence.py` after changing the benchmark data.
+All 120 cases blocked by uploadable documents include a matched synthetic TXT evidence package. The page exposes a one-click guided pipeline for these cases, dynamically uploads the case's actual missing documents, runs live policy reanalysis and creates a specialist review pack. All 23 product-blocked flight-delay cases also receive a runtime-bound ticket, carrier confirmation and itemised receipt after Card selection. Card-loss and hotel cases without a defensible matched benefit, such as `JB-SYN-0543`, still make a safe operational or specialist handoff instead of inventing irrelevant evidence. Regenerate the fixtures with `python3 scripts/generate_pipeline_evidence.py` after changing the benchmark data.
 
 Uploaded originals remain in the ignored local `.journeyback_uploads/` directory. For plain-text files, the server sends a bounded extracted-text excerpt plus the user's document note to the configured model. For PDFs and images in this zero-dependency prototype, only verified metadata and the user-entered note are sent; the UI does not claim that unreadable binary contents were analysed.
 

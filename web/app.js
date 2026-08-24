@@ -131,7 +131,7 @@ function renderRecovery(data) {
   renderWallet(data);
   renderWorkspaceActions(data.workspace.handoff);
   renderEvidenceReview(data);
-  elements.processingMode.textContent = data.workspace.processing.is_live ? "Live AI + RAG" : "Expected path";
+  elements.processingMode.textContent = data.workspace.processing.is_live ? "Live AI + RAG" : data.workspace.processing.label;
   elements.processingMode.className = `mode-chip ${data.workspace.processing.is_live ? "live" : ""}`;
   elements.handoffStatus.textContent = data.workspace.handoff.ready ? "Review-ready" : "Draft mode";
 }
@@ -154,14 +154,20 @@ function renderDecision(data) {
   const question = workspace.primary_question;
   let control = "";
   if (question?.type === "product") {
+    const postConfirmationPipeline = question.post_confirmation_pipeline;
     const options = question.options.map((product) => `<option value="${escapeHtml(product.code)}">${escapeHtml(product.name)}</option>`).join("");
     control = `
-      <form id="primary-input-form" class="primary-form product-question" data-evidence-code="${escapeHtml(question.evidence_code)}">
+      <form id="primary-input-form" class="primary-form product-question" data-evidence-code="${escapeHtml(question.evidence_code)}" data-auto-pipeline="${postConfirmationPipeline ? "true" : "false"}">
         <label for="product-choice">Card or insurance product</label>
         <div class="input-action-row">
           <select id="product-choice" required><option value="">Select the exact product</option>${options}</select>
-          <button class="button button-primary" type="submit">Confirm &amp; run live analysis</button>
+          <button class="button button-primary" type="submit" disabled>Select a Card first</button>
         </div>
+        <small id="primary-input-feedback" class="primary-input-feedback">${escapeHtml(
+          postConfirmationPipeline
+            ? `Choose the Card once. JourneyBack will automatically process ${postConfirmationPipeline.file_count} matched ${postConfirmationPipeline.file_count === 1 ? "file" : "files"}, run policy analysis and build the review pack.`
+            : "Choose the exact product, then confirm to run live LLM + BGE-M3 policy analysis."
+        )}</small>
       </form>
     `;
   } else if (question?.type === "upload") {
@@ -189,7 +195,26 @@ function renderDecision(data) {
     `;
   }
 
-  const hasGuidedPipeline = Boolean(question?.guided_pipeline || guidedPipelineRun);
+  if (data.processing_mode === "validated_input" && guidedPipelineRun?.status === "running") {
+    control = `
+      <div class="ready-summary pending-analysis">
+        <span class="ready-check">✓</span>
+        <div><strong>The Card selection is confirmed</strong><small>JourneyBack is processing the matched evidence package now.</small></div>
+      </div>
+      <button class="button button-primary" type="button" disabled>Complete pipeline running…</button>
+    `;
+  } else if (data.processing_mode === "validated_input") {
+    control = `
+      <div class="ready-summary pending-analysis">
+        <span class="ready-check">✓</span>
+        <div><strong>The Card selection is confirmed</strong><small>Live policy analysis has not completed yet.</small></div>
+      </div>
+      <button id="retry-live-analysis" class="button button-primary" type="button">Retry live policy analysis</button>
+    `;
+  }
+
+  const pipelineConfig = question?.guided_pipeline || question?.post_confirmation_pipeline;
+  const hasGuidedPipeline = Boolean(pipelineConfig || guidedPipelineRun);
   if (hasGuidedPipeline && question?.type === "upload") {
     control = `
       <details class="manual-upload">
@@ -215,7 +240,7 @@ function renderDecision(data) {
     <h2>${escapeHtml(workspace.headline)}</h2>
     <p class="decision-summary">${escapeHtml(workspace.summary)}</p>
     ${changeMarkup}
-    ${guidedPipelineMarkup(question?.guided_pipeline)}
+    ${guidedPipelineMarkup(pipelineConfig)}
     ${control}
   `;
   bindPrimaryInput();
@@ -228,6 +253,8 @@ function renderDecision(data) {
   elements.decisionCard.querySelectorAll("[data-action-code]").forEach((button) => {
     button.addEventListener("click", () => performRecoveryAction(button.dataset.actionCode, button));
   });
+  const retryButton = elements.decisionCard.querySelector("#retry-live-analysis");
+  if (retryButton) retryButton.addEventListener("click", () => retryLivePolicyAnalysis(retryButton));
 }
 
 function evidenceStepLabel(evidenceCode) {
@@ -241,7 +268,7 @@ function evidenceStepLabel(evidenceCode) {
   return labels[evidenceCode] || "Upload supporting evidence";
 }
 
-function createGuidedPipelineRun(files = []) {
+function createGuidedPipelineRun(files = [], trigger = "evidence_upload") {
   const uploadSteps = files.map((item) => ({
     id: item.evidence_code,
     label: evidenceStepLabel(item.evidence_code),
@@ -251,6 +278,7 @@ function createGuidedPipelineRun(files = []) {
   return {
     status: "running",
     error: "",
+    trigger,
     fileCount: files.length,
     steps: [
       { id: "load", label: "Load matched test evidence", detail: `${files.length} synthetic TXT ${files.length === 1 ? "file" : "files"}`, status: "pending" },
@@ -268,6 +296,8 @@ function guidedPipelineMarkup(config) {
   const steps = run?.steps || createGuidedPipelineRun(configuredFiles).steps;
   const fileCount = run?.fileCount ?? config?.file_count ?? configuredFiles.length;
   const fileLabel = `${fileCount} ${fileCount === 1 ? "file" : "files"}`;
+  const trigger = run?.trigger || config?.trigger || "evidence_upload";
+  const isProductDriven = trigger === "product_confirmation";
   const isRunning = run?.status === "running";
   const isComplete = run?.status === "complete";
   const isError = run?.status === "error";
@@ -288,25 +318,29 @@ function guidedPipelineMarkup(config) {
       ? "Pipeline stopped at a failed step"
       : isRunning
         ? "Running the complete pipeline"
-        : "Test the complete pipeline with one click";
+        : isProductDriven
+          ? "Confirm the Card to run the complete pipeline"
+          : "Test the complete pipeline with one click";
   const description = isComplete
     ? `All ${fileLabel} were processed, policy evidence was retrieved and the review pack is ready.`
     : isError
       ? run.error
-      : "Use the matched synthetic evidence set and watch every real API stage complete.";
+      : config?.description || "Use the matched synthetic evidence set and watch every real API stage complete.";
 
   return `
     <section class="guided-pipeline ${isComplete ? "complete" : isError ? "error" : isRunning ? "running" : "idle"}" aria-live="polite">
       <div class="guided-pipeline-heading">
-        <div><p class="eyebrow">GUIDED PIPELINE TEST</p><h3>${escapeHtml(title)}</h3></div>
+        <div><p class="eyebrow">${isProductDriven ? "AUTOMATED RECOVERY PIPELINE" : "GUIDED PIPELINE TEST"}</p><h3>${escapeHtml(title)}</h3></div>
         <span>${escapeHtml(fileLabel)} · Live AI + BGE-M3</span>
       </div>
       <p>${escapeHtml(description)}</p>
       <ol class="guided-pipeline-steps">${stepsMarkup}</ol>
       <div class="guided-pipeline-actions">
-        <button id="run-guided-pipeline" class="button button-primary" type="button" ${isRunning ? "disabled" : ""}>
-          ${isRunning ? "Pipeline running…" : isComplete || isError ? "Run again" : escapeHtml(config?.label || "Run complete pipeline")}
-        </button>
+        ${isProductDriven ? "" : `
+          <button id="run-guided-pipeline" class="button button-primary" type="button" ${isRunning ? "disabled" : ""}>
+            ${isRunning ? "Pipeline running…" : isComplete || isError ? "Run again" : escapeHtml(config?.label || "Run complete pipeline")}
+          </button>
+        `}
         ${isComplete && latestPipelineArtifact ? '<button id="open-guided-artifact" class="button button-secondary" type="button">Open review pack</button>' : ""}
       </div>
     </section>
@@ -331,89 +365,127 @@ async function runGuidedPipeline() {
   if (!currentTrip) return;
   const before = currentRecovery?.benefit_match;
   const configuredFiles = currentRecovery?.workspace?.primary_question?.guided_pipeline?.files || [];
-  guidedPipelineRun = createGuidedPipelineRun(configuredFiles);
-  latestPipelineArtifact = null;
   submittedProductCode = "";
+  try {
+    await executeGuidedPipeline({
+      before,
+      configuredFiles,
+      trigger: "evidence_upload",
+    });
+  } catch (error) {
+    failGuidedPipeline(error);
+  }
+}
+
+async function executeGuidedPipeline({ before, configuredFiles, trigger, productCode = "" }) {
+  guidedPipelineRun = createGuidedPipelineRun(configuredFiles, trigger);
+  latestPipelineArtifact = null;
   submittedEvidenceIds = [];
   latestUpload = null;
+  renderRecovery(currentRecovery);
+  showEvidenceStatus("Running the matched end-to-end evidence pipeline…", "working");
+
+  updateGuidedPipelineStep("load", "running", `Reading the matched evidence kit for ${currentTrip.case_id}`);
+  const productQuery = productCode ? `&product_code=${encodeURIComponent(productCode)}` : "";
+  const kit = await getJson(
+    `/api/demo/pipeline-test-kit?case_id=${encodeURIComponent(currentTrip.case_id)}${productQuery}`,
+  );
+  guidedPipelineRun = createGuidedPipelineRun(kit.files, trigger);
+  updateGuidedPipelineStep("load", "running", `Reading the matched evidence kit for ${currentTrip.case_id}`);
   renderDecision(currentRecovery);
-  showEvidenceStatus("Running the curated end-to-end test…", "working");
+  submittedProductCode = productCode || kit.product_code;
+  await pauseForPipelinePaint();
+  updateGuidedPipelineStep("load", "complete", `${kit.files.length} matched files ready`);
 
-  try {
-    updateGuidedPipelineStep("load", "running", `Reading the matched evidence kit for ${currentTrip.case_id}`);
-    const kit = await getJson(`/api/demo/pipeline-test-kit?case_id=${encodeURIComponent(currentTrip.case_id)}`);
-    guidedPipelineRun = createGuidedPipelineRun(kit.files);
-    updateGuidedPipelineStep("load", "running", `Reading the matched evidence kit for ${currentTrip.case_id}`);
-    renderDecision(currentRecovery);
-    submittedProductCode = kit.product_code;
-    await pauseForPipelinePaint();
-    updateGuidedPipelineStep("load", "complete", `${kit.files.length} matched files ready`);
-
-    for (const item of kit.files) {
-      updateGuidedPipelineStep(item.evidence_code, "running", `Uploading ${item.file_name}`);
-      latestUpload = await postJson("/api/evidence", {
-        case_id: currentTrip.case_id,
-        evidence_code: item.evidence_code,
-        file_name: item.file_name,
-        mime_type: item.mime_type,
-        content_base64: item.content_base64,
-        evidence_note: item.evidence_note,
-      });
-      if (!submittedEvidenceIds.includes(latestUpload.upload_id)) submittedEvidenceIds.push(latestUpload.upload_id);
-      await pauseForPipelinePaint();
-      const extraction = latestUpload.inspection?.text_extracted ? "text extracted" : "file persisted";
-      updateGuidedPipelineStep(item.evidence_code, "complete", `${item.file_name} · ${extraction}`);
-    }
-
-    updateGuidedPipelineStep("analysis", "running", "Calling the LLM and retrieving product policy with BGE-M3");
-    const data = await postJson("/api/reanalyse", {
+  for (const item of kit.files) {
+    updateGuidedPipelineStep(item.evidence_code, "running", `Uploading ${item.file_name}`);
+    latestUpload = await postJson("/api/evidence", {
       case_id: currentTrip.case_id,
-      product_code: submittedProductCode,
-      evidence_upload_ids: submittedEvidenceIds,
+      evidence_code: item.evidence_code,
+      file_name: item.file_name,
+      mime_type: item.mime_type,
+      content_base64: item.content_base64,
+      evidence_note: item.evidence_note,
     });
-    decisionChange = {
-      title: before?.headline === data.benefit_match.headline ? "Evidence state refreshed" : "Policy guidance changed",
-      detail: `${before?.headline || "Previous result"} → ${data.benefit_match.headline}`,
-    };
-    currentRecovery = data;
-    const trace = data.trace || {};
-    updateGuidedPipelineStep(
-      "analysis",
-      "complete",
-      `${trace.retrieved_chunks || 0} policy chunks · ${trace.validated_citations || 0} citations · ${(data.response_time_ms / 1000).toFixed(1)}s`,
-    );
-    renderRecovery(data);
-
-    updateGuidedPipelineStep("artifact", "running", "Packaging uploaded evidence and the grounded decision trace");
-    latestPipelineArtifact = await postJson("/api/action", {
-      case_id: currentTrip.case_id,
-      action_code: "build_evidence_pack",
-      product_code: submittedProductCode,
-      evidence_upload_ids: submittedEvidenceIds,
-    });
+    if (!submittedEvidenceIds.includes(latestUpload.upload_id)) submittedEvidenceIds.push(latestUpload.upload_id);
     await pauseForPipelinePaint();
-    updateGuidedPipelineStep("artifact", "complete", "Downloadable review pack generated");
-    guidedPipelineRun.status = "complete";
-    renderRecovery(data);
-    const fileLabel = `${kit.files.length} ${kit.files.length === 1 ? "file" : "files"}`;
-    showEvidenceStatus(`Complete: ${fileLabel} processed, live analysis run and review pack generated.`, "success");
-  } catch (error) {
-    const activeStep = guidedPipelineRun.steps.find((step) => step.status === "running");
-    if (activeStep) {
-      activeStep.status = "error";
-      activeStep.detail = error.message;
-    }
-    guidedPipelineRun.status = "error";
-    guidedPipelineRun.error = error.message;
-    renderDecision(currentRecovery);
-    showEvidenceStatus(error.message, "error");
+    const extraction = latestUpload.inspection?.text_extracted ? "text extracted" : "file persisted";
+    updateGuidedPipelineStep(item.evidence_code, "complete", `${item.file_name} · ${extraction}`);
   }
+
+  updateGuidedPipelineStep("analysis", "running", "Calling the LLM and retrieving product policy with BGE-M3");
+  const data = await postJson("/api/reanalyse", {
+    case_id: currentTrip.case_id,
+    product_code: submittedProductCode,
+    evidence_upload_ids: submittedEvidenceIds,
+  });
+  decisionChange = {
+    title: before?.headline === data.benefit_match.headline ? "Evidence state refreshed" : "Policy guidance changed",
+    detail: `${before?.headline || "Previous result"} → ${data.benefit_match.headline}`,
+  };
+  currentRecovery = data;
+  const trace = data.trace || {};
+  updateGuidedPipelineStep(
+    "analysis",
+    "complete",
+    `${trace.retrieved_chunks || 0} policy chunks · ${trace.validated_citations || 0} citations · ${(data.response_time_ms / 1000).toFixed(1)}s`,
+  );
+  renderRecovery(data);
+
+  updateGuidedPipelineStep("artifact", "running", "Packaging uploaded evidence and the grounded decision trace");
+  latestPipelineArtifact = await postJson("/api/action", {
+    case_id: currentTrip.case_id,
+    action_code: "build_evidence_pack",
+    product_code: submittedProductCode,
+    evidence_upload_ids: submittedEvidenceIds,
+  });
+  await pauseForPipelinePaint();
+  updateGuidedPipelineStep("artifact", "complete", "Downloadable review pack generated");
+  guidedPipelineRun.status = "complete";
+  renderRecovery(data);
+  const fileLabel = `${kit.files.length} ${kit.files.length === 1 ? "file" : "files"}`;
+  showEvidenceStatus(`Complete: ${fileLabel} processed, live analysis run and review pack generated.`, "success");
+  return data;
+}
+
+function failGuidedPipeline(error) {
+  if (!guidedPipelineRun) return;
+  const activeStep = guidedPipelineRun.steps.find((step) => step.status === "running");
+  if (activeStep) {
+    activeStep.status = "error";
+    activeStep.detail = error.message;
+  }
+  guidedPipelineRun.status = "error";
+  guidedPipelineRun.error = error.message;
+  if (currentRecovery) renderDecision(currentRecovery);
+  showEvidenceStatus(error.message, "error");
 }
 
 function bindPrimaryInput() {
   const form = document.querySelector("#primary-input-form");
   if (!form) return;
   form.addEventListener("submit", (event) => submitPrimaryInput(event, form));
+  const productSelect = form.querySelector("select");
+  if (productSelect) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    const runsCompletePipeline = form.dataset.autoPipeline === "true";
+    productSelect.addEventListener("change", () => {
+      const selected = productSelect.options[productSelect.selectedIndex];
+      submitButton.disabled = !productSelect.value;
+      submitButton.textContent = productSelect.value
+        ? runsCompletePipeline ? "Confirm Card & run complete pipeline" : "Confirm & run live analysis"
+        : "Select a Card first";
+      showPrimaryInputFeedback(
+        form,
+        productSelect.value
+          ? `${selected.textContent} selected. Confirm to start ${runsCompletePipeline ? "the automated evidence and policy pipeline" : "the policy analysis"}.`
+          : runsCompletePipeline
+            ? "Choose the Card once. JourneyBack will automatically process the matched evidence package."
+            : "Choose the exact product, then confirm to run live LLM + BGE-M3 policy analysis.",
+        productSelect.value ? "ready" : "",
+      );
+    });
+  }
   const fileInput = form.querySelector('input[type="file"]');
   const dropZone = form.querySelector("#drop-zone");
   if (!fileInput || !dropZone) return;
@@ -434,6 +506,13 @@ function bindPrimaryInput() {
     fileInput.files = transfer.files;
     updateFileLabel(file);
   });
+}
+
+function showPrimaryInputFeedback(form, message, state = "") {
+  const feedback = form.querySelector("#primary-input-feedback");
+  if (!feedback) return;
+  feedback.className = `primary-input-feedback ${state}`.trim();
+  feedback.textContent = message;
 }
 
 function updateFileLabel(file) {
@@ -535,6 +614,9 @@ async function submitPrimaryInput(event, form) {
   const submitButton = form.querySelector('button[type="submit"]');
   const evidenceCode = form.dataset.evidenceCode;
   const before = currentRecovery?.benefit_match;
+  const postConfirmationPipeline = currentRecovery?.workspace?.primary_question?.post_confirmation_pipeline || null;
+  const originalButtonText = submitButton.textContent;
+  let productConfirmation = null;
   submitButton.disabled = true;
   elements.decisionCard.classList.add("working");
   showEvidenceStatus("Validating the new information and re-running policy analysis…", "working");
@@ -545,9 +627,35 @@ async function submitPrimaryInput(event, form) {
   ]);
   try {
     if (evidenceCode === "exact_card_product") {
-      const selectedProduct = form.querySelector("select").value;
+      const productSelect = form.querySelector("select");
+      const selectedProduct = productSelect.value;
       if (!selectedProduct) throw new Error("Select a product first.");
       submittedProductCode = selectedProduct;
+      productSelect.disabled = true;
+      submitButton.textContent = "Running live analysis…";
+      showPrimaryInputFeedback(
+        form,
+        `${productSelect.options[productSelect.selectedIndex].textContent} confirmed. Retrieving the matched policy now…`,
+        "working",
+      );
+      productConfirmation = await postJson("/api/product-confirmation", {
+        case_id: currentTrip.case_id,
+        product_code: submittedProductCode,
+      });
+      if (postConfirmationPipeline) {
+        decisionChange = {
+          title: "Card confirmed — automated evidence processing started",
+          detail: `${productConfirmation.trip.card.product_name} → ${postConfirmationPipeline.file_count} matched ${postConfirmationPipeline.file_count === 1 ? "file" : "files"}`,
+        };
+        currentRecovery = productConfirmation;
+        await executeGuidedPipeline({
+          before,
+          configuredFiles: postConfirmationPipeline.files,
+          trigger: "product_confirmation",
+          productCode: submittedProductCode,
+        });
+        return;
+      }
     } else {
       const file = form.querySelector('input[type="file"]').files[0];
       if (!file) throw new Error("Choose a document first.");
@@ -574,9 +682,53 @@ async function submitPrimaryInput(event, form) {
     renderRecovery(data);
     showEvidenceStatus(`Live analysis completed in ${(data.response_time_ms / 1000).toFixed(1)}s.`, "success");
   } catch (error) {
-    showEvidenceStatus(error.message, "error");
-    submitButton.disabled = false;
+    if (guidedPipelineRun?.status === "running") failGuidedPipeline(error);
+    if (productConfirmation) {
+      decisionChange = {
+        title: "Card confirmed; live analysis needs a retry",
+        detail: `${productConfirmation.trip.card.product_name} is saved in this demo flow.`,
+      };
+      if (currentRecovery?.processing_mode !== "live_llm_rag") renderRecovery(productConfirmation);
+      showEvidenceStatus(`Card confirmed. Live policy analysis stopped: ${error.message}`, "error");
+    } else {
+      showEvidenceStatus(error.message, "error");
+    }
+    const productSelect = form.querySelector("select");
+    if (productSelect) productSelect.disabled = false;
+    submitButton.textContent = originalButtonText;
+    submitButton.disabled = productSelect ? !productSelect.value : false;
+    showPrimaryInputFeedback(form, error.message, "error");
     elements.decisionCard.classList.remove("working");
+  } finally {
+    stopLoading();
+  }
+}
+
+async function retryLivePolicyAnalysis(button) {
+  if (!currentTrip || !submittedProductCode) return;
+  button.disabled = true;
+  button.textContent = "Running live analysis…";
+  showEvidenceStatus("Retrieving policy evidence for the confirmed Card…", "working");
+  startLoading([
+    ["Retrieving product policy", "Searching the public corpus with BGE-M3"],
+    ["Updating the recovery path", "Grounding the next step in validated evidence"],
+  ]);
+  try {
+    const data = await postJson("/api/reanalyse", {
+      case_id: currentTrip.case_id,
+      product_code: submittedProductCode,
+      evidence_upload_ids: submittedEvidenceIds,
+    });
+    decisionChange = {
+      title: "Live policy analysis completed",
+      detail: `${currentRecovery?.benefit_match?.headline || "Confirmed Card"} → ${data.benefit_match.headline}`,
+    };
+    renderRecovery(data);
+    showEvidenceStatus(`Live analysis completed in ${(data.response_time_ms / 1000).toFixed(1)}s.`, "success");
+  } catch (error) {
+    showEvidenceStatus(`The Card remains confirmed. Live analysis stopped: ${error.message}`, "error");
+    button.disabled = false;
+    button.textContent = "Retry live policy analysis";
   } finally {
     stopLoading();
   }

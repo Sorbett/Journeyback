@@ -128,7 +128,8 @@ class JourneybackLLMClient:
         system_prompt = (
             f"{instructions}\n\n"
             f"Return only valid JSON for `{schema_name}`. The JSON must conform exactly "
-            f"to this schema, including required fields and enum values:\n{schema_text}"
+            f"to this schema, including required fields and enum values. Do not add aliases, "
+            f"explanations or fields that are absent from the schema:\n{schema_text}"
         )
         thinking: dict[str, str]
         # DeepSeek maps a literal "low" effort to its "high" tier. For this
@@ -157,7 +158,14 @@ class JourneybackLLMClient:
             payload=payload,
             provider="DeepSeek Chat Completions",
         )
-        return _parse_and_validate(_extract_chat_output(response), schema)
+        # DeepSeek's JSON mode guarantees JSON syntax but does not enforce JSON
+        # Schema. Ignore provider-added fields that the application never reads,
+        # while keeping required fields, known-field types and enums strict.
+        return _parse_and_validate(
+            _extract_chat_output(response),
+            schema,
+            discard_unknown_fields=True,
+        )
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         if not texts:
@@ -264,18 +272,44 @@ def _extract_chat_output(response: dict[str, Any]) -> str:
     return content
 
 
-def _parse_and_validate(output_text: str, schema: dict[str, Any]) -> dict[str, Any]:
+def _parse_and_validate(
+    output_text: str,
+    schema: dict[str, Any],
+    *,
+    discard_unknown_fields: bool = False,
+) -> dict[str, Any]:
     try:
         parsed = _decode_json_object(output_text)
     except (json.JSONDecodeError, ValueError) as exc:
         raise LLMResponseError("Model returned malformed structured output.") from exc
     if not isinstance(parsed, dict):
         raise LLMResponseError("Model structured output must be a JSON object.")
+    if discard_unknown_fields:
+        parsed = _discard_unknown_fields(parsed, schema)
     try:
         _validate_schema(parsed, schema)
     except ValueError as exc:
         raise LLMResponseError(f"Model output did not match the requested schema: {exc}") from exc
     return parsed
+
+
+def _discard_unknown_fields(value: Any, schema: dict[str, Any]) -> Any:
+    """Recursively keep only fields declared by a closed JSON schema."""
+
+    expected = schema.get("type")
+    if expected == "object" and isinstance(value, dict):
+        properties = schema.get("properties", {})
+        items = value.items()
+        if schema.get("additionalProperties") is False:
+            items = ((name, item) for name, item in items if name in properties)
+        return {
+            name: _discard_unknown_fields(item, properties.get(name, {}))
+            for name, item in items
+        }
+    if expected == "array" and isinstance(value, list):
+        item_schema = schema.get("items", {})
+        return [_discard_unknown_fields(item, item_schema) for item in value]
+    return value
 
 
 def _decode_json_object(output_text: str) -> Any:

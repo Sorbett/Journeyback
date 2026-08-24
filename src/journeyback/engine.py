@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -77,6 +78,7 @@ EXTRACTION_SCHEMA: dict[str, Any] = {
                 "baggage_loss",
                 "card_loss",
                 "medical",
+                "hotel_issue",
                 "other",
             ],
         },
@@ -177,8 +179,9 @@ wording may be relevant. Do not approve or reject a claim, promise coverage, cal
 expected payout, or present a public document as necessarily current. If product identity,
 payment facts, timing, evidence, exclusions, or source support are insufficient or conflict,
 ask for the minimum additional information and choose need_more_info or human_review.
-Prioritize reversible, time-sensitive actions such as contacting the carrier, preserving a
-PIR/confirmation and receipts, and obtaining official review. `missing_information` may contain
+Prioritize reversible, time-sensitive actions such as contacting the carrier, preserving carrier
+confirmation and receipts, preserving a PIR for baggage incidents, and obtaining official review.
+`missing_information` may contain
 only concrete facts or documents that the customer, carrier, itinerary system or Card record can
 supply. Never ask the customer to provide policy wording, interpret coverage, confirm benefit
 limits or determine claim deadlines; resolve those from retrieved evidence or route the ambiguity
@@ -186,7 +189,8 @@ to human review. Never put a policy certificate, policy terms or current wording
 `missing_information`. Do not list a future action's completion state, such as a claim submission
 timestamp, as information currently blocking analysis; keep that action in `next_steps`. Do not
 request a fact or document already marked as verified in the operational event. Keep next_steps
-to at most four."""
+to at most four. A Property Irregularity Report (PIR) is relevant only to baggage delay or
+baggage loss; never request or cite it for a flight delay, cancellation or missed connection."""
 
 
 @dataclass(frozen=True)
@@ -250,8 +254,17 @@ class JourneybackEngine:
             schema_name="journeyback_incident",
             schema=EXTRACTION_SCHEMA,
         )
+        authoritative_incident_type = _incident_type_from_operational_event(request.message)
+        if authoritative_incident_type is not None:
+            extracted = dict(extracted)
+            extracted["incident_type"] = authoritative_incident_type
         retrieval_query = str(extracted.get("retrieval_query", "")).strip()
-        if not retrieval_query:
+        if authoritative_incident_type is not None:
+            retrieval_query = (
+                f"{extracted.get('product_hint', '')} "
+                f"{authoritative_incident_type.replace('_', ' ')} {request.message}"
+            ).strip()
+        elif not retrieval_query:
             retrieval_query = request.message
         confirmed_product_code = _resolve_product_code(
             str(extracted.get("product_hint", "")), request.message
@@ -291,6 +304,8 @@ class JourneybackEngine:
         citations: list[dict[str, Any]] = []
         rejected_citations: list[str] = []
         rejected_product_citations: list[str] = []
+        rejected_incident_citations: list[str] = []
+        incident_type = str(extracted.get("incident_type", "other"))
         confirmed_product_code = _resolve_product_code(
             str(extracted.get("product_hint", "")), request.message
         )
@@ -309,6 +324,9 @@ class JourneybackEngine:
                 and item.get("product_code") != confirmed_product_code
             ):
                 rejected_product_citations.append(chunk_id)
+                continue
+            if not _citation_matches_incident(item, incident_type):
+                rejected_incident_citations.append(chunk_id)
                 continue
             seen.add(chunk_id)
             citations.append({
@@ -331,18 +349,31 @@ class JourneybackEngine:
         raw_model_missing = _unique_strings(analysis.get("missing_information", []))
         if raw_model_missing:
             missing_information, filtered_missing = _filter_customer_missing_information(
-                raw_model_missing, supplied_context=request.message
+                raw_model_missing,
+                supplied_context=request.message,
+                incident_type=incident_type,
             )
         else:
             missing_information, filtered_missing = _filter_customer_missing_information(
                 _unique_strings(extracted.get("missing_information", [])),
                 supplied_context=request.message,
+                incident_type=incident_type,
             )
         missing_information = missing_information[:5]
-        next_steps = sorted(
+        candidate_next_steps = sorted(
             [item for item in analysis.get("next_steps", []) if isinstance(item, dict)],
             key=lambda item: int(item.get("priority", 99)),
-        )[:4]
+        )
+        next_steps: list[dict[str, Any]] = []
+        filtered_next_steps: list[str] = []
+        for item in candidate_next_steps:
+            step_text = f"{item.get('title', '')} {item.get('description', '')}".strip()
+            if _request_is_irrelevant_to_incident(step_text, incident_type):
+                filtered_next_steps.append(step_text)
+                continue
+            next_steps.append(item)
+            if len(next_steps) == 4:
+                break
         return {
             "mode": "llm_rag",
             "status": status,
@@ -353,7 +384,7 @@ class JourneybackEngine:
             "incident": {
                 "summary": str(extracted.get("summary", "")),
                 "product_hint": str(extracted.get("product_hint", "")),
-                "incident_type": str(extracted.get("incident_type", "other")),
+                "incident_type": incident_type,
                 "location": str(extracted.get("location", "")),
                 "timing": str(extracted.get("timing", "")),
                 "facts": _unique_strings(extracted.get("facts", [])),
@@ -379,7 +410,9 @@ class JourneybackEngine:
                 "validated_citations": len(citations),
                 "rejected_citations": rejected_citations,
                 "rejected_product_citations": rejected_product_citations,
+                "rejected_incident_citations": rejected_incident_citations,
                 "filtered_missing_information": filtered_missing,
+                "filtered_next_steps": filtered_next_steps,
                 "customer_message_chars": len(request.message),
             },
         }
@@ -400,6 +433,7 @@ def _filter_customer_missing_information(
     values: list[str],
     *,
     supplied_context: str = "",
+    incident_type: str = "other",
 ) -> tuple[list[str], list[str]]:
     """Keep only facts a customer or connected operational source can supply."""
 
@@ -422,13 +456,57 @@ def _filter_customer_missing_information(
                 )
             )
         )
-        if is_null_response or alternative_fact_already_supplied or any(
-            marker in normalized for marker in NON_CUSTOMER_MISSING_MARKERS
+        if (
+            is_null_response
+            or alternative_fact_already_supplied
+            or _request_is_irrelevant_to_incident(value, incident_type)
+            or any(
+                marker in normalized for marker in NON_CUSTOMER_MISSING_MARKERS
+            )
         ):
             filtered.append(value)
         else:
             accepted.append(value)
     return accepted, filtered
+
+
+def _request_is_irrelevant_to_incident(value: str, incident_type: str) -> bool:
+    normalized = value.casefold()
+    requests_pir = (
+        "property irregularity report" in normalized
+        or re.search(r"\bpir\b", normalized) is not None
+    )
+    return requests_pir and incident_type not in {"baggage_delay", "baggage_loss"}
+
+
+def _citation_matches_incident(item: dict[str, Any], incident_type: str) -> bool:
+    topics = {str(value).casefold() for value in item.get("topics", [])}
+    chunk_id = str(item.get("chunk_id", "")).casefold()
+    baggage_specific = bool(
+        topics & {"baggage_delay", "extended_baggage_delay", "baggage_loss"}
+    ) or "baggage" in chunk_id
+    flight_specific = bool(
+        topics
+        & {
+            "flight_delay",
+            "flight_cancellation",
+            "missed_departure",
+            "missed_connection",
+            "overbooking",
+        }
+    )
+    if incident_type in {"baggage_delay", "baggage_loss"}:
+        return not flight_specific
+    return not baggage_specific
+
+
+def _incident_type_from_operational_event(message: str) -> str | None:
+    match = re.search(
+        r"(?mi)^Event:\s*(flight_delay|flight_cancellation|missed_connection|"
+        r"baggage_delay|baggage_loss|card_loss|medical|hotel_issue|other)\b",
+        message,
+    )
+    return match.group(1) if match else None
 
 
 def _resolve_product_code(product_hint: str, customer_message: str) -> str | None:

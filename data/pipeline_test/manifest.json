@@ -2,14 +2,14 @@
   "schema_version": 1,
   "generation_version": "journeyback-evidence-v1.0",
   "source": "data/synthetic/journeyback_cases.jsonl",
-  "package_count": 120,
-  "file_count": 196,
+  "package_count": 143,
+  "file_count": 265,
   "evidence_counts": {
-    "carrier_confirmation": 38,
-    "flight_ticket": 68,
+    "carrier_confirmation": 61,
+    "flight_ticket": 91,
     "pir": 28,
     "policy_certificate": 9,
-    "receipts": 53
+    "receipts": 76
   },
   "packages": [
     {
@@ -1165,6 +1165,236 @@
         "flight_ticket"
       ],
       "file_count": 2
+    },
+    {
+      "case_id": "JB-SYN-0545",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0546",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0547",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0548",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0550",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0555",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0560",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0561",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0563",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0567",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0568",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0569",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0575",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0579",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0581",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0585",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0587",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0588",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0589",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0591",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0593",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0596",
+      "product_code": "SG_PLATINUM_CREDIT_UNCOVERED",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
+    },
+    {
+      "case_id": "JB-SYN-0597",
+      "product_code": "UNKNOWN_PRODUCT",
+      "package_mode": "post_product_confirmation",
+      "expected_missing_documents": [
+        "exact_card_product"
+      ],
+      "file_count": 3,
+      "product_bound_at_runtime": true
     }
   ]
 }

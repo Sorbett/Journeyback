@@ -50,7 +50,21 @@ class EvidenceStoreTests(unittest.TestCase):
         self.assertIn("Carrier alternative offered: no", message)
         self.assertIn("Flight ticket and itinerary: available and already validated", message)
         self.assertIn("Traveller relationship: cardmember", message)
+        self.assertNotIn("Property Irregularity Report", message)
         self.assertNotIn("flight_ticket", enriched["expected_missing_documents"])
+
+    def test_pir_status_is_exposed_only_for_baggage_events(self) -> None:
+        baggage_message = reanalysis_message(
+            get_case("JB-SYN-0002"),
+            uploaded_evidence=[],
+        )
+        flight_message = reanalysis_message(
+            get_case("JB-SYN-0575"),
+            uploaded_evidence=[],
+        )
+
+        self.assertIn("Property Irregularity Report", baggage_message)
+        self.assertNotIn("Property Irregularity Report", flight_message)
 
 
 if __name__ == "__main__":

@@ -581,7 +581,9 @@ def build_out_of_scope_case(*, case_id: str, split: str, product_code: str, rng:
         "alternative_refused": False,
         "origin_return_paid_with_card": rng.choice([True, False]),
         "expense_charged_to_card": rng.choice([True, False]),
-        "expense_category": "unknown",
+        "expense_category": (
+            "meals_and_refreshments" if event_type == "flight_delay" else "unknown"
+        ),
         "expense_sgd": rng.randint(0, 400),
         "claim_notice_days": rng.randint(1, 25),
         "has_flight_ticket": rng.choice([True, False]),

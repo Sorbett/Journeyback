@@ -29,7 +29,13 @@ from .recovery_actions import (
     load_recovery_artifact,
     save_reanalysis_snapshot,
 )
-from .synthetic_demo import dataset_insights, get_case, recovery_case_from_synthetic, trip_from_case
+from .synthetic_demo import (
+    dataset_insights,
+    get_case,
+    recovery_case_after_product_confirmation,
+    recovery_case_from_synthetic,
+    trip_from_case,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -112,9 +118,10 @@ class JourneybackHandler(BaseHTTPRequestHandler):
             return
         if route == "/api/demo/pipeline-test-kit":
             case_id = str(query.get("case_id", [""])[0])
+            product_code = str(query.get("product_code", [""])[0]) or None
             try:
                 get_case(case_id)
-                self._json(pipeline_test_kit(case_id))
+                self._json(pipeline_test_kit(case_id, product_code=product_code))
             except ValueError as exc:
                 self._json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
             except OSError as exc:
@@ -166,6 +173,7 @@ class JourneybackHandler(BaseHTTPRequestHandler):
             "/api/analyze",
             "/api/evaluate",
             "/api/evidence",
+            "/api/product-confirmation",
             "/api/reanalyse",
             "/api/action",
         }:
@@ -219,6 +227,33 @@ class JourneybackHandler(BaseHTTPRequestHandler):
                     action_code=str(payload.get("action_code") or ""),
                     recovery=recovery,
                     uploaded_evidence=uploaded_evidence,
+                    artifact_root=self.upload_root,
+                )
+            elif route == "/api/product-confirmation":
+                started = time.perf_counter()
+                case_id = str(payload.get("case_id") or "")
+                case = get_case(case_id)
+                product_code = str(payload.get("product_code") or "") or None
+                if product_code is None:
+                    raise ValueError("Select a product before confirming it.")
+                enriched_case = enrich_case(
+                    case,
+                    product_code=product_code,
+                    uploaded_evidence=[],
+                )
+                result = recovery_case_after_product_confirmation(enriched_case)
+                result["response_time_ms"] = round(
+                    (time.perf_counter() - started) * 1_000, 1
+                )
+                result["submitted_information"] = {
+                    "product_code": product_code,
+                    "evidence": [],
+                }
+                save_reanalysis_snapshot(
+                    case_id=case_id,
+                    product_code=product_code,
+                    evidence_upload_ids=[],
+                    recovery=result,
                     artifact_root=self.upload_root,
                 )
             elif route == "/api/reanalyse":
