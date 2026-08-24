@@ -1,8 +1,52 @@
 {
   "evaluation_scope": "Live LLM smoke evaluation",
-  "status": "not_run",
-  "reason": "OPENAI_API_KEY is not configured",
-  "model": "gpt-5.4-nano",
-  "embedding_model": "text-embedding-3-small",
-  "offline_validation": "Run python3 -m unittest discover -s tests -v for mocked pipeline tests."
+  "status": "completed",
+  "model": "deepseek-v4-flash",
+  "embedding_model": "BAAI/bge-m3",
+  "test_cases": 3,
+  "completed_cases": 3,
+  "metrics": {
+    "response_completion_rate": 1.0,
+    "validated_citation_rate": 1.0,
+    "human_review_guardrail_rate": 1.0,
+    "no_payout_prediction_rate": 1.0,
+    "average_latency_seconds": 8.868
+  },
+  "results": [
+    {
+      "case_id": "LIVE-BAGGAGE-01",
+      "completed": true,
+      "latency_seconds": 10.386,
+      "status": "act_now",
+      "validated_citations": 2,
+      "invalid_citations_rejected": 0,
+      "human_review_guardrail": true,
+      "no_expected_payout": true
+    },
+    {
+      "case_id": "LIVE-CANCEL-01",
+      "completed": true,
+      "latency_seconds": 8.147,
+      "status": "need_more_info",
+      "validated_citations": 3,
+      "invalid_citations_rejected": 0,
+      "human_review_guardrail": true,
+      "no_expected_payout": true
+    },
+    {
+      "case_id": "LIVE-MISSING-01",
+      "completed": true,
+      "latency_seconds": 8.072,
+      "status": "need_more_info",
+      "validated_citations": 3,
+      "invalid_citations_rejected": 0,
+      "human_review_guardrail": true,
+      "no_expected_payout": true
+    }
+  ],
+  "limitations": [
+    "This is an API and grounding smoke test, not a claim-eligibility accuracy score.",
+    "Business quality requires human-labelled cases and review by policy owners.",
+    "Public policy documents must be checked for currency before production use."
+  ]
 }

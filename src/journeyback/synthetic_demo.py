@@ -308,7 +308,7 @@ def recovery_case_from_synthetic(
             claim_items, guidance.get("missing_information", [])
         )
     completed = sum(item["status"] == "complete" for item in claim_items)
-    return {
+    result = {
         "case_id": case["case_id"],
         "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "processing_mode": processing_mode,
@@ -340,6 +340,191 @@ def recovery_case_from_synthetic(
         "safety_note": guidance["safety_note"],
         "trace": guidance["trace"],
     }
+    result["workspace"] = _workspace_for_result(
+        case=case,
+        trip=trip,
+        guidance=guidance,
+        claim_items=claim_items,
+        processing_mode=processing_mode,
+    )
+    return result
+
+
+def _workspace_for_result(
+    *,
+    case: dict[str, Any],
+    trip: dict[str, Any],
+    guidance: dict[str, Any],
+    claim_items: list[dict[str, str]],
+    processing_mode: str,
+) -> dict[str, Any]:
+    """Expose the recovery work as an observable, one-question-at-a-time workflow."""
+
+    required_items = [item for item in claim_items if item["status"] != "complete"]
+    product_required = next(
+        (item for item in required_items if item["code"] == "exact_card_product"),
+        None,
+    )
+    primary_item = product_required or (required_items[0] if required_items else None)
+    evidence = list(guidance.get("policy_evidence", []))
+    payment_verified = bool(case["origin_return_paid_with_card"])
+    product_resolved = product_required is None
+
+    activity = [
+        {
+            "code": "disruption_detected",
+            "label": "Disruption detected",
+            "detail": f"{trip['monitoring']['label']} · {trip['disruption']['duration']}",
+            "status": "complete",
+            "source": "Carrier signal",
+        },
+        {
+            "code": "itinerary_matched",
+            "label": "Journey matched",
+            "detail": f"{trip['route']} · {len(trip['segments'])} reservations",
+            "status": "complete",
+            "source": "Itinerary",
+        },
+        {
+            "code": "payment_verified",
+            "label": "Card payment checked",
+            "detail": "Round-trip payment verified" if payment_verified else "Payment needs confirmation",
+            "status": "complete" if payment_verified else "attention",
+            "source": "Card record",
+        },
+        {
+            "code": "product_resolved",
+            "label": "Protection identified",
+            "detail": case["product_name"] if product_resolved else "Exact Card product required",
+            "status": "complete" if product_resolved else "attention",
+            "source": "Card benefits",
+        },
+        {
+            "code": "policy_retrieved",
+            "label": "Policy evidence retrieved",
+            "detail": (
+                f"{len(evidence)} validated source{'s' if len(evidence) != 1 else ''}"
+                if evidence
+                else "Waiting for a safe product match"
+            ),
+            "status": "complete" if evidence else "blocked",
+            "source": "Public policy corpus",
+        },
+        {
+            "code": "evidence_checked",
+            "label": "Evidence checked",
+            "detail": (
+                "Claim-ready evidence set"
+                if not required_items
+                else f"{len(required_items)} item{'s' if len(required_items) != 1 else ''} still needed"
+            ),
+            "status": "complete" if not required_items else "attention",
+            "source": "Evidence wallet",
+        },
+    ]
+    completed_checks = sum(item["status"] == "complete" for item in activity)
+    question = _primary_question(primary_item, trip)
+    handoff_ready = not required_items and bool(evidence)
+    return {
+        "phase": "handoff_ready" if handoff_ready else "needs_input",
+        "phase_label": "Ready for specialist review" if handoff_ready else "One input needed",
+        "headline": (
+            "Your review pack is ready"
+            if handoff_ready
+            else question["title"] if question else "A specialist should review this case"
+        ),
+        "summary": (
+            "JourneyBack has assembled the verified facts and policy sources for formal review."
+            if handoff_ready
+            else question["prompt"] if question else guidance["summary"]
+        ),
+        "activity": activity,
+        "progress": {
+            "completed": completed_checks,
+            "total": len(activity),
+            "percent": round(100 * completed_checks / len(activity)),
+        },
+        "primary_question": question,
+        "handoff": {
+            "ready": handoff_ready,
+            "destination": "Chubb Claim Centre" if handoff_ready else "JourneyBack specialist review",
+            "actions": _workspace_actions(case, handoff_ready=handoff_ready),
+        },
+        "processing": {
+            "mode": processing_mode,
+            "label": "Live policy analysis" if processing_mode == "live_llm_rag" else "Reproducible expected path",
+            "is_live": processing_mode == "live_llm_rag",
+        },
+        "disclosure": (
+            "Live LLM and BGE-M3 policy retrieval"
+            if processing_mode == "live_llm_rag"
+            else "Synthetic coverage scenario · not a model accuracy result"
+        ),
+    }
+
+
+def _primary_question(
+    item: dict[str, str] | None, trip: dict[str, Any]
+) -> dict[str, Any] | None:
+    if item is None:
+        return None
+    if item["code"] == "exact_card_product":
+        return {
+            "type": "product",
+            "evidence_code": item["code"],
+            "eyebrow": "One detail is blocking policy analysis",
+            "title": "Which protection applies to this trip?",
+            "prompt": "Confirm the exact Card or insurance product. JourneyBack will re-run the live policy analysis before changing the result.",
+            "options": trip["simulation"].get("product_options", []),
+        }
+    if item["code"] == "manual_review":
+        return {
+            "type": "review",
+            "evidence_code": item["code"],
+            "eyebrow": "A policy boundary needs a person",
+            "title": "Send this case for specialist review",
+            "prompt": "The available public wording is not sufficient for a safe automated next step.",
+        }
+    question = {
+        "type": "upload",
+        "evidence_code": item["code"],
+        "eyebrow": "One document is blocking the handoff",
+        "title": f"Add {item['label'].lower()}",
+        "prompt": "Upload the document and add a short note. JourneyBack will validate the file, extract readable text and re-run policy analysis.",
+        "accepted_formats": ["PDF", "JPG", "PNG", "TXT"],
+    }
+    if trip["case_id"] == "JB-SYN-0331":
+        question["guided_pipeline"] = {
+            "label": "Run complete pipeline",
+            "file_count": 3,
+            "description": "Use the curated evidence set and watch each live processing step.",
+        }
+    return question
+
+
+def _workspace_actions(case: dict[str, Any], *, handoff_ready: bool) -> list[dict[str, Any]]:
+    actions: list[dict[str, Any]] = []
+    if case["event_type"] not in {"card_loss", "hotel_issue"}:
+        actions.append({
+            "code": "prepare_carrier_request",
+            "label": "Prepare carrier request",
+            "description": "Create a written request for disruption confirmation.",
+            "available": True,
+        })
+    actions.append({
+        "code": "build_evidence_pack",
+        "label": "Build review pack",
+        "description": "Generate a downloadable case and evidence summary.",
+        "available": True,
+    })
+    actions.append({
+        "code": "open_claim_portal",
+        "label": "Continue to claim centre",
+        "description": "Open the formal Chubb review channel.",
+        "available": handoff_ready,
+        "url": "https://www.amex.chubbclaims.com.sg/",
+    })
+    return actions
 
 
 def dataset_insights() -> dict[str, Any]:

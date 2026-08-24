@@ -30,7 +30,73 @@ def fake_engine(*, invalid_citation: bool = False) -> tuple[JourneybackEngine, F
     return engine, client
 
 
+class PolicyQuestionFakeLLMClient(FakeLLMClient):
+    def structured(self, **kwargs):  # type: ignore[no-untyped-def]
+        result = super().structured(**kwargs)
+        if kwargs["schema_name"] == "journeyback_guidance":
+            result["missing_information"] = [
+                "Official policy certificate current wording",
+                "Date and time of claim submission",
+                "None - all other required information is available",
+                "Whether the delay meets the benefit duration threshold",
+                "Property Irregularity Report number",
+            ]
+        return result
+
+
+class AlreadyVerifiedAlternativeFakeLLMClient(FakeLLMClient):
+    def structured(self, **kwargs):  # type: ignore[no-untyped-def]
+        result = super().structured(**kwargs)
+        if kwargs["schema_name"] == "journeyback_guidance":
+            result["missing_information"] = [
+                "Whether the alternative flight offered was within a reasonable timeframe."
+            ]
+        return result
+
+
 class JourneybackEngineTests(unittest.TestCase):
+    def test_verified_alternative_fact_is_not_requested_again(self) -> None:
+        engine = JourneybackEngine(
+            settings=LLMSettings(
+                model="test-reasoning-model",
+                embedding_model="test-embedding-model",
+            ),
+            client=AlreadyVerifiedAlternativeFakeLLMClient(),
+            cache_path=False,
+        )
+        result = engine.evaluate({
+            "message": f"{MESSAGE}\nALTERNATIVE_WITHIN_FOUR_HOURS: NO"
+        })
+
+        self.assertEqual([], result["missing_information"])
+        self.assertEqual(
+            ["Whether the alternative flight offered was within a reasonable timeframe."],
+            result["trace"]["filtered_missing_information"],
+        )
+
+    def test_policy_questions_are_not_returned_as_customer_upload_requests(self) -> None:
+        client = PolicyQuestionFakeLLMClient()
+        engine = JourneybackEngine(
+            settings=LLMSettings(
+                model="test-reasoning-model",
+                embedding_model="test-embedding-model",
+            ),
+            client=client,
+            cache_path=False,
+        )
+        result = engine.evaluate({"message": MESSAGE})
+
+        self.assertEqual(["Property Irregularity Report number"], result["missing_information"])
+        self.assertEqual(
+            [
+                "Official policy certificate current wording",
+                "Date and time of claim submission",
+                "None - all other required information is available",
+                "Whether the delay meets the benefit duration threshold",
+            ],
+            result["trace"]["filtered_missing_information"],
+        )
+
     def test_natural_language_runs_two_llm_stages_and_semantic_rag(self) -> None:
         engine, client = fake_engine()
         result = engine.evaluate({"message": MESSAGE})
@@ -40,6 +106,12 @@ class JourneybackEngineTests(unittest.TestCase):
         self.assertEqual("llm_rag", result["mode"])
         self.assertEqual("baggage_delay", result["incident"]["incident_type"])
         self.assertTrue(result["policy_evidence"])
+        self.assertTrue(
+            all(
+                item["product_code"] == "SG_PLATINUM_CHARGE"
+                for item in result["policy_evidence"]
+            )
+        )
 
     def test_hallucinated_citation_is_rejected_and_routes_to_review(self) -> None:
         engine, _ = fake_engine(invalid_citation=True)
@@ -69,6 +141,23 @@ class JourneybackEngineTests(unittest.TestCase):
         results = retriever.retrieve("The Platinum Card baggage delay PIR", top_k=8)
         result_ids = {item["chunk_id"] for item in results}
         self.assertIn("POL-SG-PLATINUM-BAGGAGE", result_ids)
+
+    def test_retrieval_can_be_scoped_to_the_confirmed_product(self) -> None:
+        client = FakeLLMClient()
+        retriever = SemanticRetriever(
+            client=client,
+            embedding_model="test-embedding-model",
+            cache_path=False,
+        )
+        results = retriever.retrieve(
+            "missed connection travel inconvenience",
+            top_k=8,
+            product_code="SG_TRUE_CASHBACK",
+        )
+        self.assertTrue(results)
+        self.assertEqual(
+            {"SG_TRUE_CASHBACK"}, {item["product_code"] for item in results}
+        )
 
     def test_missing_api_key_fails_closed(self) -> None:
         settings = LLMSettings(model="model", embedding_model="embedding")

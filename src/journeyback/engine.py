@@ -24,6 +24,41 @@ SAFETY_NOTE = (
     "policy terms, complete evidence and formal review by American Express or its insurance partner."
 )
 
+NON_CUSTOMER_MISSING_MARKERS = (
+    "policy",
+    "terms and conditions",
+    "benefit",
+    "coverage",
+    "covered",
+    "eligible",
+    "eligibility",
+    "enrolled",
+    "limit",
+    "threshold",
+    "policy wording",
+    "policy section",
+    "policy certificate",
+    "policy terms",
+    "current wording",
+    "coverage trigger",
+    "benefit limit",
+    "benefit eligibility",
+    "eligible expense",
+    "claim submission",
+    "claim submission deadline",
+    "claim deadline",
+    "claim submission timestamp",
+    "date and time of claim submission",
+)
+
+PRODUCT_IDENTIFIERS = {
+    "SG_PLATINUM_CHARGE": ("the platinum card", "platinum charge"),
+    "SG_PLATINUM_RESERVE": ("platinum reserve",),
+    "SG_KRISFLYER_ASCEND": ("krisflyer ascend",),
+    "SG_TRUE_CASHBACK": ("true cashback",),
+    "SG_MY_TRAVEL_INSURANCE": ("my travel insurance",),
+}
+
 EXTRACTION_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
@@ -143,7 +178,15 @@ expected payout, or present a public document as necessarily current. If product
 payment facts, timing, evidence, exclusions, or source support are insufficient or conflict,
 ask for the minimum additional information and choose need_more_info or human_review.
 Prioritize reversible, time-sensitive actions such as contacting the carrier, preserving a
-PIR/confirmation and receipts, and obtaining official review. Keep next_steps to at most four."""
+PIR/confirmation and receipts, and obtaining official review. `missing_information` may contain
+only concrete facts or documents that the customer, carrier, itinerary system or Card record can
+supply. Never ask the customer to provide policy wording, interpret coverage, confirm benefit
+limits or determine claim deadlines; resolve those from retrieved evidence or route the ambiguity
+to human review. Never put a policy certificate, policy terms or current wording in
+`missing_information`. Do not list a future action's completion state, such as a claim submission
+timestamp, as information currently blocking analysis; keep that action in `next_steps`. Do not
+request a fact or document already marked as verified in the operational event. Keep next_steps
+to at most four."""
 
 
 @dataclass(frozen=True)
@@ -188,7 +231,7 @@ class JourneybackEngine:
     def runtime_summary(self) -> dict[str, Any]:
         summary = self.settings.public_summary()
         summary["configured"] = self.ready
-        summary["pipeline"] = "llm_extraction -> embedding_rag -> llm_grounded_guidance"
+        summary["pipeline"] = "llm_extraction -> hybrid_policy_retrieval -> llm_grounded_guidance"
         summary["embedding_cache"] = self.retriever.cache_summary()
         return summary
 
@@ -210,9 +253,13 @@ class JourneybackEngine:
         retrieval_query = str(extracted.get("retrieval_query", "")).strip()
         if not retrieval_query:
             retrieval_query = request.message
+        confirmed_product_code = _resolve_product_code(
+            str(extracted.get("product_hint", "")), request.message
+        )
         evidence = self.retriever.retrieve(
             f"{retrieval_query}\nOriginal customer description: {request.message}",
             top_k=self.settings.retrieval_top_k,
+            product_code=confirmed_product_code,
         )
 
         analysis_input = json.dumps(
@@ -243,6 +290,10 @@ class JourneybackEngine:
         evidence_by_id = {item["chunk_id"]: item for item in evidence}
         citations: list[dict[str, Any]] = []
         rejected_citations: list[str] = []
+        rejected_product_citations: list[str] = []
+        confirmed_product_code = _resolve_product_code(
+            str(extracted.get("product_hint", "")), request.message
+        )
         seen: set[str] = set()
         for model_citation in analysis.get("citations", []):
             chunk_id = str(model_citation.get("chunk_id", ""))
@@ -252,6 +303,12 @@ class JourneybackEngine:
             if item is None:
                 if chunk_id:
                     rejected_citations.append(chunk_id)
+                continue
+            if (
+                confirmed_product_code is not None
+                and item.get("product_code") != confirmed_product_code
+            ):
+                rejected_product_citations.append(chunk_id)
                 continue
             seen.add(chunk_id)
             citations.append({
@@ -271,10 +328,17 @@ class JourneybackEngine:
             headline = "No benefit wording could be cited safely"
             summary = "JourneyBack has stopped benefit-specific guidance. Confirm the exact Card product and request a manual review."
 
-        model_missing = _unique_strings(analysis.get("missing_information", []))
-        missing_information = (
-            model_missing or _unique_strings(extracted.get("missing_information", []))
-        )[:5]
+        raw_model_missing = _unique_strings(analysis.get("missing_information", []))
+        if raw_model_missing:
+            missing_information, filtered_missing = _filter_customer_missing_information(
+                raw_model_missing, supplied_context=request.message
+            )
+        else:
+            missing_information, filtered_missing = _filter_customer_missing_information(
+                _unique_strings(extracted.get("missing_information", [])),
+                supplied_context=request.message,
+            )
+        missing_information = missing_information[:5]
         next_steps = sorted(
             [item for item in analysis.get("next_steps", []) if isinstance(item, dict)],
             key=lambda item: int(item.get("priority", 99)),
@@ -306,13 +370,16 @@ class JourneybackEngine:
             "expected_payout_sgd": None,
             "safety_note": SAFETY_NOTE,
             "trace": {
-                "pipeline": ["llm_fact_extraction", "embedding_retrieval", "llm_grounded_guidance", "citation_validation"],
+                "pipeline": ["llm_fact_extraction", "bm25_embedding_rrf", "llm_grounded_guidance", "citation_validation"],
                 "model": self.settings.model,
                 "embedding_model": self.settings.embedding_model,
+                "confirmed_product_code": confirmed_product_code,
                 "retrieval_query": retrieval_query,
                 "retrieved_chunks": len(evidence),
                 "validated_citations": len(citations),
                 "rejected_citations": rejected_citations,
+                "rejected_product_citations": rejected_product_citations,
+                "filtered_missing_information": filtered_missing,
                 "customer_message_chars": len(request.message),
             },
         }
@@ -327,6 +394,51 @@ def _unique_strings(values: Any) -> list[str]:
         if text and text not in result:
             result.append(text)
     return result
+
+
+def _filter_customer_missing_information(
+    values: list[str],
+    *,
+    supplied_context: str = "",
+) -> tuple[list[str], list[str]]:
+    """Keep only facts a customer or connected operational source can supply."""
+
+    accepted: list[str] = []
+    filtered: list[str] = []
+    for value in values:
+        normalized = value.casefold()
+        is_null_response = normalized in {"none", "n/a", "nothing", "not applicable"} or normalized.startswith(
+            ("none ", "none-", "none -", "no additional ", "nothing else")
+        )
+        alternative_fact_already_supplied = (
+            "alternative" in normalized
+            and any(
+                marker in supplied_context.casefold()
+                for marker in (
+                    "alternative_within_four_hours: no",
+                    "alternative_offered: false",
+                    "alternative offered: false",
+                    "no alternative was offered",
+                )
+            )
+        )
+        if is_null_response or alternative_fact_already_supplied or any(
+            marker in normalized for marker in NON_CUSTOMER_MISSING_MARKERS
+        ):
+            filtered.append(value)
+        else:
+            accepted.append(value)
+    return accepted, filtered
+
+
+def _resolve_product_code(product_hint: str, customer_message: str) -> str | None:
+    combined = f"{product_hint}\n{customer_message}".casefold()
+    for product_code, aliases in PRODUCT_IDENTIFIERS.items():
+        if product_code.casefold() in combined:
+            return product_code
+        if any(alias in combined for alias in aliases):
+            return product_code
+    return None
 
 
 def _clamp_float(value: Any) -> float:

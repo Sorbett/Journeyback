@@ -1,0 +1,104 @@
+{
+  "evaluation_scope": "single curated end-to-end pipeline golden path",
+  "case_id": "JB-SYN-0331",
+  "fixtures": [
+    "data/pipeline_test/JB-SYN-0331/flight_ticket_and_itinerary.txt",
+    "data/pipeline_test/JB-SYN-0331/carrier_confirmation.txt",
+    "data/pipeline_test/JB-SYN-0331/itemised_expense_receipts.txt"
+  ],
+  "base_url": "http://127.0.0.1:8767",
+  "status": "passed",
+  "generated_at": "2026-08-24T10:31:07+00:00",
+  "pipeline": [
+    "llm_fact_extraction",
+    "bm25_embedding_rrf",
+    "llm_grounded_guidance",
+    "citation_validation"
+  ],
+  "stages": [
+    {
+      "id": "service_ready",
+      "label": "Service and BGE-M3 configuration",
+      "status": "passed",
+      "duration_ms": 5.8,
+      "details": {
+        "text_model": "deepseek-v4-flash",
+        "embedding_model": "BAAI/bge-m3",
+        "knowledge_chunks": 107
+      }
+    },
+    {
+      "id": "case_loaded",
+      "label": "Case loaded with one known evidence gap",
+      "status": "passed",
+      "duration_ms": 10.7,
+      "details": {
+        "processing_mode": "synthetic_expected",
+        "blocking_input": "Add flight ticket and itinerary",
+        "flight_ticket_status": "required"
+      }
+    },
+    {
+      "id": "evidence_uploaded",
+      "label": "Three TXT evidence files persisted and read",
+      "status": "passed",
+      "duration_ms": 4.0,
+      "details": {
+        "files": [
+          "flight_ticket_and_itinerary.txt",
+          "carrier_confirmation.txt",
+          "itemised_expense_receipts.txt"
+        ],
+        "upload_ids": [
+          "UP-c1ecf003554fc8f9",
+          "UP-a4e36a2d8444185c",
+          "UP-73899dea01107b69"
+        ],
+        "total_bytes": 1950,
+        "text_extracted": "3/3"
+      }
+    },
+    {
+      "id": "live_reanalysis",
+      "label": "LLM + BGE-M3 grounded reanalysis",
+      "status": "passed",
+      "duration_ms": 12713.2,
+      "details": {
+        "model": "deepseek-v4-flash",
+        "embedding_model": "BAAI/bge-m3",
+        "retrieved_chunks": 4,
+        "validated_citations": 4,
+        "policy_sources": 4,
+        "policy_product": "SG_TRUE_CASHBACK",
+        "flight_ticket_status": "complete",
+        "additional_model_questions": 1,
+        "policy_questions_filtered": 1,
+        "response_time_ms": 12707.2
+      }
+    },
+    {
+      "id": "review_pack",
+      "label": "Server-backed review pack generated",
+      "status": "passed",
+      "duration_ms": 9.2,
+      "details": {
+        "artifact_id": "ART-f5e6ebb267e75d4a",
+        "submitted_evidence": 3,
+        "policy_sources": 4,
+        "remaining_information": 1,
+        "live_result_reused": true
+      }
+    }
+  ],
+  "limitations": [
+    "This verifies pipeline plumbing and safety invariants for one synthetic case; it is not a model benchmark.",
+    "Live model wording may vary, so the test checks grounded citations and observable state changes rather than exact prose.",
+    "A passing result does not approve a claim or establish real-world benefit eligibility."
+  ],
+  "before_after": {
+    "blocking_input_before": "Add flight ticket and itinerary",
+    "flight_ticket_after": "complete",
+    "live_guidance_status": "act_now"
+  },
+  "duration_ms": 12743.7
+}

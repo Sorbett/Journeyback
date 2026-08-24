@@ -45,6 +45,11 @@ class EvidenceStoreTests(unittest.TestCase):
         message = reanalysis_message(enriched, uploaded_evidence=evidence)
         self.assertIn("Carrier confirms the connection was missed", message)
         self.assertIn("Booking reference JB-DEMO-33", message)
+        self.assertIn("Carrier written confirmation: available and already validated", message)
+        self.assertIn("Itemised expense receipts: available and already validated", message)
+        self.assertIn("Carrier alternative offered: no", message)
+        self.assertIn("Flight ticket and itinerary: available and already validated", message)
+        self.assertIn("Traveller relationship: cardmember", message)
         self.assertNotIn("flight_ticket", enriched["expected_missing_documents"])
 
 

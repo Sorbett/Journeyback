@@ -32,10 +32,23 @@ class SyntheticDemoTests(unittest.TestCase):
         self.assertEqual(case["user_query"], trip["simulation"]["user_query"])
 
     def test_unknown_product_case_exposes_supported_confirmation_options(self) -> None:
-        trip = trip_from_case(get_case("JB-SYN-0541"))
+        case = get_case("JB-SYN-0541")
+        trip = trip_from_case(case)
         options = trip["simulation"]["product_options"]
         self.assertGreaterEqual(len(options), 5)
         self.assertIn("SG_PLATINUM_CHARGE", {item["code"] for item in options})
+        recovery = recovery_case_from_synthetic(case)
+        question = recovery["workspace"]["primary_question"]
+        self.assertEqual("product", question["type"])
+        self.assertEqual("exact_card_product", question["evidence_code"])
+
+    def test_golden_case_exposes_a_one_click_guided_pipeline(self) -> None:
+        recovery = recovery_case_from_synthetic(get_case("JB-SYN-0331"))
+        question = recovery["workspace"]["primary_question"]
+
+        self.assertEqual("upload", question["type"])
+        self.assertEqual("flight_ticket", question["evidence_code"])
+        self.assertEqual(3, question["guided_pipeline"]["file_count"])
 
     def test_expected_recovery_result_never_needs_an_api_call(self) -> None:
         case = get_case("JB-SYN-0001")
@@ -45,6 +58,8 @@ class SyntheticDemoTests(unittest.TestCase):
         self.assertTrue(result["recovery_actions"])
         self.assertTrue(result["benefit_match"]["policy_evidence"])
         self.assertTrue(result["human_review_required"])
+        self.assertEqual(6, len(result["workspace"]["activity"]))
+        self.assertIn(result["workspace"]["phase"], {"needs_input", "handoff_ready"})
 
     def test_product_need_metrics_are_derived_from_600_rows(self) -> None:
         insights = dataset_insights()

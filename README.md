@@ -1,14 +1,16 @@
 # JourneyBack
 
-JourneyBack is a proactive travel-disruption recovery MVP for the Amex AI Hackathon 2026. It monitors a customer's itinerary, Card payment and carrier status; when a disruption is detected, it automatically matches the event to potentially relevant public benefit wording, prioritises recovery actions and prepares an evidence pack for formal review.
+JourneyBack is a proactive travel-disruption recovery MVP for the Amex AI Hackathon 2026. It monitors a customer's itinerary, Card payment and carrier status; when a disruption is detected, it automatically matches the event to potentially relevant public benefit wording, asks for the single fact currently blocking progress and prepares an evidence pack for formal review.
 
-The product is deliberately presented as a trip-management workflow rather than a chatbot.
+The product is deliberately presented as a recovery workspace rather than a chatbot or a passive benefits dashboard. The UI exposes what the agent checked, which source supports the guidance, what changed after new evidence and which server-backed artifact was created.
 
 ## Random-traveller demonstration
 
 The MVP randomly selects one traveller from the deterministic 600-case synthetic benchmark. Each selection changes the journey, Card or insurance product, disruption, language, policy outcome and available evidence. Use `Try another traveller` to sample a new case and `Simulate disruption` to materialise its expected result.
 
-The showcase path is deliberately instant and offline: it renders the benchmark's expected routing, evidence prompts and recovery actions without making a model call. This keeps product demonstrations fluid and makes every displayed result reproducible. It is clearly labelled as a synthetic expected result, not a live AI decision.
+The initial disruption path is deliberately instant and offline: it materialises the benchmark's expected recovery route without making a model call. This keeps product demonstrations fluid and makes every displayed result reproducible. It is clearly labelled as a synthetic coverage scenario, not a model-accuracy result. Selecting a Card product or uploading the requested evidence then runs the real LLM and retrieval pipeline before the workspace changes its guidance.
+
+Recovery actions are not cosmetic checkboxes. The server can create and persist a carrier-confirmation request or a structured human-review pack under the ignored local upload directory, and the browser can download the result.
 
 The real pipeline remains available through `POST /api/analyze` and `POST /api/evaluate`. In production, its operational event would come from a carrier, travel platform or monitoring feed.
 
@@ -55,7 +57,7 @@ Itinerary + Card payment + carrier status
                     ↓
         Structured LLM fact extraction
                     ↓
-    Embedding search over 107 public chunks
+ BM25 + BGE-M3 retrieval over 107 public chunks
                     ↓
        Grounded recovery-plan generation
                     ↓
@@ -64,7 +66,7 @@ Itinerary + Card payment + carrier status
           Formal human review remains required
 ```
 
-There is no hand-authored event threshold table or keyword score in the live request path. Deterministic code is limited to event assembly, input validation, vector similarity, citation allow-listing, evidence-pack state and safety postconditions.
+There is no hand-authored event threshold table or product-specific keyword score in the live request path. Generic BM25 and BGE-M3 ranks are combined with reciprocal-rank fusion; deterministic code is otherwise limited to event assembly, input validation, citation allow-listing, evidence-pack state and safety postconditions.
 
 The first **live** request embeds any missing or changed knowledge chunks and writes a model-specific cache under `.journeyback_cache/`. Server startup itself does not call the embedding API. Later live requests normally embed only the new event query unless the corpus or embedding model changes. `GET /api/health` exposes safe cache diagnostics (`cache_present`, cache size and in-memory state) without exposing credentials.
 
@@ -97,9 +99,13 @@ In DeepSeek mode, JourneyBack maps `none` and `low` to non-thinking mode for pre
 - `POST /api/detect` materialises the selected case's expected result immediately; pass `{"case_id":"JB-SYN-0001","live":true}` to explicitly run the real LLM/RAG pipeline.
 - `POST /api/evidence` validates and stores a selected PDF, JPG, PNG or TXT file under the ignored local `.journeyback_uploads/` directory.
 - `POST /api/reanalyse` validates a submitted Card product and uploaded evidence, then runs the real LLM + embedding-policy retrieval pipeline before updating the recovery case.
+- `POST /api/action` creates a persisted carrier-request draft or formal-review pack instead of toggling local UI state.
+- `GET /api/artifact` downloads a server-created recovery artifact after validating its case and artifact identifiers.
 - `GET /api/demo/insights` aggregates the product-need metrics shown on the page.
 - `GET /api/health` reports service readiness, model names, embedding-cache state and knowledge-base status without exposing an API key.
-- `GET /evaluation` serves the generated visual evaluation report.
+- `GET /evaluation` serves the product-outcome benchmark overview.
+- `GET /evaluation/retrieval` serves the supporting retrieval benchmark report.
+- `GET /evaluation/scenarios` serves the synthetic scenario-coverage report.
 
 The recovery case contains the detected event, validated benefit evidence, ordered actions and evidence-pack completion state. It never returns an expected payout and always requires formal human review.
 
@@ -115,6 +121,14 @@ Run the offline suite. Model calls use a deterministic test double, so tests do 
 python3 -m unittest discover -s tests -v
 ```
 
+Run the single-case live pipeline check after configuring the text and embedding API keys:
+
+```bash
+python3 scripts/test_pipeline.py
+```
+
+This uses three curated TXT files for `JB-SYN-0331`—ticket/itinerary, carrier confirmation and itemised receipts—and verifies the actual HTTP path from evidence upload through LLM extraction, BGE-M3 hybrid retrieval, grounded citations and a downloadable review pack. It writes a five-stage PASS/FAIL report to `outputs/pipeline_validation/latest.html`; it is intentionally separate from the 600-case scenario benchmark.
+
 Run all 600 generated journeys and rebuild the standalone visual report:
 
 ```bash
@@ -128,6 +142,28 @@ This writes:
 - `outputs/synthetic_evaluation/report.html` — responsive charts explaining the product need.
 
 The deterministic report validates scenario coverage and expected routing; it does not claim live-model accuracy or real-world claim incidence.
+
+Build the product-outcome-first benchmark overview after refreshing the component reports:
+
+```bash
+python3 scripts/evaluate_product.py
+```
+
+This makes customer and specialist outcomes the primary scorecard—first-pass evidence readiness, time to a review-ready pack, follow-up burden, reviewer acceptance and safe handoff. It deliberately leaves business uplift unscored until a static-form baseline and blinded human review are available. Retrieval metrics appear only as supporting evidence.
+
+Run the separate author-reviewed retrieval holdout with the offline BM25 baseline:
+
+```bash
+PYTHONPATH=src python3 scripts/evaluate_retrieval.py
+```
+
+After configuring SiliconFlow, compare BM25, BGE-M3 and their reciprocal-rank-fusion hybrid:
+
+```bash
+PYTHONPATH=src python3 scripts/evaluate_retrieval.py --semantic
+```
+
+This writes `outputs/retrieval_evaluation/metrics.json` and `report.html`. The 22-query English/Chinese holdout is maintained separately from the 600-case generator. Its labels are author-reviewed rather than independently policy-adjudicated, so it measures component retrieval only—not claim eligibility or customer value.
 
 After configuring a real key, run the live smoke evaluation:
 

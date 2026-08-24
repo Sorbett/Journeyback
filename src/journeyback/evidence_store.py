@@ -99,10 +99,28 @@ def save_evidence(
     (case_root / f"{upload_id}.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    return {
+    public_metadata = {
         key: value
         for key, value in metadata.items()
         if key not in {"stored_name", "content_excerpt"}
+    }
+    public_metadata["inspection"] = evidence_inspection(metadata)
+    return public_metadata
+
+
+def evidence_inspection(metadata: dict[str, Any]) -> dict[str, Any]:
+    """Return a transparent UI summary of what the zero-dependency server verified."""
+
+    excerpt = str(metadata.get("content_excerpt") or "")
+    return {
+        "integrity_verified": bool(metadata.get("sha256")),
+        "text_extracted": bool(excerpt),
+        "excerpt": excerpt[:600],
+        "scope": (
+            "Readable text and the user note were available to policy analysis."
+            if excerpt
+            else "Only file metadata and the user note were available; binary contents were not interpreted."
+        ),
     }
 
 
@@ -179,19 +197,38 @@ def reanalysis_message(
         document_lines.append(line)
     documents = "\n".join(document_lines) if document_lines else "- No new file evidence"
     payment = "verified" if case["origin_return_paid_with_card"] else "not verified"
+    connected_evidence = "\n".join([
+        f"- Flight ticket and itinerary: {_availability(case.get('has_flight_ticket'))}",
+        f"- Carrier written confirmation: {_availability(case.get('has_carrier_confirmation'))}",
+        f"- Property Irregularity Report: {_availability(case.get('has_pir'))}",
+        f"- Itemised expense receipts: {_availability(case.get('has_receipts'))}",
+        f"- Policy certificate: {_availability(case.get('has_policy_certificate'))}",
+    ])
     return (
         "Reanalyse this travel disruption using the newly submitted, server-validated facts below. "
         "These facts are authoritative and supersede any earlier ambiguity in the synthetic customer wording.\n\n"
         f"Verified product: {case['product_name']} ({case['product_code']})\n"
+        f"Traveller relationship: {case['traveler_type']}\n"
+        f"Travelling with the Card Member: {'yes' if case['travelling_with_cardmember'] else 'no'}\n"
+        f"Travelling party size: {case['family_size']}\n"
         f"Event: {case['event_type']} lasting {case['incident_duration_minutes']} minutes\n"
         f"Route: {case['origin_airport']} to {case['destination_airport']}\n"
+        f"Trip duration: {case['trip_duration_days']} days\n"
         f"Round-trip Card payment: {payment}\n"
         f"Expense charged to Card: {'yes' if case['expense_charged_to_card'] else 'no'}\n"
+        f"Expense category and amount: {case['expense_category']} · SGD {case['expense_sgd']}\n"
+        f"Carrier alternative offered: {'yes' if case['alternative_offered'] else 'no'}\n"
+        f"Customer refused the offered alternative: {'yes' if case['alternative_refused'] else 'no'}\n"
         f"Claim notice timing: {case['claim_notice_days']} days\n"
+        f"Current connected evidence status:\n{connected_evidence}\n"
         f"Newly uploaded evidence:\n{documents}\n\n"
         "Use public policy evidence to provide the safest current next steps. Do not approve a claim "
         "or promise payment. Identify any information that remains missing."
     )
+
+
+def _availability(value: Any) -> str:
+    return "available and already validated" if bool(value) else "not available"
 
 
 def _safe_token(value: str, *, fallback: str) -> str:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import mimetypes
 import time
@@ -15,18 +16,69 @@ from urllib.parse import parse_qs, urlparse
 from .engine import JourneybackEngine
 from .evidence_store import (
     DEFAULT_UPLOAD_ROOT,
+    evidence_inspection,
     enrich_case,
     load_evidence,
     reanalysis_message,
     save_evidence,
 )
 from .llm_client import LLMAPIError, LLMConfigurationError, LLMResponseError
+from .recovery_actions import (
+    create_recovery_artifact,
+    load_reanalysis_snapshot,
+    load_recovery_artifact,
+    save_reanalysis_snapshot,
+)
 from .synthetic_demo import dataset_insights, get_case, recovery_case_from_synthetic, trip_from_case
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 WEB_ROOT = PROJECT_ROOT / "web"
-EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "synthetic_evaluation" / "report.html"
+PRODUCT_EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "product_evaluation" / "report.html"
+RETRIEVAL_EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "retrieval_evaluation" / "report.html"
+SYNTHETIC_EVALUATION_REPORT = PROJECT_ROOT / "outputs" / "synthetic_evaluation" / "report.html"
+PIPELINE_TEST_CASE_ID = "JB-SYN-0331"
+PIPELINE_TEST_PRODUCT_CODE = "SG_TRUE_CASHBACK"
+PIPELINE_TEST_ROOT = PROJECT_ROOT / "data" / "pipeline_test" / PIPELINE_TEST_CASE_ID
+PIPELINE_TEST_FILES = (
+    (
+        "flight_ticket",
+        "flight_ticket_and_itinerary.txt",
+        "Verify the passenger, route, dates and ticket reference.",
+    ),
+    (
+        "carrier_confirmation",
+        "carrier_confirmation.txt",
+        "Verify the disruption duration and the carrier's written confirmation.",
+    ),
+    (
+        "receipts",
+        "itemised_expense_receipts.txt",
+        "Verify the itemised disruption expenses and payment details.",
+    ),
+)
+
+
+def pipeline_test_kit(case_id: str) -> dict[str, Any]:
+    """Return the fixed, safe-to-expose evidence kit for the guided demo."""
+
+    if case_id != PIPELINE_TEST_CASE_ID:
+        raise ValueError(f"No guided pipeline test kit is available for {case_id or 'this case'}")
+    files = []
+    for evidence_code, file_name, evidence_note in PIPELINE_TEST_FILES:
+        path = PIPELINE_TEST_ROOT / file_name
+        files.append({
+            "evidence_code": evidence_code,
+            "file_name": file_name,
+            "mime_type": "text/plain",
+            "content_base64": base64.b64encode(path.read_bytes()).decode("ascii"),
+            "evidence_note": evidence_note,
+        })
+    return {
+        "case_id": PIPELINE_TEST_CASE_ID,
+        "product_code": PIPELINE_TEST_PRODUCT_CODE,
+        "files": files,
+    }
 
 
 class JourneybackHandler(BaseHTTPRequestHandler):
@@ -67,6 +119,15 @@ class JourneybackHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _download(self, *, body: bytes, filename: str, content_type: str) -> None:
+        self.send_response(HTTPStatus.OK)
+        self.send_header("Content-Type", f"{content_type}; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Disposition", f'attachment; filename="{Path(filename).name}"')
+        self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
         route = parsed.path
@@ -93,8 +154,45 @@ class JourneybackHandler(BaseHTTPRequestHandler):
         if route == "/api/demo/insights":
             self._json(dataset_insights())
             return
+        if route == "/api/demo/pipeline-test-kit":
+            case_id = str(query.get("case_id", [""])[0])
+            try:
+                get_case(case_id)
+                self._json(pipeline_test_kit(case_id))
+            except ValueError as exc:
+                self._json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+            except OSError as exc:
+                self._json(
+                    {"error": f"Pipeline test data is unavailable: {exc}"},
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
+            return
+        if route == "/api/artifact":
+            case_id = str(query.get("case_id", [""])[0])
+            artifact_id = str(query.get("artifact_id", [""])[0])
+            try:
+                metadata, body = load_recovery_artifact(
+                    case_id=case_id,
+                    artifact_id=artifact_id,
+                    artifact_root=self.upload_root,
+                )
+            except ValueError as exc:
+                self._json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+                return
+            self._download(
+                body=body,
+                filename=str(metadata["file_name"]),
+                content_type=str(metadata["media_type"]),
+            )
+            return
         if route == "/evaluation":
-            self._serve_file(EVALUATION_REPORT)
+            self._serve_file(PRODUCT_EVALUATION_REPORT)
+            return
+        if route == "/evaluation/retrieval":
+            self._serve_file(RETRIEVAL_EVALUATION_REPORT)
+            return
+        if route == "/evaluation/scenarios":
+            self._serve_file(SYNTHETIC_EVALUATION_REPORT)
             return
         if route == "/favicon.ico":
             self.send_response(HTTPStatus.NO_CONTENT)
@@ -113,6 +211,7 @@ class JourneybackHandler(BaseHTTPRequestHandler):
             "/api/evaluate",
             "/api/evidence",
             "/api/reanalyse",
+            "/api/action",
         }:
             self.send_error(HTTPStatus.NOT_FOUND)
             return
@@ -135,6 +234,36 @@ class JourneybackHandler(BaseHTTPRequestHandler):
                     content_base64=str(payload.get("content_base64") or ""),
                     evidence_note=str(payload.get("evidence_note") or ""),
                     upload_root=self.upload_root,
+                )
+            elif route == "/api/action":
+                case_id = str(payload.get("case_id") or "")
+                case = get_case(case_id)
+                upload_ids = payload.get("evidence_upload_ids", [])
+                if not isinstance(upload_ids, list) or len(upload_ids) > 10:
+                    raise ValueError("evidence_upload_ids must be a list of at most 10 ids")
+                uploaded_evidence = load_evidence(
+                    case_id=case_id,
+                    upload_ids=[str(value) for value in upload_ids],
+                    upload_root=self.upload_root,
+                )
+                enriched_case = enrich_case(
+                    case,
+                    product_code=str(payload.get("product_code") or "") or None,
+                    uploaded_evidence=uploaded_evidence,
+                )
+                product_code = str(payload.get("product_code") or "") or None
+                recovery = load_reanalysis_snapshot(
+                    case_id=case_id,
+                    product_code=product_code,
+                    evidence_upload_ids=[str(value) for value in upload_ids],
+                    artifact_root=self.upload_root,
+                ) or recovery_case_from_synthetic(enriched_case)
+                result = create_recovery_artifact(
+                    case=enriched_case,
+                    action_code=str(payload.get("action_code") or ""),
+                    recovery=recovery,
+                    uploaded_evidence=uploaded_evidence,
+                    artifact_root=self.upload_root,
                 )
             elif route == "/api/reanalyse":
                 started = time.perf_counter()
@@ -175,10 +304,20 @@ class JourneybackHandler(BaseHTTPRequestHandler):
                             "upload_id": item["upload_id"],
                             "evidence_code": item["evidence_code"],
                             "file_name": item["file_name"],
+                            "mime_type": item["mime_type"],
+                            "size_bytes": item["size_bytes"],
+                            "inspection": evidence_inspection(item),
                         }
                         for item in uploaded_evidence
                     ],
                 }
+                save_reanalysis_snapshot(
+                    case_id=case_id,
+                    product_code=product_code,
+                    evidence_upload_ids=[str(value) for value in upload_ids],
+                    recovery=result,
+                    artifact_root=self.upload_root,
+                )
             elif route == "/api/detect":
                 started = time.perf_counter()
                 case = get_case(str(payload.get("case_id") or "") or None)

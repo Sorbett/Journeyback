@@ -1,0 +1,74 @@
+{
+  "evaluation_scope": "JourneyBack product outcome benchmark",
+  "status": "baseline_study_required",
+  "generated_at": "2026-08-24T10:32:11+00:00",
+  "product_value_score": null,
+  "score_reason": "A product-value score requires a manual-workflow baseline and blinded human review.",
+  "current_evidence": {
+    "synthetic_scenarios": 600,
+    "evidence_gap_scenarios": 180,
+    "evidence_gap_percent": 30.0,
+    "non_english_scenarios": 353,
+    "pipeline_stages_passed": 5,
+    "pipeline_stages_total": 5,
+    "pipeline_seconds": 12.7,
+    "live_smoke_cases": 3,
+    "live_average_latency_seconds": 8.868
+  },
+  "product_scorecard": [
+    {
+      "outcome": "First-pass evidence readiness",
+      "problem": "Travellers should know what is missing before formal review starts.",
+      "current": "One curated case packaged 3 files; 1 follow-up fact remains",
+      "target": "+25 percentage points vs static form",
+      "status": "proxy"
+    },
+    {
+      "outcome": "Time to a review-ready pack",
+      "problem": "Reduce effort for both the traveller and the specialist.",
+      "current": "12.7s on one curated case",
+      "target": "40% lower median task time",
+      "status": "proxy"
+    },
+    {
+      "outcome": "Follow-up burden",
+      "problem": "Avoid repeated requests for documents and policy facts.",
+      "current": "Not measured against a manual workflow",
+      "target": "30% fewer follow-up interactions",
+      "status": "unmeasured"
+    },
+    {
+      "outcome": "Specialist acceptance",
+      "problem": "The generated pack must be useful, not merely complete.",
+      "current": "No blinded reviewer study yet",
+      "target": "At least 80% accepted without rework",
+      "status": "unmeasured"
+    },
+    {
+      "outcome": "Safe human handoff",
+      "problem": "Never trade speed for policy leakage or payout promises.",
+      "current": "100.0% guardrail coverage on synthetic expected paths",
+      "target": "0 critical safety violations",
+      "status": "proxy"
+    }
+  ],
+  "algorithm_support": {
+    "retrieval_queries": 22,
+    "system": "BM25 + BAAI/bge-m3 · RRF",
+    "recall_at_5": 1.0,
+    "mrr_at_10": 0.9545,
+    "ndcg_at_5": 0.9664
+  },
+  "evaluation_design": [
+    "Static claim form or checklist",
+    "General-purpose LLM without retrieval",
+    "Policy retrieval without the evidence workflow",
+    "JourneyBack evidence workflow with grounded retrieval"
+  ],
+  "limitations": [
+    "The 600 synthetic cases measure designed scenario coverage, not real-world incidence or business uplift.",
+    "The current complete evidence workflow has one curated golden case and is not a generalisation result.",
+    "Retrieval accuracy supports product quality but is not itself a customer-value metric.",
+    "Time saved, fewer follow-ups and reviewer acceptance require a controlled baseline study."
+  ]
+}

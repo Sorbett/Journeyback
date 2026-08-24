@@ -10,6 +10,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
+from .benchmarking import BM25Ranker, reciprocal_rank_fusion
 from .config import PROJECT_ROOT
 from .knowledge_base import KnowledgeBase
 from .llm_client import LLMClient
@@ -19,11 +20,12 @@ DEFAULT_CACHE_ROOT = PROJECT_ROOT / ".journeyback_cache"
 
 
 class SemanticRetriever:
-    """Rank every policy chunk by vector similarity to an LLM-written query.
+    """Rank policy chunks with BGE-M3 and generic BM25 reciprocal-rank fusion.
 
     Product, event and payment facts are encoded in the query and chunk text.
-    There is no event threshold table or hand-authored keyword scoring in the
-    runtime path. Embeddings are cached by model and content hash.
+    There is no event threshold table or hand-authored policy score in the
+    runtime path. Embeddings are cached by model and content hash; lexical and
+    semantic ranks are fused without product-specific weights.
     """
 
     def __init__(
@@ -33,11 +35,14 @@ class SemanticRetriever:
         embedding_model: str,
         knowledge_base: KnowledgeBase | None = None,
         cache_path: Path | None | bool = None,
+        hybrid: bool = True,
     ) -> None:
         self.client = client
         self.embedding_model = embedding_model
         self.knowledge_base = knowledge_base or KnowledgeBase.load()
         self.by_chunk_id = {chunk["chunk_id"]: chunk for chunk in self.knowledge_base.chunks}
+        self.hybrid = hybrid
+        self.lexical_ranker = BM25Ranker(self.knowledge_base.chunks) if hybrid else None
         self._memory_vectors: dict[str, list[float]] | None = None
         self._cache_lock = threading.Lock()
         if cache_path is False:
@@ -48,18 +53,53 @@ class SemanticRetriever:
             slug = re.sub(r"[^a-zA-Z0-9_.-]+", "_", embedding_model)
             self.cache_path = DEFAULT_CACHE_ROOT / f"embeddings_{slug}.json"
 
-    def retrieve(self, query: str, *, top_k: int = 8) -> list[dict[str, Any]]:
+    def retrieve(
+        self,
+        query: str,
+        *,
+        top_k: int = 8,
+        product_code: str | None = None,
+    ) -> list[dict[str, Any]]:
         query = query.strip()
         if not query:
             raise ValueError("Semantic retrieval query cannot be empty.")
+        candidates = [
+            chunk
+            for chunk in self.knowledge_base.chunks
+            if product_code is None or chunk["product_code"] == product_code
+        ]
+        if not candidates:
+            raise ValueError(f"No policy chunks exist for product: {product_code}")
+        candidate_ids = {chunk["chunk_id"] for chunk in candidates}
         corpus_vectors = self._corpus_vectors()
         query_vector = self.client.embed([query])[0]
         ranked = [
             (_cosine_similarity(query_vector, corpus_vectors[chunk["chunk_id"]]), chunk)
-            for chunk in self.knowledge_base.chunks
+            for chunk in candidates
         ]
         ranked.sort(key=lambda item: (item[0], float(item[1]["authority_score"])), reverse=True)
-        return [self._public_result(chunk, score) for score, chunk in ranked[:top_k]]
+        if not self.hybrid:
+            return [self._public_result(chunk, score, "semantic") for score, chunk in ranked[:top_k]]
+
+        semantic_ids = [chunk["chunk_id"] for _, chunk in ranked]
+        assert self.lexical_ranker is not None
+        lexical_ids = [
+            chunk_id
+            for chunk_id in self.lexical_ranker.rank(
+                query, top_k=len(self.knowledge_base.chunks)
+            )
+            if chunk_id in candidate_ids
+        ]
+        fused_ids = reciprocal_rank_fusion(
+            [semantic_ids, lexical_ids], top_k=top_k
+        )
+        similarity_by_id = {chunk["chunk_id"]: score for score, chunk in ranked}
+        return [
+            self._public_result(
+                self.by_chunk_id[chunk_id], similarity_by_id[chunk_id], "hybrid_rrf"
+            )
+            for chunk_id in fused_ids
+        ]
 
     def cache_summary(self) -> dict[str, Any]:
         """Expose safe cache state for diagnostics without loading or rebuilding vectors."""
@@ -72,6 +112,7 @@ class SemanticRetriever:
             "cache_bytes": cache_bytes,
             "corpus_loaded_in_memory": self._memory_vectors is not None,
             "rebuild_policy": "only_missing_or_changed_chunks",
+            "retrieval_strategy": "bm25_bge_m3_rrf" if self.hybrid else "semantic_only",
         }
 
     def _corpus_vectors(self) -> dict[str, list[float]]:
@@ -137,7 +178,9 @@ class SemanticRetriever:
         temporary.replace(self.cache_path)
 
     @staticmethod
-    def _public_result(chunk: dict[str, Any], similarity: float) -> dict[str, Any]:
+    def _public_result(
+        chunk: dict[str, Any], similarity: float, retrieval_method: str
+    ) -> dict[str, Any]:
         return {
             "chunk_id": chunk["chunk_id"],
             "source_id": chunk["source_id"],
@@ -153,6 +196,7 @@ class SemanticRetriever:
             "url": chunk["url"],
             "excerpt": chunk["retrieval_text"][:700],
             "similarity": round(similarity, 6),
+            "retrieval_method": retrieval_method,
         }
 
 

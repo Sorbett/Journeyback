@@ -1,0 +1,1814 @@
+{
+  "evaluation_scope": "JourneyBack component-level retrieval holdout",
+  "status": "completed",
+  "generated_at": "2026-08-22T11:27:43+00:00",
+  "holdout": {
+    "path": "data/evaluation/retrieval_holdout.jsonl",
+    "sha256": "16736add88c5f3926c2e96c104079790ee6d5fcfb1c72d6f37cbce28209e9536",
+    "queries": 22,
+    "locales": [
+      "en-SG",
+      "zh-SG"
+    ],
+    "label_source": "manual reading of the public Singapore corpus"
+  },
+  "systems": {
+    "bm25": {
+      "label": "BM25 lexical baseline",
+      "status": "completed",
+      "query_count": 22,
+      "metrics": {
+        "hit_rate_at_5": 0.9545,
+        "recall_at_5": 0.9545,
+        "mrr_at_10": 0.8914,
+        "ndcg_at_5": 0.9042
+      },
+      "locale_breakdown": {
+        "en-SG": {
+          "queries": 11,
+          "hit_rate_at_5": 0.9091,
+          "mrr_at_10": 0.8737
+        },
+        "zh-SG": {
+          "queries": 11,
+          "hit_rate_at_5": 1.0,
+          "mrr_at_10": 0.9091
+        }
+      },
+      "results": [
+        {
+          "query_id": "RET-001",
+          "locale": "en-SG",
+          "category": "eligibility",
+          "query": "My wife is travelling on my Platinum Card booking. What payment condition makes the trip eligible?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "SG-AMEX-FLIGHT-FAQ-HTML-002",
+            "SG-AMEX-MANAGE-BOOKING-HTML-002",
+            "SG-AMEX-FLIGHT-FAQ-HTML-001",
+            "SG-AMEX-MANAGE-BOOKING-HTML-001",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "SG-AMEX-KF-ASCEND-HTML-004"
+          ],
+          "first_relevant_rank": 9,
+          "hit_at_5": false,
+          "recall_at_5": 0.0,
+          "reciprocal_rank": 0.1111111111111111,
+          "ndcg_at_5": 0.0
+        },
+        {
+          "query_id": "RET-002",
+          "locale": "zh-SG",
+          "category": "duration",
+          "query": "白金卡单次旅行超过180天之后是否还在保障期内？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-DURATION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-003",
+          "locale": "en-SG",
+          "category": "flight_disruption",
+          "query": "The Platinum Card flight was cancelled and no alternative was available for four hours. Which travel inconvenience wording applies?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "SG-AMEX-FLIGHT-FAQ-HTML-001",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-004",
+          "locale": "zh-SG",
+          "category": "baggage",
+          "query": "Platinum托运行李48小时还没有送到，必需品规则在哪一条？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-DELAY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-005",
+          "locale": "en-SG",
+          "category": "exclusion",
+          "query": "I refused the airline's alternative flight and have no PIR. Find the Platinum travel inconvenience exclusions.",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "SG-AMEX-FLIGHT-FAQ-HTML-002",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "SG-AMEX-FLIGHT-FAQ-HTML-001",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "first_relevant_rank": 2,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.5,
+          "ndcg_at_5": 0.6309297535714575
+        },
+        {
+          "query_id": "RET-006",
+          "locale": "zh-SG",
+          "category": "claims_evidence",
+          "query": "Platinum航班延误申请需要机票、航空公司书面证明和收据吗，多久内提交？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-007",
+          "locale": "en-SG",
+          "category": "trip_cancellation",
+          "query": "Platinum trip cancellation because of illness: where are the non-refundable cost and medical certificate conditions?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-CANCELLATION",
+            "SG-AMEX-MR-TC-HTML-006",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "SG-AMEX-MR-TC-HTML-031",
+            "SG-AMEX-PLAT-TRAVEL-HTML-HTML-002",
+            "POL-SG-PLATINUM-DURATION",
+            "SG-AMEX-MR-TC-HTML-032",
+            "SG-AMEX-MR-TC-HTML-007",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-008",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "Platinum Reserve的去程和回程是否都必须刷这张卡，最长旅行时间是多少？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-009",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "Reserve Card missed connection for four hours and baggage missing for 48 hours. Find the applicable limits section.",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-010",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "Platinum Reserve回程最后一段行李延误，没有收据，会触发哪些排除？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-011",
+          "locale": "en-SG",
+          "category": "claims_evidence",
+          "query": "What documents and notification deadline apply to a Platinum Reserve travel inconvenience claim?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "SG-AMEX-MR-TC-HTML-005",
+            "SG-AMEX-MR-TC-HTML-004",
+            "SG-AMEX-MR-TC-HTML-003"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-012",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "KrisFlyer Ascend配偶单独旅行是否受保，往返机票付款条件是什么？",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-KF-ASCEND-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-013",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "KrisFlyer Ascend flight delay exceeded four hours and luggage exceeded six hours. Retrieve the inconvenience benefit wording.",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "SG-AMEX-FLIGHT-FAQ-HTML-001"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-014",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "KrisFlyer Ascend购买的应急物品没有刷这张卡，也没有PIR，相关限制是什么？",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 2,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.5,
+          "ndcg_at_5": 0.6309297535714575
+        },
+        {
+          "query_id": "RET-015",
+          "locale": "en-SG",
+          "category": "claims_channel",
+          "query": "Where does a KrisFlyer Ascend Card Member file with Chubb and what is the general 30-day requirement?",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "SG-AMEX-KF-ASCEND-HTML-001",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "SG-AMEX-TRUE-CASHBACK-HTML-002",
+            "SG-AMEX-KF-ASCEND-HTML-004",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "SG-AMEX-MR-TC-HTML-002",
+            "SG-AMEX-MR-TC-HTML-042"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-016",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "True Cashback附属卡、配偶和子女的旅行保障以及往返付款条件",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-MY-TRAVEL-DELAY"
+          ],
+          "first_relevant_rank": 2,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.5,
+          "ndcg_at_5": 0.6309297535714575
+        },
+        {
+          "query_id": "RET-017",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "True Cashback missed connection, six-hour baggage delay and 48-hour baggage loss limits",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-018",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "True Cashback行李到达目的地后没有向航空公司报失，也没有完整PIR",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-019",
+          "locale": "en-SG",
+          "category": "claims_channel",
+          "query": "Find the True Cashback Chubb claim channel and the deadline for carrier evidence.",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "SG-AMEX-MR-TC-HTML-004"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-020",
+          "locale": "zh-SG",
+          "category": "product_boundary",
+          "query": "我买的是My Travel Insurance，不是信用卡附带保障，但不记得Essential、Standard还是Superior",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-021",
+          "locale": "en-SG",
+          "category": "travel_delay",
+          "query": "My Travel Insurance public transport delay lasted twelve hours. Find the six-hour block and operator confirmation rule.",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-DELAY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "SG-AMEX-FLIGHT-FAQ-HTML-002",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "SG-AMEX-TRAVEL-TC-HTML-014"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-022",
+          "locale": "zh-SG",
+          "category": "misconnection",
+          "query": "前一程晚到导致海外转机失败，六小时没有后续交通，需要承运人确认哪些时间？",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-MISCONNECTION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-KF-ASCEND-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        }
+      ]
+    },
+    "semantic": {
+      "label": "siliconflow · BAAI/bge-m3",
+      "status": "completed",
+      "query_count": 22,
+      "metrics": {
+        "hit_rate_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr_at_10": 0.947,
+        "ndcg_at_5": 0.9605
+      },
+      "locale_breakdown": {
+        "en-SG": {
+          "queries": 11,
+          "hit_rate_at_5": 1.0,
+          "mrr_at_10": 0.9545
+        },
+        "zh-SG": {
+          "queries": 11,
+          "hit_rate_at_5": 1.0,
+          "mrr_at_10": 0.9394
+        }
+      },
+      "results": [
+        {
+          "query_id": "RET-001",
+          "locale": "en-SG",
+          "category": "eligibility",
+          "query": "My wife is travelling on my Platinum Card booking. What payment condition makes the trip eligible?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-002",
+          "locale": "zh-SG",
+          "category": "duration",
+          "query": "白金卡单次旅行超过180天之后是否还在保障期内？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-DURATION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-MY-TRAVEL-MISCONNECTION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-003",
+          "locale": "en-SG",
+          "category": "flight_disruption",
+          "query": "The Platinum Card flight was cancelled and no alternative was available for four hours. Which travel inconvenience wording applies?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-MY-TRAVEL-MISCONNECTION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-004",
+          "locale": "zh-SG",
+          "category": "baggage",
+          "query": "Platinum托运行李48小时还没有送到，必需品规则在哪一条？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-DURATION",
+            "SG-AMEX-PLAT-TRAVEL-HTML-HTML-002",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-005",
+          "locale": "en-SG",
+          "category": "exclusion",
+          "query": "I refused the airline's alternative flight and have no PIR. Find the Platinum travel inconvenience exclusions.",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "SG-AMEX-PLAT-TRAVEL-HTML-HTML-002",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "first_relevant_rank": 2,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.5,
+          "ndcg_at_5": 0.6309297535714575
+        },
+        {
+          "query_id": "RET-006",
+          "locale": "zh-SG",
+          "category": "claims_evidence",
+          "query": "Platinum航班延误申请需要机票、航空公司书面证明和收据吗，多久内提交？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-007",
+          "locale": "en-SG",
+          "category": "trip_cancellation",
+          "query": "Platinum trip cancellation because of illness: where are the non-refundable cost and medical certificate conditions?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "SG-AMEX-PLAT-TRAVEL-HTML-HTML-002",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-DURATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-008",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "Platinum Reserve的去程和回程是否都必须刷这张卡，最长旅行时间是多少？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-ELIGIBILITY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-009",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "Reserve Card missed connection for four hours and baggage missing for 48 hours. Find the applicable limits section.",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "SG-AMEX-FLIGHT-FAQ-HTML-002"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-010",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "Platinum Reserve回程最后一段行李延误，没有收据，会触发哪些排除？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-KF-ASCEND-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 3,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.3333333333333333,
+          "ndcg_at_5": 0.5
+        },
+        {
+          "query_id": "RET-011",
+          "locale": "en-SG",
+          "category": "claims_evidence",
+          "query": "What documents and notification deadline apply to a Platinum Reserve travel inconvenience claim?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-DURATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-012",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "KrisFlyer Ascend配偶单独旅行是否受保，往返机票付款条件是什么？",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "SG-AMEX-KF-ASCEND-HTML-004",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "SG-AMEX-KF-ASCEND-HTML-001",
+            "SG-AMEX-TRUE-CASHBACK-HTML-002",
+            "SG-AMEX-KF-ASCEND-HTML-005"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-013",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "KrisFlyer Ascend flight delay exceeded four hours and luggage exceeded six hours. Retrieve the inconvenience benefit wording.",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-014",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "KrisFlyer Ascend购买的应急物品没有刷这张卡，也没有PIR，相关限制是什么？",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "SG-AMEX-KF-ASCEND-HTML-004",
+            "SG-AMEX-MR-TC-HTML-004",
+            "SG-AMEX-MR-TC-HTML-019",
+            "SG-AMEX-KF-ASCEND-HTML-001"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-015",
+          "locale": "en-SG",
+          "category": "claims_channel",
+          "query": "Where does a KrisFlyer Ascend Card Member file with Chubb and what is the general 30-day requirement?",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "SG-AMEX-KF-ASCEND-HTML-004",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "SG-AMEX-KF-ASCEND-HTML-001",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "SG-AMEX-TRUE-CASHBACK-HTML-002",
+            "POL-SG-KF-ASCEND-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-016",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "True Cashback附属卡、配偶和子女的旅行保障以及往返付款条件",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "SG-AMEX-MR-TC-HTML-004",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "SG-AMEX-TRUE-CASHBACK-HTML-001",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-017",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "True Cashback missed connection, six-hour baggage delay and 48-hour baggage loss limits",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-MY-TRAVEL-DELAY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-018",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "True Cashback行李到达目的地后没有向航空公司报失，也没有完整PIR",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "SG-AMEX-TRUE-CASHBACK-HTML-001"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-019",
+          "locale": "en-SG",
+          "category": "claims_channel",
+          "query": "Find the True Cashback Chubb claim channel and the deadline for carrier evidence.",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "SG-AMEX-TRUE-CASHBACK-HTML-001",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-DURATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-020",
+          "locale": "zh-SG",
+          "category": "product_boundary",
+          "query": "我买的是My Travel Insurance，不是信用卡附带保障，但不记得Essential、Standard还是Superior",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "SG-AMEX-MR-TC-HTML-006",
+            "SG-AMEX-MR-TC-HTML-019",
+            "SG-AMEX-MR-TC-HTML-003",
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-021",
+          "locale": "en-SG",
+          "category": "travel_delay",
+          "query": "My Travel Insurance public transport delay lasted twelve hours. Find the six-hour block and operator confirmation rule.",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-DELAY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-022",
+          "locale": "zh-SG",
+          "category": "misconnection",
+          "query": "前一程晚到导致海外转机失败，六小时没有后续交通，需要承运人确认哪些时间？",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-MISCONNECTION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        }
+      ]
+    },
+    "hybrid": {
+      "label": "BM25 + BAAI/bge-m3 · RRF",
+      "status": "completed",
+      "query_count": 22,
+      "metrics": {
+        "hit_rate_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr_at_10": 0.9545,
+        "ndcg_at_5": 0.9664
+      },
+      "locale_breakdown": {
+        "en-SG": {
+          "queries": 11,
+          "hit_rate_at_5": 1.0,
+          "mrr_at_10": 0.9091
+        },
+        "zh-SG": {
+          "queries": 11,
+          "hit_rate_at_5": 1.0,
+          "mrr_at_10": 1.0
+        }
+      },
+      "results": [
+        {
+          "query_id": "RET-001",
+          "locale": "en-SG",
+          "category": "eligibility",
+          "query": "My wife is travelling on my Platinum Card booking. What payment condition makes the trip eligible?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "SG-AMEX-FLIGHT-FAQ-HTML-002",
+            "SG-AMEX-MANAGE-BOOKING-HTML-002",
+            "SG-AMEX-FLIGHT-FAQ-HTML-001",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "SG-AMEX-MANAGE-BOOKING-HTML-001",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY"
+          ],
+          "first_relevant_rank": 2,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.5,
+          "ndcg_at_5": 0.6309297535714575
+        },
+        {
+          "query_id": "RET-002",
+          "locale": "zh-SG",
+          "category": "duration",
+          "query": "白金卡单次旅行超过180天之后是否还在保障期内？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-DURATION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-003",
+          "locale": "en-SG",
+          "category": "flight_disruption",
+          "query": "The Platinum Card flight was cancelled and no alternative was available for four hours. Which travel inconvenience wording applies?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-004",
+          "locale": "zh-SG",
+          "category": "baggage",
+          "query": "Platinum托运行李48小时还没有送到，必需品规则在哪一条？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-005",
+          "locale": "en-SG",
+          "category": "exclusion",
+          "query": "I refused the airline's alternative flight and have no PIR. Find the Platinum travel inconvenience exclusions.",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "SG-AMEX-FLIGHT-FAQ-HTML-002",
+            "SG-AMEX-FLIGHT-FAQ-HTML-001",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 2,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 0.5,
+          "ndcg_at_5": 0.6309297535714575
+        },
+        {
+          "query_id": "RET-006",
+          "locale": "zh-SG",
+          "category": "claims_evidence",
+          "query": "Platinum航班延误申请需要机票、航空公司书面证明和收据吗，多久内提交？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-007",
+          "locale": "en-SG",
+          "category": "trip_cancellation",
+          "query": "Platinum trip cancellation because of illness: where are the non-refundable cost and medical certificate conditions?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "SG-AMEX-PLAT-TRAVEL-HTML-HTML-002",
+            "POL-SG-PLATINUM-DURATION",
+            "SG-AMEX-MR-TC-HTML-006",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "SG-AMEX-MR-TC-HTML-031",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-008",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "Platinum Reserve的去程和回程是否都必须刷这张卡，最长旅行时间是多少？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-DURATION",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-BAGGAGE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-009",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "Reserve Card missed connection for four hours and baggage missing for 48 hours. Find the applicable limits section.",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "SG-AMEX-TRAVEL-TC-HTML-014"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-010",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "Platinum Reserve回程最后一段行李延误，没有收据，会触发哪些排除？",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-011",
+          "locale": "en-SG",
+          "category": "claims_evidence",
+          "query": "What documents and notification deadline apply to a Platinum Reserve travel inconvenience claim?",
+          "expected_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "SG-AMEX-MR-TC-HTML-005"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-012",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "KrisFlyer Ascend配偶单独旅行是否受保，往返机票付款条件是什么？",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "SG-AMEX-KF-ASCEND-HTML-004"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-013",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "KrisFlyer Ascend flight delay exceeded four hours and luggage exceeded six hours. Retrieve the inconvenience benefit wording.",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "SG-AMEX-KF-ASCEND-HTML-002"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-014",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "KrisFlyer Ascend购买的应急物品没有刷这张卡，也没有PIR，相关限制是什么？",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-015",
+          "locale": "en-SG",
+          "category": "claims_channel",
+          "query": "Where does a KrisFlyer Ascend Card Member file with Chubb and what is the general 30-day requirement?",
+          "expected_chunk_ids": [
+            "POL-SG-KF-ASCEND-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "SG-AMEX-KF-ASCEND-HTML-003",
+            "SG-AMEX-KF-ASCEND-HTML-001",
+            "SG-AMEX-KF-ASCEND-HTML-002",
+            "SG-AMEX-KF-ASCEND-HTML-004",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "SG-AMEX-TRUE-CASHBACK-HTML-002",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "SG-AMEX-MR-TC-HTML-002"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-016",
+          "locale": "zh-SG",
+          "category": "eligibility",
+          "query": "True Cashback附属卡、配偶和子女的旅行保障以及往返付款条件",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "POL-SG-PLATINUM-CANCELLATION",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "SG-AMEX-MR-TC-HTML-004",
+            "POL-SG-PLATINUM-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-017",
+          "locale": "en-SG",
+          "category": "flight_and_baggage",
+          "query": "True Cashback missed connection, six-hour baggage delay and 48-hour baggage loss limits",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-018",
+          "locale": "zh-SG",
+          "category": "exclusion",
+          "query": "True Cashback行李到达目的地后没有向航空公司报失，也没有完整PIR",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-019",
+          "locale": "en-SG",
+          "category": "claims_channel",
+          "query": "Find the True Cashback Chubb claim channel and the deadline for carrier evidence.",
+          "expected_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-CLAIMS"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-TRUE-CASHBACK-CLAIMS",
+            "POL-SG-KF-ASCEND-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-TRUE-CASHBACK-EXCLUSIONS",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "SG-AMEX-TRUE-CASHBACK-HTML-001",
+            "POL-SG-PLATINUM-CANCELLATION"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-020",
+          "locale": "zh-SG",
+          "category": "product_boundary",
+          "query": "我买的是My Travel Insurance，不是信用卡附带保障，但不记得Essential、Standard还是Superior",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "POL-SG-PLATINUM-RESERVE-EXCLUSIONS",
+            "POL-SG-PLATINUM-INCONVENIENCE-EXCLUSIONS",
+            "POL-SG-PLATINUM-ELIGIBILITY",
+            "POL-SG-KF-ASCEND-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-EXCLUSIONS",
+            "POL-SG-TRUE-CASHBACK-ELIGIBILITY",
+            "POL-SG-PLATINUM-RESERVE-ELIGIBILITY",
+            "SG-AMEX-MR-TC-HTML-006"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-021",
+          "locale": "en-SG",
+          "category": "travel_delay",
+          "query": "My Travel Insurance public transport delay lasted twelve hours. Find the six-hour block and operator confirmation rule.",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-DELAY"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "POL-SG-PLATINUM-RESERVE-CLAIMS",
+            "POL-SG-MY-TRAVEL-PRODUCT-BOUNDARY",
+            "SG-AMEX-FLIGHT-FAQ-HTML-002"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        },
+        {
+          "query_id": "RET-022",
+          "locale": "zh-SG",
+          "category": "misconnection",
+          "query": "前一程晚到导致海外转机失败，六小时没有后续交通，需要承运人确认哪些时间？",
+          "expected_chunk_ids": [
+            "POL-SG-MY-TRAVEL-MISCONNECTION"
+          ],
+          "top_10_chunk_ids": [
+            "POL-SG-MY-TRAVEL-MISCONNECTION",
+            "POL-SG-MY-TRAVEL-DELAY",
+            "POL-SG-PLATINUM-TRAVEL-INCONVENIENCE",
+            "POL-SG-TRUE-CASHBACK-INCONVENIENCE",
+            "POL-SG-PLATINUM-CLAIMS",
+            "POL-SG-PLATINUM-RESERVE-INCONVENIENCE",
+            "POL-SG-KF-ASCEND-INCONVENIENCE",
+            "POL-SG-PLATINUM-BAGGAGE",
+            "SG-AMEX-TRAVEL-TC-HTML-014",
+            "POL-SG-TRUE-CASHBACK-CLAIMS"
+          ],
+          "first_relevant_rank": 1,
+          "hit_at_5": true,
+          "recall_at_5": 1.0,
+          "reciprocal_rank": 1.0,
+          "ndcg_at_5": 1.0
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "This evaluates retrieval, not claim eligibility or end-to-end product success.",
+    "The labels are author-reviewed and have not been independently adjudicated by a policy expert.",
+    "The 600 generated journeys remain a scenario-coverage set and are not used as model-accuracy evidence.",
+    "A production benchmark requires a sealed, versioned, double-reviewed test split."
+  ]
+}
